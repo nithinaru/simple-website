@@ -233,10 +233,7 @@ export default function Home() {
                   {paper.year}
                 </span>
               </div>
-              <span className="text-xs text-stone-600">
-                {paper.venue} — {paper.status}
-                {paper.citations > 0 ? ` · ${paper.citations} citations` : null}
-              </span>
+              <span className="text-xs text-stone-600">{paper.venue}</span>
             </div>
           </Line>
         ))}
@@ -251,7 +248,7 @@ export default function Home() {
                 </span>
               </div>
               <span className="text-xs text-stone-600">
-                patent {patent.number} — {patent.status}
+                patent {patent.number}
               </span>
             </div>
           </Line>
