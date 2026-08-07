@@ -166,6 +166,51 @@
   --font-heading: "Redaction 50", sans-serif;
 }
 
+/*
+ * generated pastel theme.
+ *
+ * every tone is the same hue at a fixed lightness, so the page reads as one
+ * palette no matter which hue comes up. lightness is inherited from tailwind's
+ * stone ramp (that's the look we're keeping); only hue and chroma are new.
+ * chroma stays tiny — the big surfaces get the most tint and it tapers off
+ * toward the text tones so type stays readable rather than colourful.
+ *
+ * the values below are the no-js fallback (neutral, ~ stone). the inline script
+ * in _document.tsx overwrites --tone-h / --tone-c before first paint.
+ */
+:root {
+  --tone-h: 60;
+  --tone-c: 0.004;
+
+  --tone-100: oklch(0.97 calc(var(--tone-c) * 1.2) var(--tone-h));
+  --tone-200: oklch(0.923 calc(var(--tone-c) * 1.6) var(--tone-h));
+  --tone-300: oklch(0.869 calc(var(--tone-c) * 1.6) var(--tone-h));
+  --tone-400: oklch(0.709 calc(var(--tone-c) * 1.3) var(--tone-h));
+  --tone-500: oklch(0.553 calc(var(--tone-c) * 1.2) var(--tone-h));
+  --tone-600: oklch(0.444 calc(var(--tone-c) * 1.1) var(--tone-h));
+  --tone-700: oklch(0.374 var(--tone-c) var(--tone-h));
+  --tone-800: oklch(0.268 calc(var(--tone-c) * 0.9) var(--tone-h));
+
+  /* the one saturated element (the equalizer), nudged off-hue so it reads as
+     an accent instead of another shade of the background */
+  --tone-accent: oklch(0.62 0.09 calc(var(--tone-h) + 35));
+}
+
+/* `inline` so the utilities emit var(--tone-*) instead of copying the values —
+   that's what lets the runtime script re-theme the whole page by touching two
+   variables. */
+@theme inline {
+  --color-stone-100: var(--tone-100);
+  --color-stone-200: var(--tone-200);
+  --color-stone-300: var(--tone-300);
+  --color-stone-400: var(--tone-400);
+  --color-stone-500: var(--tone-500);
+  --color-stone-600: var(--tone-600);
+  --color-stone-700: var(--tone-700);
+  --color-stone-800: var(--tone-800);
+  --color-green-500: var(--tone-accent);
+}
+
 h1,
 h2,
 h3 {

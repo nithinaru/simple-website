@@ -11,10 +11,28 @@ const CRITICAL_FONTS = [
   "/fonts/Redaction_50-Bold.woff2",
 ];
 
+/*
+ * rolls a fresh palette on every page load. runs blocking in <head>, before
+ * first paint, so there is no flash of the previous/fallback theme.
+ *
+ * only two numbers are random — the hue and how much chroma it carries. every
+ * tone in globals.css derives from those, which is what keeps a random roll
+ * looking deliberate instead of like eight unrelated colours.
+ */
+const THEME_SCRIPT = `(function(){try{
+var h=Math.random()*360;
+var c=0.012+Math.random()*0.012;
+var s=document.documentElement.style;
+s.setProperty('--tone-h',h.toFixed(2));
+s.setProperty('--tone-c',c.toFixed(4));
+}catch(e){}})();`;
+
 export default function Document() {
   return (
     <Html lang="en">
       <Head>
+        {/* biome-ignore lint/security/noDangerouslySetInnerHtml: must run before paint */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
         {CRITICAL_FONTS.map((href) => (
           <link
             key={href}

@@ -4,6 +4,12 @@ A minimal single-page version of [nithinaruswamy.com](https://nithinaruswamy.com
 
 All content lives in [`src/utils/constants.ts`](src/utils/constants.ts) — work, projects, research, patents, awards, skills, interests, travel and media.
 
+### theming
+
+The palette is generated, not picked from a list. Every page load rolls a random hue and a small chroma value; every surface and text tone in [`src/globals.css`](src/globals.css) derives from those two numbers, keeping the lightness ramp of Tailwind's `stone` scale. That's what makes a random roll look deliberate — one hue, eight consistent tones, plus an off-hue accent for the equalizer.
+
+The roll happens in a blocking inline script in [`src/pages/_document.tsx`](src/pages/_document.tsx) so there's no flash before first paint. To make it calmer or more colourful, change the chroma range there; to bias toward certain hues, constrain the hue line.
+
 ### install & run
 
 ```
