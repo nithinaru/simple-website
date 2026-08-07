@@ -14,240 +14,207 @@ export interface Song {
  */
 export const SONGS = [
   {
-    title: "Questions",
-    artist: "Jack Harlow",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/0c/3e/f2/0c3ef243-44b8-7636-d4be-884d6e5fe01b/075679685834.jpg/300x300bb.jpg",
-    durationSeconds: 134,
+    "title": "Questions",
+    "artist": "Jack Harlow",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/0c/3e/f2/0c3ef243-44b8-7636-d4be-884d6e5fe01b/075679685834.jpg/300x300bb.jpg",
+    "durationSeconds": 134
   },
   {
-    title: "Hold My Liquor",
-    artist: "Kanye West",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/90/9e/2f/909e2f18-effe-9b1f-5adb-a155d1921186/4099964224955.jpg/300x300bb.jpg",
-    durationSeconds: 178,
+    "title": "Hold My Liquor",
+    "artist": "Kanye West",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/90/9e/2f/909e2f18-effe-9b1f-5adb-a155d1921186/4099964224955.jpg/300x300bb.jpg",
+    "durationSeconds": 178
   },
   {
-    title: "Hello Miss Johnson",
-    artist: "Jack Harlow",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/2b/2b/f2/2b2bf218-d783-8901-9aeb-39d6ea908151/075679635853.jpg/300x300bb.jpg",
-    durationSeconds: 165,
+    "title": "Hello Miss Johnson",
+    "artist": "Jack Harlow",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/2b/2b/f2/2b2bf218-d783-8901-9aeb-39d6ea908151/075679635853.jpg/300x300bb.jpg",
+    "durationSeconds": 165
   },
   {
-    title: "ALL THE LOVE",
-    artist: "Kanye West, Andre Troutman",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/4b/38/d1/4b38d146-381d-ace2-73df-24074576e62b/656465138828_cover.jpg/300x300bb.jpg",
-    durationSeconds: 229,
+    "title": "ALL THE LOVE",
+    "artist": "Kanye West, Andre Troutman",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/4b/38/d1/4b38d146-381d-ace2-73df-24074576e62b/656465138828_cover.jpg/300x300bb.jpg",
+    "durationSeconds": 229
   },
   {
-    title: "Tell Your Friends",
-    artist: "The Weeknd",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/30/05/1e/30051e57-a63a-3acc-4b30-42568293f5f7/15UMGIM36514.rgb.jpg/300x300bb.jpg",
-    durationSeconds: 334,
+    "title": "Tell Your Friends",
+    "artist": "The Weeknd",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/30/05/1e/30051e57-a63a-3acc-4b30-42568293f5f7/15UMGIM36514.rgb.jpg/300x300bb.jpg",
+    "durationSeconds": 334
   },
   {
-    title: "drive ME crazy!",
-    artist: "Lil Yachty, Diana Gordon",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/f7/e4/8e/f7e48e71-eff3-5191-bbad-313bfa046c03/839c9f68-aecd-4e11-bef0-b6b45e457912.jpg/300x300bb.jpg",
-    durationSeconds: 117,
+    "title": "drive ME crazy!",
+    "artist": "Lil Yachty, Diana Gordon",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/f7/e4/8e/f7e48e71-eff3-5191-bbad-313bfa046c03/839c9f68-aecd-4e11-bef0-b6b45e457912.jpg/300x300bb.jpg",
+    "durationSeconds": 117
   },
   {
-    title: "Sanguine Paradise",
-    artist: "Lil Uzi Vert",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/07/8a/4a/078a4a95-1f64-4cf4-4659-276bd9a3ce64/075679916037.jpg/300x300bb.jpg",
-    durationSeconds: 173,
+    "title": "Sanguine Paradise",
+    "artist": "Lil Uzi Vert",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/07/8a/4a/078a4a95-1f64-4cf4-4659-276bd9a3ce64/075679916037.jpg/300x300bb.jpg",
+    "durationSeconds": 173
   },
   {
-    title: "Calling My Name",
-    artist: "Drake",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/6d/31/ab/6d31abaf-7a07-05f1-13ad-72ec520b6bfb/22UMGIM67374.rgb.jpg/300x300bb.jpg",
-    durationSeconds: 130,
+    "title": "Calling My Name",
+    "artist": "Drake",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/6d/31/ab/6d31abaf-7a07-05f1-13ad-72ec520b6bfb/22UMGIM67374.rgb.jpg/300x300bb.jpg",
+    "durationSeconds": 130
   },
   {
-    title: "Real Friends",
-    artist: "Kanye West",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/ec/fd/e0/ecfde04e-6db2-e55e-41fe-83c87a52b16e/00602547908339.rgb.jpg/300x300bb.jpg",
-    durationSeconds: 252,
+    "title": "Real Friends",
+    "artist": "Kanye West",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/ec/fd/e0/ecfde04e-6db2-e55e-41fe-83c87a52b16e/00602547908339.rgb.jpg/300x300bb.jpg",
+    "durationSeconds": 252
   },
   {
-    title: "EQUINOX",
-    artist: "Sean Leon",
-    artworkUrl: "",
-    durationSeconds: 210,
+    "title": "THE GLADE",
+    "artist": "Sean Leon, Daniel Caesar",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/4f/e0/66/4fe066c4-5846-c0e4-da15-98a37018d013/198092672905.jpg/300x300bb.jpg",
+    "durationSeconds": 222
   },
   {
-    title: "SKITZO",
-    artist: "Travis Scott, Young Thug",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/7d/4f/94/7d4f9468-56e1-3a2d-7186-c8088170ef58/196871341899.jpg/300x300bb.jpg",
-    durationSeconds: 367,
+    "title": "SKITZO",
+    "artist": "Travis Scott, Young Thug",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/7d/4f/94/7d4f9468-56e1-3a2d-7186-c8088170ef58/196871341899.jpg/300x300bb.jpg",
+    "durationSeconds": 367
   },
   {
-    title: "Watch",
-    artist: "Travis Scott, Lil Uzi Vert, Kanye West",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music118/v4/a5/0e/2f/a50e2fe3-38bd-937b-c973-62b7bd392a99/886447093795.jpg/300x300bb.jpg",
-    durationSeconds: 217,
+    "title": "Watch",
+    "artist": "Travis Scott, Lil Uzi Vert, Kanye West",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music118/v4/a5/0e/2f/a50e2fe3-38bd-937b-c973-62b7bd392a99/886447093795.jpg/300x300bb.jpg",
+    "durationSeconds": 217
   },
   {
-    title: "PUPPET",
-    artist: "Tyler, The Creator",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/0c/06/05/0c060581-6242-6a2a-a677-20170f2cf8da/886447710180.jpg/300x300bb.jpg",
-    durationSeconds: 201,
+    "title": "PUPPET",
+    "artist": "Tyler, The Creator",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/0c/06/05/0c060581-6242-6a2a-a677-20170f2cf8da/886447710180.jpg/300x300bb.jpg",
+    "durationSeconds": 201
   },
   {
-    title: "Favorite Girl",
-    artist: "Offset, Ty Dolla $ign",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/e3/3b/1e/e33b1e58-b6db-c1da-1187-29d62f278be4/25UMGIM92351.rgb.jpg/300x300bb.jpg",
-    durationSeconds: 161,
+    "title": "Favorite Girl",
+    "artist": "Offset, Ty Dolla $ign",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/e3/3b/1e/e33b1e58-b6db-c1da-1187-29d62f278be4/25UMGIM92351.rgb.jpg/300x300bb.jpg",
+    "durationSeconds": 161
   },
   {
-    title: "ELECTROWAVEBABY",
-    artist: "Kid Cudi",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/f2/26/be/f226bed2-f408-1e43-182d-d5a1fd964e08/23UMGIM95122.rgb.jpg/300x300bb.jpg",
-    durationSeconds: 205,
+    "title": "ELECTROWAVEBABY",
+    "artist": "Kid Cudi",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/f2/26/be/f226bed2-f408-1e43-182d-d5a1fd964e08/23UMGIM95122.rgb.jpg/300x300bb.jpg",
+    "durationSeconds": 205
   },
   {
-    title: "Somebody",
-    artist: "Latto",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/36/5f/be/365fbe2d-cc1f-3c50-29ba-8a13ce944c25/196873151403.jpg/300x300bb.jpg",
-    durationSeconds: 202,
+    "title": "Somebody",
+    "artist": "Latto",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/36/5f/be/365fbe2d-cc1f-3c50-29ba-8a13ce944c25/196873151403.jpg/300x300bb.jpg",
+    "durationSeconds": 202
   },
   {
-    title: "Wheels Fall Off",
-    artist: "Ty Dolla $ign, Ye",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/c7/20/ca/c720ca3b-0111-96e3-5055-841a323a842e/075679935984.jpg/300x300bb.jpg",
-    durationSeconds: 204,
+    "title": "Wheels Fall Off",
+    "artist": "Ty Dolla $ign, Ye",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/c7/20/ca/c720ca3b-0111-96e3-5055-841a323a842e/075679935984.jpg/300x300bb.jpg",
+    "durationSeconds": 204
   },
   {
-    title: "Jukebox Joints",
-    artist: "A$AP Rocky, Joe Fox, Kanye West",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/9f/9b/4c/9f9b4cbc-5910-51fb-8486-adf3b89bc973/886444594837.jpg/300x300bb.jpg",
-    durationSeconds: 324,
+    "title": "Jukebox Joints",
+    "artist": "A$AP Rocky, Joe Fox, Kanye West",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/9f/9b/4c/9f9b4cbc-5910-51fb-8486-adf3b89bc973/886444594837.jpg/300x300bb.jpg",
+    "durationSeconds": 324
   },
   {
-    title: "SKELETONS",
-    artist: "Travis Scott",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/e7/49/8f/e7498f65-df8f-bead-d6e3-2a8d4d642a79/886447235317.jpg/300x300bb.jpg",
-    durationSeconds: 146,
+    "title": "SKELETONS",
+    "artist": "Travis Scott",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/e7/49/8f/e7498f65-df8f-bead-d6e3-2a8d4d642a79/886447235317.jpg/300x300bb.jpg",
+    "durationSeconds": 146
   },
   {
-    title: "Hours In Silence",
-    artist: "Drake, 21 Savage",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/e1/6e/6a/e16e6a89-3e6d-1936-1a9c-b51680bcd4c1/22UM1IM29132.rgb.jpg/300x300bb.jpg",
-    durationSeconds: 399,
+    "title": "Hours In Silence",
+    "artist": "Drake, 21 Savage",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/e1/6e/6a/e16e6a89-3e6d-1936-1a9c-b51680bcd4c1/22UM1IM29132.rgb.jpg/300x300bb.jpg",
+    "durationSeconds": 399
   },
   {
-    title: "Futsal Shuffle 2020",
-    artist: "Lil Uzi Vert",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music123/v4/78/d8/1e/78d81ea1-1fd1-ef3b-8aa3-a4549899671e/27888e7f-f49b-42f5-a9ad-d4c54f466b31.jpg/300x300bb.jpg",
-    durationSeconds: 198,
+    "title": "Futsal Shuffle 2020",
+    "artist": "Lil Uzi Vert",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music123/v4/78/d8/1e/78d81ea1-1fd1-ef3b-8aa3-a4549899671e/27888e7f-f49b-42f5-a9ad-d4c54f466b31.jpg/300x300bb.jpg",
+    "durationSeconds": 198
   },
   {
-    title: "Parent Trap",
-    artist: "Jack Harlow, Justin Timberlake",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/e6/b8/83/e6b88344-8d5d-d353-06bc-3204d87071e6/075679759252.jpg/300x300bb.jpg",
-    durationSeconds: 190,
+    "title": "Parent Trap",
+    "artist": "Jack Harlow, Justin Timberlake",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/e6/b8/83/e6b88344-8d5d-d353-06bc-3204d87071e6/075679759252.jpg/300x300bb.jpg",
+    "durationSeconds": 190
   },
   {
-    title: "Lovin On Me",
-    artist: "Jack Harlow",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/60/88/3e/60883eee-7ec2-75e9-ccc6-5a6187371d97/075679665010.jpg/300x300bb.jpg",
-    durationSeconds: 138,
+    "title": "Lovin On Me",
+    "artist": "Jack Harlow",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/60/88/3e/60883eee-7ec2-75e9-ccc6-5a6187371d97/075679665010.jpg/300x300bb.jpg",
+    "durationSeconds": 138
   },
   {
-    title: "leavemealone",
-    artist: "Fred again.., Baby Keem",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/14/dc/f3/14dcf361-a172-1f94-8b24-cb8ec383b964/f5e4cfc0-56d4-4b13-a14c-b03385a74485.jpg/300x300bb.jpg",
-    durationSeconds: 138,
+    "title": "leavemealone",
+    "artist": "Fred again.., Baby Keem",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/14/dc/f3/14dcf361-a172-1f94-8b24-cb8ec383b964/f5e4cfc0-56d4-4b13-a14c-b03385a74485.jpg/300x300bb.jpg",
+    "durationSeconds": 138
   },
   {
-    title: "Kicked Out the House",
-    artist: "De La Soul",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/61/95/c6/6195c62e-5ab7-da8b-b751-5a488060d728/810098503105.png/300x300bb.jpg",
-    durationSeconds: 116,
+    "title": "Kicked Out the House",
+    "artist": "De La Soul",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/61/95/c6/6195c62e-5ab7-da8b-b751-5a488060d728/810098503105.png/300x300bb.jpg",
+    "durationSeconds": 116
   },
   {
-    title: "Out Of Luck",
-    artist: "KAYTRANADA, Mariah the Scientist",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/7c/67/dd/7c67dd0e-c3aa-9f6c-40b6-7e10b74a39ef/196871978699.jpg/300x300bb.jpg",
-    durationSeconds: 179,
+    "title": "Out Of Luck",
+    "artist": "KAYTRANADA, Mariah the Scientist",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/7c/67/dd/7c67dd0e-c3aa-9f6c-40b6-7e10b74a39ef/196871978699.jpg/300x300bb.jpg",
+    "durationSeconds": 179
   },
   {
-    title: "Turn On The Lights again..",
-    artist: "Fred again.., Swedish House Mafia",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/1c/4d/34/1c4d3479-4fe5-5c0a-ccfe-c45cbb9bf843/5054197263439.jpg/300x300bb.jpg",
-    durationSeconds: 268,
+    "title": "Turn On The Lights again..",
+    "artist": "Fred again.., Swedish House Mafia",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music112/v4/1c/4d/34/1c4d3479-4fe5-5c0a-ccfe-c45cbb9bf843/5054197263439.jpg/300x300bb.jpg",
+    "durationSeconds": 268
   },
   {
-    title: "Last 1s Left",
-    artist: "Skepta, Fred again..",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/cf/eb/fc/cfebfc00-935d-b7cb-ed55-6ed0bfdb1581/5026854879567.jpg/300x300bb.jpg",
-    durationSeconds: 226,
+    "title": "Last 1s Left",
+    "artist": "Skepta, Fred again..",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/cf/eb/fc/cfebfc00-935d-b7cb-ed55-6ed0bfdb1581/5026854879567.jpg/300x300bb.jpg",
+    "durationSeconds": 226
   },
   {
-    title: "My Old Ways",
-    artist: "Tame Impala",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/bc/cb/62/bccb621b-27c4-af88-06b7-2eb8ec5f1b6c/a858ef3a-08fb-46aa-950b-86a7715d4042.png/300x300bb.jpg",
-    durationSeconds: 212,
+    "title": "My Old Ways",
+    "artist": "Tame Impala",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/bc/cb/62/bccb621b-27c4-af88-06b7-2eb8ec5f1b6c/a858ef3a-08fb-46aa-950b-86a7715d4042.png/300x300bb.jpg",
+    "durationSeconds": 212
   },
   {
-    title: "Honeyland",
-    artist: "Gordo, Afshin Momadi",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/3d/98/5d/3d985daf-139f-a484-5797-897b3c420849/196872335002.jpg/300x300bb.jpg",
-    durationSeconds: 277,
+    "title": "Honeyland",
+    "artist": "Gordo, Afshin Momadi",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/3d/98/5d/3d985daf-139f-a484-5797-897b3c420849/196872335002.jpg/300x300bb.jpg",
+    "durationSeconds": 277
   },
   {
-    title: "How Much I Feel",
-    artist: "Ambrosia",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/96/39/2e/96392e92-9576-b10f-0e4b-659ca936575f/mzi.wqseclen.jpg/300x300bb.jpg",
-    durationSeconds: 283,
+    "title": "How Much I Feel",
+    "artist": "Ambrosia",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/96/39/2e/96392e92-9576-b10f-0e4b-659ca936575f/mzi.wqseclen.jpg/300x300bb.jpg",
+    "durationSeconds": 283
   },
   {
-    title: "Biggest Part of Me",
-    artist: "Ambrosia",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/87/96/8e/87968e44-3f23-d08a-57c7-b3b7d82abafe/mzi.jjiffeca.jpg/300x300bb.jpg",
-    durationSeconds: 324,
+    "title": "Biggest Part of Me",
+    "artist": "Ambrosia",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/87/96/8e/87968e44-3f23-d08a-57c7-b3b7d82abafe/mzi.jjiffeca.jpg/300x300bb.jpg",
+    "durationSeconds": 324
   },
   {
-    title: "You're the Only Woman (You & I)",
-    artist: "Ambrosia",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/87/96/8e/87968e44-3f23-d08a-57c7-b3b7d82abafe/mzi.jjiffeca.jpg/300x300bb.jpg",
-    durationSeconds: 263,
+    "title": "You're the Only Woman (You & I)",
+    "artist": "Ambrosia",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/87/96/8e/87968e44-3f23-d08a-57c7-b3b7d82abafe/mzi.jjiffeca.jpg/300x300bb.jpg",
+    "durationSeconds": 263
   },
   {
-    title: "Holdin' on to Yesterday",
-    artist: "Ambrosia",
-    artworkUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music/9e/a0/03/mzi.yjnqigov.jpg/300x300bb.jpg",
-    durationSeconds: 256,
-  },
+    "title": "Holdin' on to Yesterday",
+    "artist": "Ambrosia",
+    "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music/9e/a0/03/mzi.yjnqigov.jpg/300x300bb.jpg",
+    "durationSeconds": 256
+  }
 ] as const satisfies ReadonlyArray<Song>;
