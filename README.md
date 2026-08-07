@@ -19,11 +19,15 @@ The widget picks a random track on load, then moves through the list from there,
 ### install & run
 
 ```
-bun install
-bun dev
+npm install
+npm run dev
 ```
 
-`bun dev` and `bun build` run `scripts/fetch-previews.ts` first, which fetches link-preview screenshots via microlink into `public/images/previews/`. Existing files are skipped.
+`npm run dev` and `npm run build` run `scripts/fetch-previews.ts` first, which fetches link-preview screenshots via microlink into `public/images/previews/`. Existing files are skipped.
+
+### deploying
+
+Hosted on Netlify; see [`netlify.toml`](netlify.toml). The deploy runs `npm run build:ci`, which is `next build` *without* the preview fetch — screenshots are committed, so a deploy never depends on a third-party API. After adding an item to `constants.ts`, run `npm run prebuild` locally and commit the new screenshot.
 
 ### credits
 
