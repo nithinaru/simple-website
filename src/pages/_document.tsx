@@ -58,9 +58,9 @@ export default function Document() {
         />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/site.webmanifest" />
-        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#171717" />
-        <meta name="theme-color" content="#171717" />
-        <meta name="msapplication-TileColor" content="#171717" />
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#0a0a0a" />
+        <meta name="theme-color" content="#f7f1e7" />
+        <meta name="msapplication-TileColor" content="#f7f1e7" />
       </Head>
       <body className="antialiased">
         <Main />
