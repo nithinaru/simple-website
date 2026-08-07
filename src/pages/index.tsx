@@ -226,24 +226,18 @@ export default function Home() {
       <div className="flex flex-col gap-3 mt-3">
         {PAPERS.map((paper, i) => (
           <Line key={paper.title} delay={0.5 + i * 0.15}>
-            <a href={paper.url} target="_blank" rel="noopener noreferrer">
-              <div className="flex flex-col items-start text-left">
-                <div className="flex items-baseline justify-between gap-2 sm:gap-8 w-full">
-                  <span className="font-bold text-stone-700">
-                    {paper.title}
-                  </span>
-                  <span className="text-sm text-stone-400 whitespace-nowrap hidden sm:inline">
-                    {paper.year}
-                  </span>
-                </div>
-                <span className="text-xs text-stone-600">
-                  {paper.venue} — {paper.status}
-                  {paper.citations > 0
-                    ? ` · ${paper.citations} citations`
-                    : null}
+            <div className="flex flex-col items-start text-left">
+              <div className="flex items-baseline justify-between gap-2 sm:gap-8 w-full">
+                <span className="font-bold text-stone-700">{paper.title}</span>
+                <span className="text-sm text-stone-400 whitespace-nowrap hidden sm:inline">
+                  {paper.year}
                 </span>
               </div>
-            </a>
+              <span className="text-xs text-stone-600">
+                {paper.venue} — {paper.status}
+                {paper.citations > 0 ? ` · ${paper.citations} citations` : null}
+              </span>
+            </div>
           </Line>
         ))}
 
@@ -263,18 +257,6 @@ export default function Home() {
           </Line>
         ))}
       </div>
-
-      <p className="text-xs text-stone-400 mt-2 mb-4">
-        design based on{" "}
-        <a
-          href="https://looskie.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline hover:text-stone-600"
-        >
-          cody miller's website
-        </a>
-      </p>
 
       <div className="hidden md:block">
         <HoverPreview
