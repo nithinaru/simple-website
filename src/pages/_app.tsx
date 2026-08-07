@@ -171,8 +171,8 @@ export default function App({ Component, pageProps, router }: AppProps) {
         <meta property="og:title" content={SITE_TITLE} />
         <meta property="og:description" content={SITE_DESCRIPTION} />
         <meta property="og:image" content={`${SITE_URL}/og.png`} />
-        <meta property="og:image:width" content="1248" />
-        <meta property="og:image:height" content="702" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={SITE_TITLE} />
