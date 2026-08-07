@@ -50,9 +50,9 @@ const STEP_INDICES = ANIMATION_STEPS.map((_, i) => i);
 const STEP_SIZES = ANIMATION_STEPS.map((s) => s.size);
 
 const SITE_URL = "https://nithinaruswamy.com";
-const SITE_TITLE = "nithin";
+const SITE_TITLE = "Nithin Aruswamy";
 const SITE_DESCRIPTION =
-  "operations research & math at uc berkeley, operations researcher at uc davis.";
+  "Nithin studies Operations Research & Mathematics at UC Berkeley. He works as a researcher at UC Davis & Engineer at Growth Factory Ventures";
 
 const JSON_LD = JSON.stringify({
   "@context": "https://schema.org",
@@ -101,7 +101,10 @@ export default function App({ Component, pageProps, router }: AppProps) {
   const fontSizeRem = useTransform(
     fontSize,
     (v) =>
-      `clamp(${(v * 0.3).toFixed(2)}rem, ${(v * 3.5).toFixed(2)}vw, ${v}rem)`,
+      // the vw term is what sizes the name on narrow screens. 2.6 keeps
+      // "Nithin Aruswamy" inside a 375px viewport at the final step; the rem
+      // cap means wider screens are unaffected.
+      `clamp(${(v * 0.3).toFixed(2)}rem, ${(v * 2.6).toFixed(2)}vw, ${v}rem)`,
   );
 
   useMotionValueEvent(spring, "change", (v) => {
@@ -183,7 +186,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
                 className="font-bold whitespace-nowrap will-change-transform"
                 style={{ fontSize: fontSizeRem }}
               >
-                nithin
+                Nithin Aruswamy
               </motion.h1>
 
               {expanded ? (
