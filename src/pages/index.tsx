@@ -102,7 +102,9 @@ const ItemRow = memo(function ItemRow({
 
         <div className="relative flex items-baseline justify-between gap-2 sm:gap-8 w-full">
           <div className="flex items-baseline gap-2 min-w-0">
-            <span className="font-bold text-stone-700 truncate">{label}</span>
+            <span className="font-display font-bold text-stone-700 truncate">
+              {label}
+            </span>
             <span className="text-sm text-stone-500 hidden sm:inline">
               {role}
             </span>
@@ -228,7 +230,9 @@ export default function Home() {
           <Line key={paper.title} delay={0.5 + i * 0.15}>
             <div className="flex flex-col items-start text-left">
               <div className="flex items-baseline justify-between gap-2 sm:gap-8 w-full">
-                <span className="font-bold text-stone-700">{paper.title}</span>
+                <span className="font-display font-bold text-stone-700">
+                  {paper.title}
+                </span>
                 <span className="text-sm text-stone-400 whitespace-nowrap hidden sm:inline">
                   {paper.year}
                 </span>
@@ -245,7 +249,9 @@ export default function Home() {
           <Line key={patent.number} delay={0.5 + (PAPERS.length + i) * 0.15}>
             <div className="flex flex-col items-start text-left">
               <div className="flex items-baseline justify-between gap-2 sm:gap-8 w-full">
-                <span className="font-bold text-stone-700">{patent.title}</span>
+                <span className="font-display font-bold text-stone-700">
+                  {patent.title}
+                </span>
                 <span className="text-sm text-stone-400 whitespace-nowrap hidden sm:inline">
                   {patent.year}
                 </span>

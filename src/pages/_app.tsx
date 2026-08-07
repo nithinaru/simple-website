@@ -20,8 +20,19 @@ import {
   useTransform,
 } from "motion/react";
 import type { AppProps } from "next/app";
+import { Inter } from "next/font/google";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
+
+// inter's variable font carries an optical-size axis: opsz 32 is "Inter
+// Display" (tighter, for headline-ish text), opsz 14 is the regular text cut.
+// one download covers both.
+const inter = Inter({
+  subsets: ["latin"],
+  axes: ["opsz"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 const NAME_WRAPPER_SPRING_CONFIG = {
   type: "spring",
@@ -147,7 +158,9 @@ export default function App({ Component, pageProps, router }: AppProps) {
   }
 
   return (
-    <main className="flex h-full w-full overflow-hidden">
+    <main
+      className={`${inter.variable} font-body flex h-full w-full overflow-hidden`}
+    >
       <Head>
         <title>{SITE_TITLE}</title>
         <meta name="description" content={SITE_DESCRIPTION} />
