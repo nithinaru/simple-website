@@ -103,7 +103,7 @@ export interface Song {
  * a fixed playlist. the widget picks a random track on each page load and
  * moves through the list from there, looping forever.
  */
-export const SONGS = ${JSON.stringify(songs, null, 2)} as const satisfies ReadonlyArray<Song>;
+export const SONGS: readonly Song[] = ${JSON.stringify(songs, null, 2)};
 `;
 
 writeFileSync(join(ROOT, "src/utils/songs.ts"), body);

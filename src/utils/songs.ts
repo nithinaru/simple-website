@@ -12,7 +12,7 @@ export interface Song {
  * a fixed playlist. the widget picks a random track on each page load and
  * moves through the list from there, looping forever.
  */
-export const SONGS = [
+export const SONGS: readonly Song[] = [
   {
     "title": "Questions",
     "artist": "Jack Harlow",
@@ -217,4 +217,4 @@ export const SONGS = [
     "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music/9e/a0/03/mzi.yjnqigov.jpg/300x300bb.jpg",
     "durationSeconds": 256
   }
-] as const satisfies ReadonlyArray<Song>;
+];
