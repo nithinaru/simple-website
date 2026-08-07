@@ -1,6 +1,17 @@
 import AnimatedText from "@/components/animated-text";
 import HoverPreview from "@/components/hover-preview";
-import { PROJECTS, WORK_ITEMS } from "@/utils/constants";
+import {
+  AWARDS,
+  COUNTRIES_VISITED,
+  INTERESTS,
+  MEDIA,
+  PAPERS,
+  PATENTS,
+  PROJECTS,
+  SKILLS,
+  STAMPS,
+  WORK_ITEMS,
+} from "@/utils/constants";
 import getPreviewUrl from "@/utils/get-preview-url";
 import {
   motion,
@@ -125,6 +136,35 @@ const ItemRow = memo(function ItemRow({
   );
 });
 
+type LineProps = {
+  delay: number;
+  children: React.ReactNode;
+};
+
+const Line = memo(function Line({ delay, children }: LineProps) {
+  return (
+    <motion.div
+      className="will-change-transform"
+      initial={ITEM_ANIMATION.initial}
+      animate={ITEM_ANIMATION.animate}
+      transition={{ ...ITEM_ANIMATION.transition, delay }}
+    >
+      {children}
+    </motion.div>
+  );
+});
+
+function SectionHeading({ text }: { text: string }) {
+  return (
+    <AnimatedText
+      className="text-xl mt-8 font-bold"
+      element="h2"
+      text={text}
+      artificialDelay={0.3}
+    />
+  );
+}
+
 export default function Home() {
   const [hoveredWork, setHoveredWork] = useState<HoverState>(null);
   const [hoveredProject, setHoveredProject] = useState<HoverState>(null);
@@ -148,12 +188,18 @@ export default function Home() {
 
   return (
     <>
-      <AnimatedText
-        className="text-xl mt-4 font-bold"
-        element="h2"
-        text="work"
-        artificialDelay={0.3}
-      />
+      <SectionHeading text="about" />
+
+      <Line delay={0.5}>
+        <p className="text-sm text-stone-600 mt-3 max-w-lg">
+          i study operations research &amp; math at uc berkeley. i'm heavily
+          invested in agricultural automation and smart wearable technology, and
+          i currently work as an operations researcher at the uc davis graduate
+          school of management.
+        </p>
+      </Line>
+
+      <SectionHeading text="work" />
 
       <div className="flex flex-col gap-3 mt-3" onMouseLeave={clearWorkHover}>
         {WORK_ITEMS.map((item, i) => (
@@ -174,12 +220,7 @@ export default function Home() {
         ))}
       </div>
 
-      <AnimatedText
-        className="text-xl mt-4 font-bold"
-        element="h2"
-        text="projects"
-        artificialDelay={0.3}
-      />
+      <SectionHeading text="projects" />
 
       <div
         className="flex flex-col gap-3 mt-3"
@@ -201,6 +242,169 @@ export default function Home() {
           />
         ))}
       </div>
+
+      <SectionHeading text="research" />
+
+      <div className="flex flex-col gap-3 mt-3">
+        {PAPERS.map((paper, i) => (
+          <Line key={paper.title} delay={0.5 + i * 0.15}>
+            <a href={paper.url} target="_blank" rel="noopener noreferrer">
+              <div className="flex flex-col items-start text-left">
+                <div className="flex items-baseline justify-between gap-2 sm:gap-8 w-full">
+                  <span className="font-bold text-stone-700">
+                    {paper.title}
+                  </span>
+                  <span className="text-sm text-stone-400 whitespace-nowrap hidden sm:inline">
+                    {paper.year}
+                  </span>
+                </div>
+                <span className="text-xs text-stone-600">
+                  {paper.venue} — {paper.status}
+                  {paper.citations > 0
+                    ? ` · ${paper.citations} citations`
+                    : null}
+                </span>
+              </div>
+            </a>
+          </Line>
+        ))}
+
+        {PATENTS.map((patent, i) => (
+          <Line key={patent.number} delay={0.5 + (PAPERS.length + i) * 0.15}>
+            <div className="flex flex-col items-start text-left">
+              <div className="flex items-baseline justify-between gap-2 sm:gap-8 w-full">
+                <span className="font-bold text-stone-700">
+                  {patent.title}
+                </span>
+                <span className="text-sm text-stone-400 whitespace-nowrap hidden sm:inline">
+                  {patent.year}
+                </span>
+              </div>
+              <span className="text-xs text-stone-600">
+                patent {patent.number} — {patent.status}
+              </span>
+            </div>
+          </Line>
+        ))}
+      </div>
+
+      <SectionHeading text="awards" />
+
+      <div className="flex flex-col gap-2 mt-3">
+        {AWARDS.map((award, i) => (
+          <Line key={`${award.title}-${award.org}`} delay={0.5 + i * 0.1}>
+            <div className="flex items-baseline justify-between gap-2 sm:gap-8 w-full">
+              <div className="flex items-baseline gap-2 min-w-0">
+                <span className="font-bold text-stone-700">{award.title}</span>
+                <span className="text-sm text-stone-500">{award.org}</span>
+              </div>
+              <span className="text-sm text-stone-400 whitespace-nowrap hidden sm:inline">
+                {award.year}
+              </span>
+            </div>
+          </Line>
+        ))}
+      </div>
+
+      <SectionHeading text="skills" />
+
+      <div className="flex flex-col gap-3 mt-3">
+        {SKILLS.map((group, i) => (
+          <Line key={group.title} delay={0.5 + i * 0.15}>
+            <div className="flex flex-col items-start text-left">
+              <span className="font-bold text-stone-700">{group.title}</span>
+              <span className="text-xs text-stone-600">
+                {group.items.join(" · ")}
+              </span>
+            </div>
+          </Line>
+        ))}
+      </div>
+
+      <SectionHeading text="interests" />
+
+      <Line delay={0.5}>
+        <p className="text-sm text-stone-600 mt-3 max-w-lg">
+          {INTERESTS.join(" · ")}
+        </p>
+      </Line>
+
+      <SectionHeading text="travel" />
+
+      <Line delay={0.5}>
+        <p className="text-xs text-stone-500 mt-3">
+          {COUNTRIES_VISITED} countries visited — most recently:
+        </p>
+      </Line>
+
+      <div className="flex flex-col gap-2 mt-2">
+        {STAMPS.map((stamp, i) => (
+          <Line key={stamp.code} delay={0.6 + i * 0.1}>
+            <div className="flex items-baseline justify-between gap-2 sm:gap-8 w-full">
+              <div className="flex items-baseline gap-2">
+                <span className="font-bold text-stone-700">
+                  {stamp.country}
+                </span>
+                <span className="text-sm text-stone-500">{stamp.code}</span>
+              </div>
+              <span className="text-sm text-stone-400 whitespace-nowrap hidden sm:inline">
+                {stamp.when}
+              </span>
+            </div>
+          </Line>
+        ))}
+      </div>
+
+      <SectionHeading text="library" />
+
+      <div className="flex flex-col gap-5 mt-3">
+        {MEDIA.map((group, gi) => (
+          <Line key={group.title} delay={0.5 + gi * 0.15}>
+            <div className="flex flex-col items-start text-left gap-1">
+              <span className="font-bold text-stone-700">{group.title}</span>
+              {group.items.map((item) => (
+                <div
+                  key={item.title}
+                  className="flex items-baseline justify-between gap-2 sm:gap-8 w-full"
+                >
+                  <div className="flex items-baseline gap-2 min-w-0">
+                    <span className="text-sm text-stone-600">
+                      {item.title}
+                    </span>
+                    <span className="text-xs text-stone-500 truncate">
+                      {item.author}
+                    </span>
+                    {item.note ? (
+                      <span className="text-xs text-stone-400 hidden sm:inline">
+                        ({item.note})
+                      </span>
+                    ) : null}
+                  </div>
+                  <span className="text-xs text-stone-400 whitespace-nowrap hidden sm:inline">
+                    {item.year}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </Line>
+        ))}
+      </div>
+
+      <p className="text-xs text-stone-400 mt-10">
+        library is non-exhaustive · open to recommendations
+      </p>
+
+      <p className="text-xs text-stone-400 mt-2 mb-4">
+        design based on{" "}
+        <a
+          href="https://looskie.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-stone-600"
+        >
+          cody miller's website
+        </a>
+      </p>
 
       <div className="hidden md:block">
         <HoverPreview

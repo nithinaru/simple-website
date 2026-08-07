@@ -25,7 +25,7 @@ export default function NotFound() {
   return (
     <main className="flex min-h-screen min-w-screen overflow-hidden bg-stone-100">
       <Head>
-        <title>404 — Cody Miller</title>
+        <title>404 — Nithin Aruswamy</title>
         <meta name="robots" content="noindex" />
       </Head>
       <div className="flex items-center justify-center bg-stone-200 w-full">

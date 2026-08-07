@@ -1,6 +1,10 @@
 import AnimatedText from "@/components/animated-text";
-import { GitHubIcon, LinkedInIcon, XIcon } from "@/components/icons";
-import { Spotify } from "@/components/spotify";
+import {
+  GitHubIcon,
+  LinkedInIcon,
+  MailIcon,
+  XIcon,
+} from "@/components/icons";
 import { PROJECTS, SOCIALS, WORK_ITEMS } from "@/utils/constants";
 import "@/globals.css";
 import { Analytics } from "@vercel/analytics/next";
@@ -49,20 +53,21 @@ const LAST_STEP = ANIMATION_STEPS.length - 1;
 const STEP_INDICES = ANIMATION_STEPS.map((_, i) => i);
 const STEP_SIZES = ANIMATION_STEPS.map((s) => s.size);
 
-const SITE_URL = "https://looskie.com";
-const SITE_TITLE = "cody";
-const SITE_DESCRIPTION = "my hole in the internet.";
+const SITE_URL = "https://nithinaruswamy.com";
+const SITE_TITLE = "nithin";
+const SITE_DESCRIPTION =
+  "operations research & math at uc berkeley, operations researcher at uc davis.";
 
 const JSON_LD = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "Person",
-  name: "Cody Miller",
+  name: "Nithin Aruswamy",
   url: SITE_URL,
-  jobTitle: "Software Engineer & Designer",
+  jobTitle: "Operations Researcher & Student",
   sameAs: [
-    "https://github.com/looskie",
-    "https://x.com/devlooskie",
-    "https://linkedin.com/in/devlooskie",
+    "https://github.com/nithinaru",
+    "https://x.com/nithinaru",
+    "https://www.linkedin.com/in/aruswamy",
   ],
 });
 
@@ -87,6 +92,7 @@ const SOCIAL_ICONS: Record<string, React.ReactNode> = {
   GitHub: <GitHubIcon />,
   X: <XIcon />,
   LinkedIn: <LinkedInIcon />,
+  Email: <MailIcon />,
 };
 
 export default function App({ Component, pageProps, router }: AppProps) {
@@ -119,7 +125,9 @@ export default function App({ Component, pageProps, router }: AppProps) {
       "important",
     );
 
-    if (v > LAST_STEP) {
+    // the spring may settle on LAST_STEP without ever overshooting it, so
+    // expand as soon as it's effectively there rather than strictly past it
+    if (v >= LAST_STEP - 0.05) {
       setExpanded(true);
     }
   });
@@ -171,20 +179,19 @@ export default function App({ Component, pageProps, router }: AppProps) {
               className="relative flex flex-col items-start w-full md:w-auto max-w-md md:max-w-none"
               transition={NAME_WRAPPER_SPRING_CONFIG}
             >
-              {expanded ? <Spotify /> : null}
               <motion.h1
                 layout
                 ref={ref}
                 className="font-bold whitespace-nowrap will-change-transform"
                 style={{ fontSize: fontSizeRem }}
               >
-                cody
+                nithin
               </motion.h1>
 
               {expanded ? (
                 <>
                   <AnimatedText
-                    text="software engineer & designer"
+                    text="operations research & math @ berkeley"
                     element="p"
                   />
 
@@ -214,7 +221,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
               ) : null}
 
               <noscript>
-                <p>software engineer & designer</p>
+                <p>operations research &amp; math @ berkeley</p>
                 <nav>
                   {SOCIALS.map((social) => (
                     <a key={social.label} href={social.href}>

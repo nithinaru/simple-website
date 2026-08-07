@@ -14,6 +14,23 @@ export function XIcon() {
   );
 }
 
+export function MailIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="size-4"
+    >
+      <rect x="2" y="4" width="20" height="16" rx="2" />
+      <path d="m2 7 10 6 10-6" />
+    </svg>
+  );
+}
+
 export function LinkedInIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className="size-3.5">

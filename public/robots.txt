@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://looskie.com/sitemap.xml
+Sitemap: https://nithinaruswamy.com/sitemap.xml

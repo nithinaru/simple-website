@@ -1,13 +1,18 @@
-# website
+# simple-website
 
-welcome to my portfolio website built with NextJS, Tailwind and TypeScript.
+A minimal single-page version of [nithinaruswamy.com](https://nithinaruswamy.com), built with Next.js, Tailwind and TypeScript.
 
-### install deps
+All content lives in [`src/utils/constants.ts`](src/utils/constants.ts) — work, projects, research, patents, awards, skills, interests, travel and media.
 
-the http server's client (kaito) utilizes deps from the `spotify-worker`, you will need to install dependencies for that folder as well.
+### install & run
 
-`bun install && cd spotify-worker && bun install`
+```
+bun install
+bun dev
+```
 
-### Reuse
+`bun dev` and `bun build` run `scripts/fetch-previews.ts` first, which fetches link-preview screenshots via microlink into `public/images/previews/`. Existing files are skipped.
 
-I don't mind if you fork my website and use it for your own purposes, but would _very much so_ appreciate a credits area thats visible and not out of sight. Open source is awesome, and we should keep the community that way by giving each other the respected recognition ❤️
+### credits
+
+Design and codebase based on [Cody Miller's website](https://looskie.com) ([looskie/website](https://github.com/looskie/website)) — credited in the site footer. The Spotify/Discord presence widget from the original has been removed.

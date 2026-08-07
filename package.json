@@ -1,24 +1,22 @@
 {
-  "name": "website",
+  "name": "simple-website",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "bun prebuild && next dev",
-    "prebuild": "bun scripts/fetch-previews.ts",
-    "build": "bun prebuild && next build",
+    "dev": "npm run prebuild && next dev",
+    "prebuild": "node scripts/fetch-previews.ts",
+    "build": "npm run prebuild && next build",
     "start": "next start",
     "lint": "biome check",
     "format": "biome format --write"
   },
   "dependencies": {
     "@vercel/analytics": "^1.6.1",
-    "@kaito-http/client": "4.0.0-beta.29",
     "motion": "^12.34.4",
     "next": "16.1.6",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "react-hotkeys-hook": "^5.2.4",
-    "use-lanyard": "^1.7.0"
+    "react-hotkeys-hook": "^5.2.4"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.0",

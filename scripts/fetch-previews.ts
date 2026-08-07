@@ -1,4 +1,4 @@
-import { WORK_ITEMS, PROJECTS } from "../src/utils/constants";
+import { WORK_ITEMS, PROJECTS } from "../src/utils/constants.ts";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
