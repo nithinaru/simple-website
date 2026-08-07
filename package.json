@@ -12,7 +12,6 @@
     "build:ci": "next build"
   },
   "dependencies": {
-    "@vercel/analytics": "^1.6.1",
     "motion": "^12.34.4",
     "next": "16.1.6",
     "react": "19.2.3",

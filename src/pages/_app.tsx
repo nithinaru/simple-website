@@ -8,7 +8,6 @@ import {
 import { NowPlaying } from "@/components/now-playing";
 import { PROJECTS, SOCIALS, WORK_ITEMS } from "@/utils/constants";
 import "@/globals.css";
-import { Analytics } from "@vercel/analytics/next";
 import {
   LayoutGroup,
   type MotionNodeAnimationOptions,
@@ -151,7 +150,6 @@ export default function App({ Component, pageProps, router }: AppProps) {
   if (router.pathname === "/404") {
     return (
       <>
-        <Analytics />
         <Component {...pageProps} />
       </>
     );
@@ -271,7 +269,6 @@ export default function App({ Component, pageProps, router }: AppProps) {
           </LayoutGroup>
         </div>
       </motion.div>
-      <Analytics />
     </main>
   );
 }
