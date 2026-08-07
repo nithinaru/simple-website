@@ -38,7 +38,7 @@ function HoverPreview({
       {isVisible ? (
         <motion.div
           layoutId="hover-preview"
-          className="w-[320] fixed z-50 pointer-events-none overflow-hidden rounded-lg border border-stone-300/50 shadow-lg bg-stone-200"
+          className="w-[320px] fixed z-50 pointer-events-none overflow-hidden rounded-lg border border-stone-300/50 shadow-lg bg-stone-200"
           style={{
             top: anchorRect.top,
             left: anchorRect.right + 12,

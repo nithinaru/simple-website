@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "npm run prebuild && next dev",
-    "prebuild": "node scripts/fetch-previews.ts",
+    "prebuild": "node scripts/fetch-previews.ts && node scripts/optimize-previews.mjs",
     "build": "npm run prebuild && next build",
     "start": "next start",
     "lint": "biome check",

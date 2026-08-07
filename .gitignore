@@ -35,8 +35,9 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
-# generated preview screenshots
-/public/images/previews
+# raw screenshots from fetch-previews.ts; only the optimized .webp
+# versions produced by optimize-previews.mjs are committed
+/public/images/previews/*.png
 
 # vercel
 .vercel

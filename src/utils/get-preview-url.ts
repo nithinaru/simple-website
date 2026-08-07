@@ -6,7 +6,7 @@ const getPreviewUrl = (item: {
     return `/images/${item.image}`;
   }
 
-  return `/images/previews/${item.slug}.png`;
+  return `/images/previews/${item.slug}.webp`;
 };
 
 export default getPreviewUrl;
