@@ -1,24 +1,21 @@
+import {
+  type MotionNodeAnimationOptions,
+  motion,
+  type Transition,
+} from "motion/react";
+import { memo, useCallback, useState } from "react";
 import AnimatedText from "@/components/animated-text";
 import HoverPreview from "@/components/hover-preview";
 import {
   AWARDS,
-  COUNTRIES_VISITED,
+  EDUCATION,
   INTERESTS,
-  MEDIA,
   PAPERS,
   PATENTS,
   PROJECTS,
-  SKILLS,
-  STAMPS,
   WORK_ITEMS,
 } from "@/utils/constants";
 import getPreviewUrl from "@/utils/get-preview-url";
-import {
-  motion,
-  type MotionNodeAnimationOptions,
-  type Transition,
-} from "motion/react";
-import { memo, useCallback, useState } from "react";
 
 type HoverState = {
   id: string;
@@ -188,8 +185,6 @@ export default function Home() {
 
   return (
     <>
-      <SectionHeading text="about" />
-
       <Line delay={0.5}>
         <p className="text-sm text-stone-600 mt-3 max-w-lg">
           i study operations research &amp; math at uc berkeley. i'm heavily
@@ -198,6 +193,59 @@ export default function Home() {
           school of management.
         </p>
       </Line>
+
+      <Line delay={0.65}>
+        <p className="text-xs text-stone-400 mt-2 max-w-lg">
+          {INTERESTS.join(" · ")}
+        </p>
+      </Line>
+
+      <SectionHeading text="education" />
+
+      <div className="flex flex-col gap-3 mt-3">
+        {EDUCATION.map((school, i) => (
+          <Line key={school.slug} delay={0.5 + i * 0.15}>
+            <a href={school.url} target="_blank" rel="noopener noreferrer">
+              <div className="flex flex-col items-start text-left">
+                <div className="flex items-baseline justify-between gap-2 sm:gap-8 w-full">
+                  <div className="flex items-baseline gap-2 min-w-0">
+                    <span className="font-bold text-stone-700 truncate">
+                      {school.school}
+                    </span>
+                    <span className="text-sm text-stone-500 hidden sm:inline">
+                      {school.degree}
+                    </span>
+                  </div>
+                </div>
+                <span className="text-xs text-stone-500 sm:hidden">
+                  {school.degree}
+                </span>
+                <span className="text-xs text-stone-600">{school.about}</span>
+              </div>
+            </a>
+          </Line>
+        ))}
+      </div>
+
+      <Line delay={0.65}>
+        <p className="text-xs text-stone-400 mt-4">honors</p>
+      </Line>
+
+      <div className="flex flex-col gap-2 mt-2">
+        {AWARDS.map((award, i) => (
+          <Line key={`${award.title}-${award.org}`} delay={0.65 + i * 0.1}>
+            <div className="flex items-baseline justify-between gap-2 sm:gap-8 w-full">
+              <div className="flex items-baseline gap-2 min-w-0">
+                <span className="font-bold text-stone-700">{award.title}</span>
+                <span className="text-sm text-stone-500">{award.org}</span>
+              </div>
+              <span className="text-sm text-stone-400 whitespace-nowrap hidden sm:inline">
+                {award.year}
+              </span>
+            </div>
+          </Line>
+        ))}
+      </div>
 
       <SectionHeading text="work" />
 
@@ -243,7 +291,7 @@ export default function Home() {
         ))}
       </div>
 
-      <SectionHeading text="research" />
+      <SectionHeading text="publications" />
 
       <div className="flex flex-col gap-3 mt-3">
         {PAPERS.map((paper, i) => (
@@ -273,9 +321,7 @@ export default function Home() {
           <Line key={patent.number} delay={0.5 + (PAPERS.length + i) * 0.15}>
             <div className="flex flex-col items-start text-left">
               <div className="flex items-baseline justify-between gap-2 sm:gap-8 w-full">
-                <span className="font-bold text-stone-700">
-                  {patent.title}
-                </span>
+                <span className="font-bold text-stone-700">{patent.title}</span>
                 <span className="text-sm text-stone-400 whitespace-nowrap hidden sm:inline">
                   {patent.year}
                 </span>
@@ -287,112 +333,6 @@ export default function Home() {
           </Line>
         ))}
       </div>
-
-      <SectionHeading text="awards" />
-
-      <div className="flex flex-col gap-2 mt-3">
-        {AWARDS.map((award, i) => (
-          <Line key={`${award.title}-${award.org}`} delay={0.5 + i * 0.1}>
-            <div className="flex items-baseline justify-between gap-2 sm:gap-8 w-full">
-              <div className="flex items-baseline gap-2 min-w-0">
-                <span className="font-bold text-stone-700">{award.title}</span>
-                <span className="text-sm text-stone-500">{award.org}</span>
-              </div>
-              <span className="text-sm text-stone-400 whitespace-nowrap hidden sm:inline">
-                {award.year}
-              </span>
-            </div>
-          </Line>
-        ))}
-      </div>
-
-      <SectionHeading text="skills" />
-
-      <div className="flex flex-col gap-3 mt-3">
-        {SKILLS.map((group, i) => (
-          <Line key={group.title} delay={0.5 + i * 0.15}>
-            <div className="flex flex-col items-start text-left">
-              <span className="font-bold text-stone-700">{group.title}</span>
-              <span className="text-xs text-stone-600">
-                {group.items.join(" · ")}
-              </span>
-            </div>
-          </Line>
-        ))}
-      </div>
-
-      <SectionHeading text="interests" />
-
-      <Line delay={0.5}>
-        <p className="text-sm text-stone-600 mt-3 max-w-lg">
-          {INTERESTS.join(" · ")}
-        </p>
-      </Line>
-
-      <SectionHeading text="travel" />
-
-      <Line delay={0.5}>
-        <p className="text-xs text-stone-500 mt-3">
-          {COUNTRIES_VISITED} countries visited — most recently:
-        </p>
-      </Line>
-
-      <div className="flex flex-col gap-2 mt-2">
-        {STAMPS.map((stamp, i) => (
-          <Line key={stamp.code} delay={0.6 + i * 0.1}>
-            <div className="flex items-baseline justify-between gap-2 sm:gap-8 w-full">
-              <div className="flex items-baseline gap-2">
-                <span className="font-bold text-stone-700">
-                  {stamp.country}
-                </span>
-                <span className="text-sm text-stone-500">{stamp.code}</span>
-              </div>
-              <span className="text-sm text-stone-400 whitespace-nowrap hidden sm:inline">
-                {stamp.when}
-              </span>
-            </div>
-          </Line>
-        ))}
-      </div>
-
-      <SectionHeading text="library" />
-
-      <div className="flex flex-col gap-5 mt-3">
-        {MEDIA.map((group, gi) => (
-          <Line key={group.title} delay={0.5 + gi * 0.15}>
-            <div className="flex flex-col items-start text-left gap-1">
-              <span className="font-bold text-stone-700">{group.title}</span>
-              {group.items.map((item) => (
-                <div
-                  key={item.title}
-                  className="flex items-baseline justify-between gap-2 sm:gap-8 w-full"
-                >
-                  <div className="flex items-baseline gap-2 min-w-0">
-                    <span className="text-sm text-stone-600">
-                      {item.title}
-                    </span>
-                    <span className="text-xs text-stone-500 truncate">
-                      {item.author}
-                    </span>
-                    {item.note ? (
-                      <span className="text-xs text-stone-400 hidden sm:inline">
-                        ({item.note})
-                      </span>
-                    ) : null}
-                  </div>
-                  <span className="text-xs text-stone-400 whitespace-nowrap hidden sm:inline">
-                    {item.year}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </Line>
-        ))}
-      </div>
-
-      <p className="text-xs text-stone-400 mt-10">
-        library is non-exhaustive · open to recommendations
-      </p>
 
       <p className="text-xs text-stone-400 mt-2 mb-4">
         design based on{" "}

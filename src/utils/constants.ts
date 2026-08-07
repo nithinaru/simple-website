@@ -8,6 +8,17 @@ export type WorkItem = {
   image?: string;
 };
 
+export type EducationItem = {
+  school: string;
+  slug: string;
+  degree: string;
+  location: string;
+  about: string;
+  url: string;
+  date?: string;
+  image?: string;
+};
+
 export type Project = {
   name: string;
   slug: string;
@@ -72,6 +83,17 @@ export const SOCIALS: readonly Social[] = [
   { label: "X", href: "https://x.com/nithinaru" },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/aruswamy" },
   { label: "Email", href: "mailto:nithin.alaska@gmail.com" },
+];
+
+export const EDUCATION: readonly EducationItem[] = [
+  {
+    school: "UC Berkeley",
+    slug: "uc-berkeley",
+    degree: "B.A. Operations Research & Mathematics",
+    location: "Berkeley, CA",
+    about: "berkeley, ca",
+    url: "https://www.berkeley.edu",
+  },
 ];
 
 export const WORK_ITEMS: readonly WorkItem[] = [

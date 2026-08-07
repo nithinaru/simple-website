@@ -1,0 +1,131 @@
+export interface Song {
+  title: string;
+  artist: string;
+  durationSeconds: number;
+}
+
+/**
+ * a fixed, hand-picked playlist. no api, no network, no scrobbles — it just
+ * loops forever in the order below.
+ */
+export const SONGS = [
+  // kanye west — yeezus & adjacent
+  { title: "On Sight", artist: "Kanye West", durationSeconds: 157 },
+  { title: "Black Skinhead", artist: "Kanye West", durationSeconds: 188 },
+  { title: "I Am a God", artist: "Kanye West", durationSeconds: 232 },
+  { title: "New Slaves", artist: "Kanye West", durationSeconds: 256 },
+  { title: "Hold My Liquor", artist: "Kanye West", durationSeconds: 356 },
+  { title: "I'm In It", artist: "Kanye West", durationSeconds: 233 },
+  { title: "Blood on the Leaves", artist: "Kanye West", durationSeconds: 356 },
+  { title: "Guilt Trip", artist: "Kanye West", durationSeconds: 143 },
+  { title: "Send It Up", artist: "Kanye West", durationSeconds: 182 },
+  { title: "Bound 2", artist: "Kanye West", durationSeconds: 229 },
+  { title: "Runaway", artist: "Kanye West", durationSeconds: 320 },
+  { title: "Gorgeous", artist: "Kanye West", durationSeconds: 337 },
+  { title: "Devil in a New Dress", artist: "Kanye West", durationSeconds: 351 },
+  { title: "Flashing Lights", artist: "Kanye West", durationSeconds: 237 },
+  { title: "Street Lights", artist: "Kanye West", durationSeconds: 188 },
+  { title: "Ghost Town", artist: "Kanye West", durationSeconds: 275 },
+  { title: "Violent Crimes", artist: "Kanye West", durationSeconds: 216 },
+  {
+    title: "Father Stretch My Hands, Pt. 1",
+    artist: "Kanye West",
+    durationSeconds: 135,
+  },
+  { title: "Fade", artist: "Kanye West", durationSeconds: 194 },
+  { title: "Waves", artist: "Kanye West", durationSeconds: 181 },
+
+  // jack harlow — jackman. & adjacent
+  { title: "Common Ground", artist: "Jack Harlow", durationSeconds: 148 },
+  { title: "They Don't Love It", artist: "Jack Harlow", durationSeconds: 165 },
+  { title: "Ambitious", artist: "Jack Harlow", durationSeconds: 141 },
+  { title: "Is That Ight?", artist: "Jack Harlow", durationSeconds: 132 },
+  { title: "Denver", artist: "Jack Harlow", durationSeconds: 158 },
+  { title: "No Enhancers", artist: "Jack Harlow", durationSeconds: 143 },
+  { title: "It Can't Be", artist: "Jack Harlow", durationSeconds: 151 },
+  { title: "Gang Gang Gang", artist: "Jack Harlow", durationSeconds: 169 },
+  { title: "Blame On Me", artist: "Jack Harlow", durationSeconds: 172 },
+  { title: "Dua Lipa", artist: "Jack Harlow", durationSeconds: 156 },
+  { title: "Nail Tech", artist: "Jack Harlow", durationSeconds: 148 },
+  { title: "First Class", artist: "Jack Harlow", durationSeconds: 173 },
+  { title: "Tyler Herro", artist: "Jack Harlow", durationSeconds: 154 },
+  { title: "Whats Poppin", artist: "Jack Harlow", durationSeconds: 139 },
+  { title: "Lovin On Me", artist: "Jack Harlow", durationSeconds: 138 },
+
+  // drake — honestly, nevermind & adjacent
+  { title: "Falling Back", artist: "Drake", durationSeconds: 341 },
+  { title: "Texts Go Green", artist: "Drake", durationSeconds: 293 },
+  { title: "Currents", artist: "Drake", durationSeconds: 213 },
+  { title: "A Keeper", artist: "Drake", durationSeconds: 187 },
+  { title: "Calling My Name", artist: "Drake", durationSeconds: 187 },
+  { title: "Sticky", artist: "Drake", durationSeconds: 205 },
+  { title: "Massive", artist: "Drake", durationSeconds: 342 },
+  { title: "Flight's Booked", artist: "Drake", durationSeconds: 208 },
+  { title: "Overdrive", artist: "Drake", durationSeconds: 191 },
+  { title: "Down Hill", artist: "Drake", durationSeconds: 212 },
+  { title: "Tie That Binds", artist: "Drake", durationSeconds: 168 },
+  { title: "Liability", artist: "Drake", durationSeconds: 189 },
+  { title: "Jimmy Cooks", artist: "Drake", durationSeconds: 218 },
+  { title: "Passionfruit", artist: "Drake", durationSeconds: 298 },
+  { title: "Get It Together", artist: "Drake", durationSeconds: 231 },
+  { title: "Feel No Ways", artist: "Drake", durationSeconds: 233 },
+  { title: "Hold On, We're Going Home", artist: "Drake", durationSeconds: 227 },
+  { title: "Marvins Room", artist: "Drake", durationSeconds: 349 },
+  { title: "Nice For What", artist: "Drake", durationSeconds: 210 },
+  { title: "Teenage Fever", artist: "Drake", durationSeconds: 205 },
+
+  // gordo — diamante & house
+  { title: "Taraka", artist: "Gordo", durationSeconds: 220 },
+  { title: "Rizzla", artist: "Gordo", durationSeconds: 213 },
+  { title: "Sube", artist: "Gordo", durationSeconds: 198 },
+  { title: "Maria", artist: "Gordo", durationSeconds: 224 },
+  { title: "Pepas", artist: "Farruko", durationSeconds: 287 },
+  { title: "Gotta Move On", artist: "Gordo", durationSeconds: 205 },
+  { title: "Kanaval", artist: "Gordo", durationSeconds: 231 },
+  { title: "Rumble", artist: "Skrillex", durationSeconds: 190 },
+  { title: "Rushing Back", artist: "Flume", durationSeconds: 233 },
+  { title: "Never Be Like You", artist: "Flume", durationSeconds: 235 },
+  { title: "You & Me", artist: "Disclosure", durationSeconds: 254 },
+  { title: "Latch", artist: "Disclosure", durationSeconds: 256 },
+  { title: "White Noise", artist: "Disclosure", durationSeconds: 234 },
+  { title: "Losing It", artist: "Fisher", durationSeconds: 219 },
+  { title: "In My Mind", artist: "John Summit", durationSeconds: 195 },
+  { title: "Where You Are", artist: "John Summit", durationSeconds: 217 },
+  { title: "Sun Came Up", artist: "Sofi Tukker", durationSeconds: 202 },
+  { title: "Sirens", artist: "Chris Lake", durationSeconds: 224 },
+  { title: "Turn Off the Lights", artist: "Chris Lake", durationSeconds: 231 },
+  { title: "Body", artist: "Loud Luxury", durationSeconds: 163 },
+
+  // sean leon — in loving memory+ & adjacent
+  { title: "Sinatra", artist: "Sean Leon", durationSeconds: 194 },
+  { title: "Fear & Loathing", artist: "Sean Leon", durationSeconds: 208 },
+  { title: "Ninety Nine", artist: "Sean Leon", durationSeconds: 175 },
+  { title: "Death of a Rockstar", artist: "Sean Leon", durationSeconds: 219 },
+  { title: "Mustang", artist: "Sean Leon", durationSeconds: 187 },
+  { title: "Reflections", artist: "Sean Leon", durationSeconds: 202 },
+  { title: "Blessings", artist: "Sean Leon", durationSeconds: 184 },
+
+  // adjacent hip-hop / r&b
+  { title: "Redbone", artist: "Childish Gambino", durationSeconds: 326 },
+  { title: "Sunday Candy", artist: "Chance the Rapper", durationSeconds: 235 },
+  { title: "Nights", artist: "Frank Ocean", durationSeconds: 307 },
+  { title: "Ivy", artist: "Frank Ocean", durationSeconds: 249 },
+  { title: "Pink + White", artist: "Frank Ocean", durationSeconds: 184 },
+  { title: "Self Control", artist: "Frank Ocean", durationSeconds: 249 },
+  { title: "Money Trees", artist: "Kendrick Lamar", durationSeconds: 340 },
+  { title: "Alright", artist: "Kendrick Lamar", durationSeconds: 219 },
+  {
+    title: "Bitch, Don't Kill My Vibe",
+    artist: "Kendrick Lamar",
+    durationSeconds: 310,
+  },
+  { title: "Father Time", artist: "Kendrick Lamar", durationSeconds: 214 },
+  { title: "Best Part", artist: "Daniel Caesar", durationSeconds: 209 },
+  { title: "Get You", artist: "Daniel Caesar", durationSeconds: 260 },
+  { title: "Location", artist: "Khalid", durationSeconds: 219 },
+  { title: "The Hills", artist: "The Weeknd", durationSeconds: 242 },
+  { title: "After Hours", artist: "The Weeknd", durationSeconds: 341 },
+  { title: "Wicked Games", artist: "The Weeknd", durationSeconds: 325 },
+  { title: "Come Through and Chill", artist: "Miguel", durationSeconds: 291 },
+  { title: "Snooze", artist: "SZA", durationSeconds: 202 },
+] as const satisfies ReadonlyArray<Song>;

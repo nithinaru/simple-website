@@ -1,17 +1,13 @@
 import AnimatedText from "@/components/animated-text";
-import {
-  GitHubIcon,
-  LinkedInIcon,
-  MailIcon,
-  XIcon,
-} from "@/components/icons";
+import { GitHubIcon, LinkedInIcon, MailIcon, XIcon } from "@/components/icons";
+import { NowPlaying } from "@/components/now-playing";
 import { PROJECTS, SOCIALS, WORK_ITEMS } from "@/utils/constants";
 import "@/globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import {
   LayoutGroup,
-  motion,
   type MotionNodeAnimationOptions,
+  motion,
   type Transition,
   useMotionValue,
   useMotionValueEvent,
@@ -179,6 +175,8 @@ export default function App({ Component, pageProps, router }: AppProps) {
               className="relative flex flex-col items-start w-full md:w-auto max-w-md md:max-w-none"
               transition={NAME_WRAPPER_SPRING_CONFIG}
             >
+              {expanded ? <NowPlaying /> : null}
+
               <motion.h1
                 layout
                 ref={ref}
