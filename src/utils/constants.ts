@@ -185,7 +185,7 @@ export const PROJECTS: readonly Project[] = [
 export const PAPERS: readonly Paper[] = [
   {
     title: "Math Modeling & Geometry for Fabric Analysis",
-    venue: "TMLR",
+    venue: "Transactions on Machine Learning Research",
     year: "2025",
     status: "published",
     citations: 2,
