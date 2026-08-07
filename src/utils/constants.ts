@@ -6,6 +6,8 @@ export type WorkItem = {
   about: string;
   url: string;
   image?: string;
+  /** ms to wait before screenshotting, for sites with an entrance animation */
+  previewWaitMs?: number;
 };
 
 export type EducationItem = {
@@ -26,6 +28,8 @@ export type Project = {
   about: string;
   url: string;
   image?: string;
+  /** ms to wait before screenshotting, for sites with an entrance animation */
+  previewWaitMs?: number;
 };
 
 export type Paper = {
@@ -101,6 +105,14 @@ export const EDUCATION: readonly EducationItem[] = [
 
 export const WORK_ITEMS: readonly WorkItem[] = [
   {
+    company: "Growth Factory Ventures",
+    slug: "growth-factory-ventures",
+    role: "ai-native engineer",
+    date: "aug 2026 — present",
+    about: "engineering the agent-native future of venture capital",
+    url: "https://growthfactory.vc/",
+  },
+  {
     company: "UC Davis GSM",
     slug: "uc-davis-gsm",
     role: "operations researcher",
@@ -154,6 +166,7 @@ export const PROJECTS: readonly Project[] = [
     role: "co-founder",
     about: "building the world's first mass-market smart insole",
     url: "https://therapeuo.xyz/",
+    previewWaitMs: 4000,
   },
   {
     name: "OneDay",

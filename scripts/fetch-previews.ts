@@ -5,15 +5,26 @@ import { join } from "node:path";
 const PREVIEWS_DIR = join(import.meta.dirname, "../public/images/previews");
 const MICROLINK_BASE = "https://api.microlink.io";
 
-const items = [...WORK_ITEMS.filter((item) => !item.image), ...PROJECTS];
+const items = [
+  ...WORK_ITEMS.filter((item) => !item.image),
+  ...PROJECTS.filter((item) => !item.image),
+];
 
-async function fetchScreenshot(url: string): Promise<Buffer | null> {
+async function fetchScreenshot(
+  url: string,
+  waitMs?: number,
+): Promise<Buffer | null> {
   const params = new URLSearchParams({
     url,
     screenshot: "true",
     meta: "false",
     embed: "screenshot.url",
   });
+
+  // sites with an entrance animation need a beat before they're worth shooting
+  if (waitMs) {
+    params.set("waitForTimeout", String(waitMs));
+  }
 
   const res = await fetch(`${MICROLINK_BASE}/?${params}`);
 
@@ -39,7 +50,7 @@ const results = await Promise.allSettled(
     }
 
     console.log(`fetching screenshot for ${item.slug}...`);
-    const buf = await fetchScreenshot(item.url);
+    const buf = await fetchScreenshot(item.url, item.previewWaitMs);
 
     if (!buf) return;
 
