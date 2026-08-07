@@ -6,15 +6,7 @@ import {
 import { memo, useCallback, useState } from "react";
 import AnimatedText from "@/components/animated-text";
 import HoverPreview from "@/components/hover-preview";
-import {
-  AWARDS,
-  EDUCATION,
-  INTERESTS,
-  PAPERS,
-  PATENTS,
-  PROJECTS,
-  WORK_ITEMS,
-} from "@/utils/constants";
+import { PAPERS, PATENTS, PROJECTS, WORK_ITEMS } from "@/utils/constants";
 import getPreviewUrl from "@/utils/get-preview-url";
 
 type HoverState = {
@@ -185,68 +177,6 @@ export default function Home() {
 
   return (
     <>
-      <Line delay={0.5}>
-        <p className="text-sm text-stone-600 mt-3 max-w-lg">
-          i study operations research &amp; math at uc berkeley. i'm heavily
-          invested in agricultural automation and smart wearable technology, and
-          i currently work as an operations researcher at the uc davis graduate
-          school of management.
-        </p>
-      </Line>
-
-      <Line delay={0.65}>
-        <p className="text-xs text-stone-400 mt-2 max-w-lg">
-          {INTERESTS.join(" · ")}
-        </p>
-      </Line>
-
-      <SectionHeading text="education" />
-
-      <div className="flex flex-col gap-3 mt-3">
-        {EDUCATION.map((school, i) => (
-          <Line key={school.slug} delay={0.5 + i * 0.15}>
-            <a href={school.url} target="_blank" rel="noopener noreferrer">
-              <div className="flex flex-col items-start text-left">
-                <div className="flex items-baseline justify-between gap-2 sm:gap-8 w-full">
-                  <div className="flex items-baseline gap-2 min-w-0">
-                    <span className="font-bold text-stone-700 truncate">
-                      {school.school}
-                    </span>
-                    <span className="text-sm text-stone-500 hidden sm:inline">
-                      {school.degree}
-                    </span>
-                  </div>
-                </div>
-                <span className="text-xs text-stone-500 sm:hidden">
-                  {school.degree}
-                </span>
-                <span className="text-xs text-stone-600">{school.about}</span>
-              </div>
-            </a>
-          </Line>
-        ))}
-      </div>
-
-      <Line delay={0.65}>
-        <p className="text-xs text-stone-400 mt-4">honors</p>
-      </Line>
-
-      <div className="flex flex-col gap-2 mt-2">
-        {AWARDS.map((award, i) => (
-          <Line key={`${award.title}-${award.org}`} delay={0.65 + i * 0.1}>
-            <div className="flex items-baseline justify-between gap-2 sm:gap-8 w-full">
-              <div className="flex items-baseline gap-2 min-w-0">
-                <span className="font-bold text-stone-700">{award.title}</span>
-                <span className="text-sm text-stone-500">{award.org}</span>
-              </div>
-              <span className="text-sm text-stone-400 whitespace-nowrap hidden sm:inline">
-                {award.year}
-              </span>
-            </div>
-          </Line>
-        ))}
-      </div>
-
       <SectionHeading text="work" />
 
       <div className="flex flex-col gap-3 mt-3" onMouseLeave={clearWorkHover}>

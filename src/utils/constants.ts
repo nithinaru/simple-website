@@ -116,14 +116,6 @@ export const WORK_ITEMS: readonly WorkItem[] = [
     url: "https://haas.berkeley.edu/business-academy/careers/instructors/",
   },
   {
-    company: "OneDay",
-    slug: "oneday",
-    role: "founder",
-    date: "aug 2025 — dec 2025",
-    about: "full-stack productivity iOS app with 5,000+ users in 30 countries",
-    url: "https://apps.apple.com/us/app/oneday-by-nithin-aruswamy/id6755661127",
-  },
-  {
     company: "UC Irvine EECS",
     slug: "uc-irvine-eecs",
     role: "machine learning researcher",
@@ -149,14 +141,6 @@ export const WORK_ITEMS: readonly WorkItem[] = [
     about:
       "mentored 10+ middle school teams and ran logistics for VEX at UC Berkeley",
     url: "https://www.robolabs.org/",
-  },
-  {
-    company: "Jet-Set Teen",
-    slug: "jet-set-teen",
-    role: "author",
-    date: "jun 2021 — sep 2024",
-    about: "explored 50+ countries, Amazon #1 New Release in Travel Guides",
-    url: "https://www.amazon.com/Jet-Set-Teen-International-Travels-Budgeting/dp/B0DF6VKC18",
   },
 ];
 
@@ -190,11 +174,11 @@ export const PROJECTS: readonly Project[] = [
     url: "https://youtu.be/HTlI9NxZe-g?si=V1cE4Rpiqy2UMVoT",
   },
   {
-    name: "microtexture",
-    slug: "microtexture",
-    role: "creator",
-    about: "computer vision pipeline for material microtexture analysis",
-    url: "https://github.com/nithinaru/microtexture",
+    name: "Jet-Set Teen",
+    slug: "jet-set-teen",
+    role: "author",
+    about: "explored 50+ countries, Amazon #1 New Release in Travel Guides",
+    url: "https://www.amazon.com/Jet-Set-Teen-International-Travels-Budgeting/dp/B0DF6VKC18",
   },
 ];
 

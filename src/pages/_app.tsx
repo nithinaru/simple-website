@@ -189,7 +189,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
               {expanded ? (
                 <>
                   <AnimatedText
-                    text="operations research & math @ berkeley"
+                    text="operations research & math @ uc berkeley"
                     element="p"
                   />
 
@@ -219,7 +219,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
               ) : null}
 
               <noscript>
-                <p>operations research &amp; math @ berkeley</p>
+                <p>operations research &amp; math @ uc berkeley</p>
                 <nav>
                   {SOCIALS.map((social) => (
                     <a key={social.label} href={social.href}>
