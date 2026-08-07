@@ -88,15 +88,18 @@ function hash(input: string) {
 }
 
 /**
- * there is no album art to fetch, so each track gets its own gradient swatch
- * derived from its title + artist.
+ * fallback for the rare track with no cover art. built from the page's own
+ * generated hue (--tone-h) so it sits in the same palette as everything else,
+ * with the track's hash only nudging it a little.
  */
-function artworkGradient(title: string, artist: string) {
-  const seed = hash(`${title}—${artist}`);
-  const hueA = seed % 360;
-  const hueB = (hueA + 40 + ((seed >>> 9) % 140)) % 360;
+function fallbackArtwork(title: string, artist: string) {
+  const drift = hash(`${title}—${artist}`) % 40;
 
-  return `linear-gradient(135deg, hsl(${hueA} 78% 58%), hsl(${hueB} 72% 42%))`;
+  return (
+    `linear-gradient(135deg, ` +
+    `oklch(0.72 0.06 calc(var(--tone-h) + ${drift})), ` +
+    `oklch(0.5 0.05 calc(var(--tone-h) + ${drift + 30})))`
+  );
 }
 
 export function NowPlaying() {
@@ -105,6 +108,9 @@ export function NowPlaying() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // a different track every visit, picked after mount so the server and the
+    // first client render still agree
+    setIndex(Math.floor(Math.random() * SONGS.length));
     setMounted(true);
   }, []);
 
@@ -117,7 +123,7 @@ export function NowPlaying() {
   }, [index]);
 
   const song = mounted ? SONGS[index] : null;
-  const gradient = song ? artworkGradient(song.title, song.artist) : "";
+  const fallback = song ? fallbackArtwork(song.title, song.artist) : "";
 
   return (
     <AnimatePresence>
@@ -143,8 +149,12 @@ export function NowPlaying() {
                 animate={GLOW_FADE.animate}
                 exit={GLOW_FADE.initial}
                 transition={GLOW_FADE.transition}
-                className="absolute inset-0 h-full w-full object-cover scale-150 blur-3xl saturate-200 will-change-[transform,opacity]"
-                style={{ backgroundImage: gradient }}
+                className="absolute inset-0 h-full w-full scale-150 blur-3xl saturate-75 opacity-60 will-change-[transform,opacity] bg-cover bg-center"
+                style={
+                  song.artworkUrl
+                    ? { backgroundImage: `url(${song.artworkUrl})` }
+                    : { backgroundImage: fallback }
+                }
               />
             </AnimatePresence>
             <div className="absolute inset-0 bg-linear-to-r from-transparent via-stone-200/50 to-stone-200" />
@@ -167,17 +177,29 @@ export function NowPlaying() {
                 >
                   <div className="shrink-0">
                     <motion.div layout className="relative z-10">
-                      <div
-                        className="size-6 rounded-lg"
-                        style={{ backgroundImage: gradient }}
-                        role="img"
-                        aria-label={`${song.title} by ${song.artist}`}
-                      />
+                      {song.artworkUrl ? (
+                        <img
+                          className="size-6 rounded-lg object-cover"
+                          src={song.artworkUrl}
+                          alt={`${song.title} by ${song.artist}`}
+                        />
+                      ) : (
+                        <div
+                          className="size-6 rounded-lg"
+                          style={{ backgroundImage: fallback }}
+                          role="img"
+                          aria-label={`${song.title} by ${song.artist}`}
+                        />
+                      )}
                     </motion.div>
 
                     <div
-                      className="absolute size-18 left-0 top-0 z-0 blur-3xl"
-                      style={{ backgroundImage: gradient }}
+                      className="absolute size-18 left-0 top-0 z-0 blur-3xl opacity-70 bg-cover bg-center"
+                      style={
+                        song.artworkUrl
+                          ? { backgroundImage: `url(${song.artworkUrl})` }
+                          : { backgroundImage: fallback }
+                      }
                       aria-hidden="true"
                     />
                   </div>

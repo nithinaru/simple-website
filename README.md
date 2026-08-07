@@ -10,6 +10,12 @@ The palette is generated, not picked from a list. Every page load rolls a random
 
 The roll happens in a blocking inline script in [`src/pages/_document.tsx`](src/pages/_document.tsx) so there's no flash before first paint. To make it calmer or more colourful, change the chroma range there; to bias toward certain hues, constrain the hue line.
 
+### the now-playing pill
+
+The playlist lives in [`scripts/playlist.json`](scripts/playlist.json). Running `node scripts/fetch-artwork.ts` resolves each track's cover art and real duration from the iTunes Search API and regenerates [`src/utils/songs.ts`](src/utils/songs.ts). Cover images are referenced from Apple's CDN by URL, not copied into this repo.
+
+The widget picks a random track on load, then moves through the list from there, looping. Tracks without cover art fall back to a gradient built from the page's generated hue.
+
 ### install & run
 
 ```
