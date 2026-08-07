@@ -79,9 +79,12 @@ export type Social = {
 };
 
 export const SOCIALS: readonly Social[] = [
-  { label: "GitHub", href: "https://github.com/nithinaru" },
-  { label: "X", href: "https://x.com/nithinaru" },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/aruswamy" },
+  { label: "GitHub", href: "https://github.com/nithinaru" },
+  {
+    label: "Google Scholar",
+    href: "https://scholar.google.com/citations?user=jqQkW0AAAAAJ&hl=en&oi=ao",
+  },
   { label: "Email", href: "mailto:nithin.alaska@gmail.com" },
 ];
 
@@ -146,7 +149,7 @@ export const WORK_ITEMS: readonly WorkItem[] = [
 
 export const PROJECTS: readonly Project[] = [
   {
-    name: "Therapeuo",
+    name: "Tarsole (fka Therapeuo)",
     slug: "therapeuo",
     role: "co-founder",
     about: "building the world's first mass-market smart insole",

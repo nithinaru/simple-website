@@ -1,5 +1,10 @@
 import AnimatedText from "@/components/animated-text";
-import { GitHubIcon, LinkedInIcon, MailIcon, XIcon } from "@/components/icons";
+import {
+  GitHubIcon,
+  GoogleScholarIcon,
+  LinkedInIcon,
+  MailIcon,
+} from "@/components/icons";
 import { NowPlaying } from "@/components/now-playing";
 import { PROJECTS, SOCIALS, WORK_ITEMS } from "@/utils/constants";
 import "@/globals.css";
@@ -62,7 +67,7 @@ const JSON_LD = JSON.stringify({
   jobTitle: "Operations Researcher & Student",
   sameAs: [
     "https://github.com/nithinaru",
-    "https://x.com/nithinaru",
+    "https://scholar.google.com/citations?user=jqQkW0AAAAAJ&hl=en&oi=ao",
     "https://www.linkedin.com/in/aruswamy",
   ],
 });
@@ -86,7 +91,7 @@ const SOCIAL_ANIMATION = {
 
 const SOCIAL_ICONS: Record<string, React.ReactNode> = {
   GitHub: <GitHubIcon />,
-  X: <XIcon />,
+  "Google Scholar": <GoogleScholarIcon />,
   LinkedIn: <LinkedInIcon />,
   Email: <MailIcon />,
 };
@@ -101,10 +106,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
   const fontSizeRem = useTransform(
     fontSize,
     (v) =>
-      // the vw term is what sizes the name on narrow screens. 2.6 keeps
-      // "Nithin Aruswamy" inside a 375px viewport at the final step; the rem
-      // cap means wider screens are unaffected.
-      `clamp(${(v * 0.3).toFixed(2)}rem, ${(v * 2.6).toFixed(2)}vw, ${v}rem)`,
+      `clamp(${(v * 0.3).toFixed(2)}rem, ${(v * 3.5).toFixed(2)}vw, ${v}rem)`,
   );
 
   useMotionValueEvent(spring, "change", (v) => {
@@ -186,7 +188,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
                 className="font-bold whitespace-nowrap will-change-transform"
                 style={{ fontSize: fontSizeRem }}
               >
-                Nithin Aruswamy
+                nithin
               </motion.h1>
 
               {expanded ? (
@@ -231,7 +233,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
                   ))}
                 </nav>
 
-                <h2>work</h2>
+                <h2>experience</h2>
                 {WORK_ITEMS.map((item) => (
                   <div key={item.slug}>
                     <a href={item.url}>

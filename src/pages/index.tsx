@@ -177,7 +177,7 @@ export default function Home() {
 
   return (
     <>
-      <SectionHeading text="work" />
+      <SectionHeading text="experience" />
 
       <div className="flex flex-col gap-3 mt-3" onMouseLeave={clearWorkHover}>
         {WORK_ITEMS.map((item, i) => (
