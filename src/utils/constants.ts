@@ -204,7 +204,7 @@ export const PAPERS: readonly Paper[] = [
     venue: "Youth Innovators Journal",
     year: "2024",
     status: "published",
-    citations: 0,
+    citations: 3,
     url: "https://static1.squarespace.com/static/68f03354b22f613e25f92137/t/6902d275baad1a1ef23948ee/1761792629466/YIJ+-+SHIELD.pdf",
   },
   {
@@ -212,7 +212,7 @@ export const PAPERS: readonly Paper[] = [
     venue: "arXiv",
     year: "2024",
     status: "preprint",
-    citations: 0,
+    citations: 12,
     url: "https://github.com/nithinaru/microtexture",
   },
 ];
