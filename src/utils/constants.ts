@@ -161,12 +161,26 @@ export const WORK_ITEMS: readonly WorkItem[] = [
 
 export const PROJECTS: readonly Project[] = [
   {
+    name: "Priceflag",
+    slug: "priceflag",
+    role: "co-founder",
+    about: "simulate & safely roll out price changes",
+    url: "https://priceflag.org/",
+  },
+  {
     name: "Tarsole (fka Therapeuo)",
     slug: "therapeuo",
     role: "co-founder",
     about: "building the world's first mass-market smart insole",
     url: "https://therapeuo.xyz/",
     previewWaitMs: 4000,
+  },
+  {
+    name: "Jet-Set Teen",
+    slug: "jet-set-teen",
+    role: "author",
+    about: "explored 50+ countries, Amazon #1 New Release in Travel Guides",
+    url: "https://www.amazon.com/Jet-Set-Teen-International-Travels-Budgeting/dp/B0DF6VKC18",
   },
   {
     name: "OneDay",
@@ -176,13 +190,6 @@ export const PROJECTS: readonly Project[] = [
     url: "https://apps.apple.com/us/app/oneday-by-nithin-aruswamy/id6755661127",
   },
   {
-    name: "Truffle",
-    slug: "truffle",
-    role: "creator",
-    about: "a natural language optimizer for operations research problems",
-    url: "https://github.com/nithinaru/Truffle",
-  },
-  {
     name: "Terran",
     slug: "terran",
     role: "co-founder",
@@ -190,11 +197,11 @@ export const PROJECTS: readonly Project[] = [
     url: "https://youtu.be/HTlI9NxZe-g?si=V1cE4Rpiqy2UMVoT",
   },
   {
-    name: "Jet-Set Teen",
-    slug: "jet-set-teen",
-    role: "author",
-    about: "explored 50+ countries, Amazon #1 New Release in Travel Guides",
-    url: "https://www.amazon.com/Jet-Set-Teen-International-Travels-Budgeting/dp/B0DF6VKC18",
+    name: "Truffle",
+    slug: "truffle",
+    role: "creator",
+    about: "a natural language optimizer for operations research problems",
+    url: "https://github.com/nithinaru/Truffle",
   },
 ];
 
