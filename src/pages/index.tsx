@@ -80,8 +80,7 @@ const ItemRow = memo(function ItemRow({
     [onHover, id, previewUrl],
   );
 
-  return (
-    <a href={url} target="_blank" rel="noopener noreferrer">
+  const content = (
       <motion.div
         className="relative flex flex-col items-start will-change-transform -mx-2 px-2 -my-1 py-1 text-left"
         initial={ITEM_ANIMATION.initial}
@@ -121,8 +120,19 @@ const ItemRow = memo(function ItemRow({
         </span>
 
         <span className="relative text-xs text-stone-600">{about}</span>
-        <img src={previewUrl} alt="" className="hidden" fetchPriority="low" />
+        {previewUrl ? (
+          <img src={previewUrl} alt="" className="hidden" fetchPriority="low" />
+        ) : null}
       </motion.div>
+  );
+
+  if (!url) {
+    return content;
+  }
+
+  return (
+    <a href={url} target="_blank" rel="noopener noreferrer">
+      {content}
     </a>
   );
 });

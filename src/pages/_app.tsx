@@ -67,7 +67,7 @@ const STEP_SIZES = ANIMATION_STEPS.map((s) => s.size);
 const SITE_URL = "https://nithinaruswamy.com";
 const SITE_TITLE = "Nithin Aruswamy";
 const SITE_DESCRIPTION =
-  "Nithin studies Operations Research & Mathematics at UC Berkeley. He works as a researcher at UC Davis & Engineer at Growth Factory Ventures";
+  "Nithin studies Operations Research & Mathematics. He is a researcher at UC Davis & Engineer at Stealth.";
 
 const JSON_LD = JSON.stringify({
   "@context": "https://schema.org",
@@ -205,7 +205,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
               {expanded ? (
                 <>
                   <AnimatedText
-                    text="operations research & math @ uc berkeley"
+                    text="operations research & mathematics (gap year)"
                     element="p"
                   />
 
@@ -235,7 +235,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
               ) : null}
 
               <noscript>
-                <p>operations research &amp; math @ uc berkeley</p>
+                <p>operations research &amp; mathematics (gap year)</p>
                 <nav>
                   {SOCIALS.map((social) => (
                     <a key={social.label} href={social.href}>

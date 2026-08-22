@@ -5,9 +5,10 @@ import { join } from "node:path";
 const PREVIEWS_DIR = join(import.meta.dirname, "../public/images/previews");
 const MICROLINK_BASE = "https://api.microlink.io";
 
+// items without a url (e.g. stealth roles) keep a hand-made committed webp
 const items = [
-  ...WORK_ITEMS.filter((item) => !item.image),
-  ...PROJECTS.filter((item) => !item.image),
+  ...WORK_ITEMS.filter((item) => !item.image && item.url),
+  ...PROJECTS.filter((item) => !item.image && item.url),
 ];
 
 async function fetchScreenshot(

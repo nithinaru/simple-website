@@ -105,12 +105,12 @@ export const EDUCATION: readonly EducationItem[] = [
 
 export const WORK_ITEMS: readonly WorkItem[] = [
   {
-    company: "Growth Factory Ventures",
-    slug: "growth-factory-ventures",
+    company: "Stealth",
+    slug: "stealth",
     role: "ai-native engineer",
     date: "aug 2026 — present",
-    about: "engineering the agent-native future of venture capital",
-    url: "https://growthfactory.vc/",
+    about: "building in stealth",
+    url: "",
   },
   {
     company: "UC Davis GSM",
