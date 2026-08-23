@@ -67,7 +67,7 @@ const STEP_SIZES = ANIMATION_STEPS.map((s) => s.size);
 const SITE_URL = "https://nithinaruswamy.com";
 const SITE_TITLE = "Nithin Aruswamy";
 const SITE_DESCRIPTION =
-  "Nithin studies Operations Research & Mathematics. He is a researcher at UC Davis & Engineer at Stealth.";
+  "Nithin studies Operations Research & Mathematics. He is a researcher at UC Davis.";
 
 const JSON_LD = JSON.stringify({
   "@context": "https://schema.org",
