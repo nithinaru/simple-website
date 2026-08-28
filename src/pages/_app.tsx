@@ -67,7 +67,7 @@ const STEP_SIZES = ANIMATION_STEPS.map((s) => s.size);
 const SITE_URL = "https://nithinaruswamy.com";
 const SITE_TITLE = "Nithin Aruswamy";
 const SITE_DESCRIPTION =
-  "Nithin studies Mathematics and Operations Research. He is a researcher at UC Davis GSB. He's an avid traveler, has visited 50+ countries and a #1 Amazon New Release travel author.";
+  "Nithin studies Mathematics. He is an operations researcher at UC Davis GSB. He's an avid traveler (50+ countries) and a #1 Amazon New Release travel author.";
 
 const JSON_LD = JSON.stringify({
   "@context": "https://schema.org",
