@@ -27,7 +27,7 @@ npm run dev
 
 ### deploying
 
-Hosted on Netlify; see [`netlify.toml`](netlify.toml). The deploy runs `npm run build:ci`, which is `next build` *without* the preview fetch — screenshots are committed, so a deploy never depends on a third-party API. After adding an item to `constants.ts`, run `npm run prebuild` locally and commit the new screenshot.
+Hosted on Vercel; see [`vercel.json`](vercel.json). The deploy runs `npm run build:ci`, which is `next build` *without* the preview fetch — screenshots are committed, so a deploy never depends on a third-party API. After adding an item to `constants.ts`, run `npm run prebuild` locally and commit the new screenshot.
 
 ### credits
 
