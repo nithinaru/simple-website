@@ -220,17 +220,17 @@ h3 {
 }
 
 /*
- * inter, in two optical sizes off a single variable font.
- * `font-body` is the regular text cut; `font-display` is Inter Display, used
+ * newsreader, in two optical sizes off a single variable font.
+ * `font-body` is the regular text cut; `font-display` is the display cut, used
  * for the item titles (companies, project and publication names).
  */
 .font-body {
-  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-body), ui-serif, Georgia, serif;
   font-variation-settings: "opsz" 14;
 }
 
 .font-display {
-  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-body), ui-serif, Georgia, serif;
   font-variation-settings: "opsz" 32;
   letter-spacing: -0.011em;
 }

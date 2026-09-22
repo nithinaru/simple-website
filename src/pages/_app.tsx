@@ -19,17 +19,17 @@ import {
   useTransform,
 } from "motion/react";
 import type { AppProps } from "next/app";
-import { Goudy_Bookletter_1911, Inter } from "next/font/google";
+import { Goudy_Bookletter_1911, Newsreader } from "next/font/google";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 
-// inter's variable font carries an optical-size axis: opsz 32 is "Inter
-// Display" (tighter, for headline-ish text), opsz 14 is the regular text cut.
+// newsreader's variable font carries an optical-size axis: opsz 32 is the
+// display cut (tighter, for the item titles), opsz 14 is the regular text cut.
 // one download covers both.
-const inter = Inter({
+const bodyFont = Newsreader({
   subsets: ["latin"],
   axes: ["opsz"],
-  variable: "--font-inter",
+  variable: "--font-body",
   display: "swap",
 });
 
@@ -172,7 +172,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
 
   return (
     <main
-      className={`${inter.variable} font-body flex h-full w-full overflow-hidden`}
+      className={`${bodyFont.variable} font-body flex h-full w-full overflow-hidden`}
     >
       <Head>
         <title>{SITE_TITLE}</title>
