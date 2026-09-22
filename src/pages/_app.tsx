@@ -19,7 +19,7 @@ import {
   useTransform,
 } from "motion/react";
 import type { AppProps } from "next/app";
-import { Inter } from "next/font/google";
+import { Goudy_Bookletter_1911, Inter } from "next/font/google";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 
@@ -32,6 +32,17 @@ const inter = Inter({
   variable: "--font-inter",
   display: "swap",
 });
+
+// the face the name settles on once the animation finishes. also used for the
+// section headings (see globals.css). exposed on :root so the 404 page, which
+// renders outside <main>, gets it too.
+const nameFont = Goudy_Bookletter_1911({
+  subsets: ["latin"],
+  weight: "400",
+  display: "block",
+});
+
+const FONT_VARS = `:root{--font-name:${nameFont.style.fontFamily}}`;
 
 const NAME_WRAPPER_SPRING_CONFIG = {
   type: "spring",
@@ -46,14 +57,14 @@ const NAME_SPRING_CONFIG = {
 } as const satisfies Transition;
 
 const ANIMATION_STEPS = [
-  { font: "Redaction 100", weight: 700, size: 16 },
-  { font: "Redaction 10", weight: 400, size: 13 },
-  { font: "Redaction 70", weight: 700, size: 10 },
-  { font: "Redaction", weight: 400, size: 8 },
-  { font: "Redaction 35", weight: 700, size: 6.5 },
-  { font: "Redaction 100", weight: 400, size: 5.2 },
-  { font: "Redaction 20", weight: 400, size: 4.2 },
-  { font: "Redaction 50", weight: 700, size: 3.75 },
+  { font: '"Redaction 100"', weight: 700, size: 16 },
+  { font: '"Redaction 10"', weight: 400, size: 13 },
+  { font: '"Redaction 70"', weight: 700, size: 10 },
+  { font: '"Redaction"', weight: 400, size: 8 },
+  { font: '"Redaction 35"', weight: 700, size: 6.5 },
+  { font: '"Redaction 100"', weight: 400, size: 5.2 },
+  { font: '"Redaction 20"', weight: 400, size: 4.2 },
+  { font: "var(--font-name), serif", weight: 400, size: 3.75 },
 ] as const satisfies Array<{
   font: string;
   weight: number;
@@ -127,7 +138,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
     const i = Math.max(0, Math.min(Math.round(v), LAST_STEP));
     ref.current.style.setProperty(
       "font-family",
-      `"${ANIMATION_STEPS[i].font}"`,
+      ANIMATION_STEPS[i].font,
       "important",
     );
     ref.current.style.setProperty(
@@ -150,6 +161,10 @@ export default function App({ Component, pageProps, router }: AppProps) {
   if (router.pathname === "/404") {
     return (
       <>
+        <Head>
+          {/* biome-ignore lint/security/noDangerouslySetInnerHtml: font vars */}
+          <style dangerouslySetInnerHTML={{ __html: FONT_VARS }} />
+        </Head>
         <Component {...pageProps} />
       </>
     );
@@ -161,6 +176,8 @@ export default function App({ Component, pageProps, router }: AppProps) {
     >
       <Head>
         <title>{SITE_TITLE}</title>
+        {/* biome-ignore lint/security/noDangerouslySetInnerHtml: font vars */}
+        <style dangerouslySetInnerHTML={{ __html: FONT_VARS }} />
         <meta name="description" content={SITE_DESCRIPTION} />
         <link rel="canonical" href={SITE_URL} />
 

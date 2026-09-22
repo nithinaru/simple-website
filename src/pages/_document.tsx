@@ -8,7 +8,6 @@ const CRITICAL_FONTS = [
   "/fonts/Redaction_35-Bold.woff2",
   "/fonts/Redaction_100-Regular.woff2",
   "/fonts/Redaction_20-Regular.woff2",
-  "/fonts/Redaction_50-Bold.woff2",
 ];
 
 /*

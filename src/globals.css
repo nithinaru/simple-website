@@ -163,7 +163,7 @@
 
 @theme {
   --font-sans: "Redaction", sans-serif;
-  --font-heading: "Redaction 50", sans-serif;
+  --font-heading: var(--font-name), serif;
 }
 
 /*
@@ -215,6 +215,8 @@ h1,
 h2,
 h3 {
   font-family: var(--font-heading);
+  /* the heading face only ships one weight; don't let `font-bold` smear it */
+  font-synthesis: none;
 }
 
 /*
