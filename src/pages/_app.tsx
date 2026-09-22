@@ -119,6 +119,33 @@ const SOCIAL_ICONS: Record<string, React.ReactNode> = {
   Email: <MailIcon />,
 };
 
+// split per letter so each one can breathe on its own (see .name-letter in
+// globals.css). every letter gets its own random period and starting offset,
+// so they drift in and out of step instead of rolling left to right. rolled
+// once per mount; this only renders client-side after the intro, so there is
+// no hydration mismatch to worry about.
+function BreathingName() {
+  const [timings] = useState(() =>
+    [...NAME].map(() => ({
+      "--dur": `${(2.4 + Math.random() * 2.6).toFixed(2)}s`,
+      "--delay": `${(-Math.random() * 5).toFixed(2)}s`,
+      "--pulse-delay": `${(Math.random() * 0.5).toFixed(2)}s`,
+    })),
+  );
+
+  return [...NAME].map((letter, i) => (
+    <span
+      // biome-ignore lint/suspicious/noArrayIndexKey: static string
+      key={i}
+      aria-hidden="true"
+      className="name-letter"
+      style={timings[i] as React.CSSProperties}
+    >
+      {letter}
+    </span>
+  ));
+}
+
 export default function App({ Component, pageProps, router }: AppProps) {
   const ref = useRef<HTMLHeadingElement>(null);
   const progress = useMotionValue(0);
@@ -219,21 +246,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
                 style={{ fontSize: fontSizeRem }}
                 aria-label={NAME}
               >
-                {expanded
-                  ? // split per letter so each one can breathe on its own
-                    // phase (see .name-letter in globals.css)
-                    [...NAME].map((letter, i) => (
-                      <span
-                        // biome-ignore lint/suspicious/noArrayIndexKey: static string
-                        key={i}
-                        aria-hidden="true"
-                        className="name-letter"
-                        style={{ "--i": i } as React.CSSProperties}
-                      >
-                        {letter}
-                      </span>
-                    ))
-                  : NAME}
+                {expanded ? <BreathingName /> : NAME}
               </motion.h1>
 
               {expanded ? (

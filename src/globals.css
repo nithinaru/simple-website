@@ -220,12 +220,13 @@ h3 {
 }
 
 /*
- * the name slowly swells and thins, one letter after another — modelled on
- * the dia browser hero. dia animates a variable weight axis; goudy bookletter
- * only ships one weight, so the thickness comes from a same-colour text
- * stroke instead. one stronger pulse runs through on arrival, then the idle
- * wave takes over (1.9s each way, letters 0.28s apart).
+ * the name slowly swells and thins — modelled on the dia browser hero. dia
+ * animates a variable weight axis; goudy bookletter only ships one weight, so
+ * the thickness comes from a same-colour text stroke instead. one strong pulse
+ * on arrival, then each letter breathes on its own random period and offset
+ * (set inline by <BreathingName>), so the wave has no direction.
  */
+
 /* registered so the keyframes interpolate — the stroke width itself snaps */
 @property --name-stroke {
   syntax: "<length>";
@@ -235,20 +236,21 @@ h3 {
 
 .name-letter {
   -webkit-text-stroke: var(--name-stroke) currentColor;
+  /* pulse listed last so it wins over the breathe while it runs */
   animation:
-    name-pulse 1.55s ease-in-out calc(var(--i) * 0.09s) 1,
-    name-breathe 3.8s ease-in-out calc(1.55s + var(--i) * 0.28s) infinite;
+    name-breathe var(--dur) ease-in-out var(--delay) infinite,
+    name-pulse 1.4s ease-in-out var(--pulse-delay) 1;
 }
 
 @keyframes name-pulse {
   50% {
-    --name-stroke: 0.045em;
+    --name-stroke: 0.09em;
   }
 }
 
 @keyframes name-breathe {
   50% {
-    --name-stroke: 0.025em;
+    --name-stroke: 0.065em;
   }
 }
 
