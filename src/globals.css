@@ -220,6 +220,45 @@ h3 {
 }
 
 /*
+ * the name slowly swells and thins, one letter after another — modelled on
+ * the dia browser hero. dia animates a variable weight axis; goudy bookletter
+ * only ships one weight, so the thickness comes from a same-colour text
+ * stroke instead. one stronger pulse runs through on arrival, then the idle
+ * wave takes over (1.9s each way, letters 0.28s apart).
+ */
+/* registered so the keyframes interpolate — the stroke width itself snaps */
+@property --name-stroke {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+.name-letter {
+  -webkit-text-stroke: var(--name-stroke) currentColor;
+  animation:
+    name-pulse 1.55s ease-in-out calc(var(--i) * 0.09s) 1,
+    name-breathe 3.8s ease-in-out calc(1.55s + var(--i) * 0.28s) infinite;
+}
+
+@keyframes name-pulse {
+  50% {
+    --name-stroke: 0.045em;
+  }
+}
+
+@keyframes name-breathe {
+  50% {
+    --name-stroke: 0.025em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .name-letter {
+    animation: none;
+  }
+}
+
+/*
  * newsreader, in two optical sizes off a single variable font.
  * `font-body` is the regular text cut; `font-display` is the display cut, used
  * for the item titles (companies, project and publication names).

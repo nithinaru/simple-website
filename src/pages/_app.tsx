@@ -71,6 +71,8 @@ const ANIMATION_STEPS = [
   size: number;
 }>;
 
+const NAME = "nithin";
+
 const LAST_STEP = ANIMATION_STEPS.length - 1;
 const STEP_INDICES = ANIMATION_STEPS.map((_, i) => i);
 const STEP_SIZES = ANIMATION_STEPS.map((s) => s.size);
@@ -215,8 +217,23 @@ export default function App({ Component, pageProps, router }: AppProps) {
                 ref={ref}
                 className="font-bold whitespace-nowrap will-change-transform"
                 style={{ fontSize: fontSizeRem }}
+                aria-label={NAME}
               >
-                nithin
+                {expanded
+                  ? // split per letter so each one can breathe on its own
+                    // phase (see .name-letter in globals.css)
+                    [...NAME].map((letter, i) => (
+                      <span
+                        // biome-ignore lint/suspicious/noArrayIndexKey: static string
+                        key={i}
+                        aria-hidden="true"
+                        className="name-letter"
+                        style={{ "--i": i } as React.CSSProperties}
+                      >
+                        {letter}
+                      </span>
+                    ))
+                  : NAME}
               </motion.h1>
 
               {expanded ? (
