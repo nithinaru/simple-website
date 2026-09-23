@@ -158,7 +158,7 @@ export const PROJECTS: readonly Project[] = [
     slug: "priceflag",
     role: "Co-Founder",
     date: "Present",
-    about: "Simulate & safely roll out price changes",
+    about: "Simulate & safely roll out price changes for eCommerce",
     url: "https://priceflag.org/",
   },
   {
