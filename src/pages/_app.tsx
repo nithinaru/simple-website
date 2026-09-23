@@ -143,7 +143,7 @@ type Breath = "main" | "near" | undefined;
 
 function useBreathing(length: number, startDelayMs: number) {
   const [current, setCurrent] = useState(-1);
-  const [durationMs, setDurationMs] = useState(SLOW_MS[0]);
+  const [durationMs, setDurationMs] = useState<number>(SLOW_MS[0]);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
