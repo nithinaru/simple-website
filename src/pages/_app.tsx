@@ -18,16 +18,12 @@ import {
   useTransform,
 } from "motion/react";
 import type { AppProps } from "next/app";
-import { Goudy_Bookletter_1911, Newsreader } from "next/font/google";
+import { Goudy_Bookletter_1911, Instrument_Sans } from "next/font/google";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 
-// newsreader's variable font carries an optical-size axis: opsz 32 is the
-// display cut (tighter, for the item titles), opsz 14 is the regular text cut.
-// one download covers both.
-const bodyFont = Newsreader({
+const bodyFont = Instrument_Sans({
   subsets: ["latin"],
-  axes: ["opsz"],
   variable: "--font-body",
   display: "swap",
 });

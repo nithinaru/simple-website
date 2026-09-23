@@ -239,18 +239,15 @@ h3 {
 }
 
 /*
- * newsreader, in two optical sizes off a single variable font.
- * `font-body` is the regular text cut; `font-display` is the display cut, used
- * for the item titles (companies, project and publication names).
+ * instrument sans for all body text. `font-display` is the item titles
+ * (companies, project and publication names), set a touch tighter.
  */
 .font-body {
-  font-family: var(--font-body), ui-serif, Georgia, serif;
-  font-variation-settings: "opsz" 14;
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
 }
 
 .font-display {
-  font-family: var(--font-body), ui-serif, Georgia, serif;
-  font-variation-settings: "opsz" 32;
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
   letter-spacing: -0.011em;
 }
 

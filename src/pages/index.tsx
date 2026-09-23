@@ -3,8 +3,6 @@ import {
   motion,
   type Transition,
 } from "motion/react";
-import Head from "next/head";
-import { useRouter } from "next/router";
 import { memo, useCallback, useState } from "react";
 import AnimatedText from "@/components/animated-text";
 import HoverPreview from "@/components/hover-preview";
@@ -40,24 +38,6 @@ const ITEM_HOVER_TRANSITION = {
   damping: 30,
 } as const satisfies Transition;
 
-// TEMP: body font shortlist. visiting /?fonts sets each of the first rows in
-// a different candidate, labelled, so they can be compared on the real page.
-// remove once one is picked.
-const FONT_TEST = [
-  "Hanken Grotesk",
-  "Instrument Sans",
-  "Albert Sans",
-  "Onest",
-  "Golos Text",
-  "Host Grotesk",
-  "Funnel Sans",
-  "Wix Madefor Text",
-] as const;
-
-const FONT_TEST_HREF = `https://fonts.googleapis.com/css2?${FONT_TEST.map(
-  (f) => `family=${f.replaceAll(" ", "+")}:wght@400;700`,
-).join("&")}&display=swap`;
-
 // precompute preview urls since items are static
 const WORK_PREVIEW_URLS = new Map(
   WORK_ITEMS.map((item) => [item.slug, getPreviewUrl(item) ?? ""]),
@@ -78,7 +58,6 @@ type ItemRowProps = {
   delay: number;
   previewUrl: string;
   onHover: (id: string, previewUrl: string, rect: DOMRect) => void;
-  testFont?: number;
 };
 
 const ItemRow = memo(function ItemRow({
@@ -93,11 +72,7 @@ const ItemRow = memo(function ItemRow({
   delay,
   previewUrl,
   onHover,
-  testFont,
 }: ItemRowProps) {
-  const testFamily =
-    testFont === undefined ? undefined : `"${FONT_TEST[testFont]}", sans-serif`;
-
   const handleMouseEnter = useCallback(
     (e: React.MouseEvent) => {
       onHover(id, previewUrl, e.currentTarget.getBoundingClientRect());
@@ -115,7 +90,6 @@ const ItemRow = memo(function ItemRow({
           delay,
         }}
         onMouseEnter={handleMouseEnter}
-        style={testFamily ? { fontFamily: testFamily } : undefined}
       >
         {isHovered ? (
           <motion.div
@@ -127,10 +101,7 @@ const ItemRow = memo(function ItemRow({
 
         <div className="relative flex items-baseline justify-between gap-2 sm:gap-8 w-full">
           <div className="flex items-baseline gap-2 min-w-0">
-            <span
-              className="font-display font-bold text-stone-700 truncate"
-              style={testFamily ? { fontFamily: testFamily } : undefined}
-            >
+            <span className="font-display font-bold text-stone-700 truncate">
               {label}
             </span>
             <span className="text-sm text-stone-500 hidden sm:inline">
@@ -149,11 +120,6 @@ const ItemRow = memo(function ItemRow({
         </span>
 
         <span className="relative text-xs text-stone-600">{about}</span>
-        {testFont === undefined ? null : (
-          <span className="relative text-[10px] text-stone-400 mt-0.5">
-            {testFont + 1} · {FONT_TEST[testFont]}
-          </span>
-        )}
         {previewUrl ? (
           <img src={previewUrl} alt="" className="hidden" fetchPriority="low" />
         ) : null}
@@ -221,18 +187,8 @@ export default function Home() {
   const clearWorkHover = useCallback(() => setHoveredWork(null), []);
   const clearProjectHover = useCallback(() => setHoveredProject(null), []);
 
-  const fontTest = useRouter().query.fonts !== undefined;
-  const testFontAt = (row: number) =>
-    fontTest && row < FONT_TEST.length ? row : undefined;
-
   return (
     <>
-      {fontTest ? (
-        <Head>
-          <link rel="stylesheet" href={FONT_TEST_HREF} />
-        </Head>
-      ) : null}
-
       <SectionHeading text="Experience" />
 
       <div className="flex flex-col gap-3 mt-3" onMouseLeave={clearWorkHover}>
@@ -250,7 +206,6 @@ export default function Home() {
             delay={0.5 + i * 0.15}
             previewUrl={WORK_PREVIEW_URLS.get(item.slug) ?? ""}
             onHover={handleWorkHover}
-            testFont={testFontAt(i)}
           />
         ))}
       </div>
@@ -274,7 +229,6 @@ export default function Home() {
             delay={0.5 + i * 0.15}
             previewUrl={PROJECT_PREVIEW_URLS.get(project.slug) ?? ""}
             onHover={handleProjectHover}
-            testFont={testFontAt(WORK_ITEMS.length + i)}
           />
         ))}
       </div>
