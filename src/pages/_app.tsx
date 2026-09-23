@@ -302,7 +302,10 @@ export default function App({ Component, pageProps, router }: AppProps) {
               transition={NAME_WRAPPER_SPRING_CONFIG}
             >
               <motion.h1
-                layout
+                // position only: the last name widens the heading when it
+                // arrives, and a full layout animation would do that by
+                // scaling — visibly stretching the first name
+                layout="position"
                 ref={ref}
                 // once the last name is in, let it drop to its own line on
                 // narrow screens instead of overflowing
