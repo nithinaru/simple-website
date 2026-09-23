@@ -85,21 +85,27 @@ const AnimatedText = ({
     );
   };
 
+  // words are separated by real spaces, not margins, so a text selection
+  // runs continuously and copies with the spaces intact
   const Children = text.split(" ").map((word, index) => (
-    <motion.span
+    <React.Fragment
       // biome-ignore lint/suspicious/noArrayIndexKey: cry harder
       key={index}
-      className="inline-block mr-[0.25em] whitespace-nowrap will-change-transform"
-      aria-hidden="true"
-      initial="initial"
-      animate="animate"
-      transition={{
-        delayChildren: index * wordDelay + (artificialDelay ?? 0),
-        staggerChildren: 0.025,
-      }}
     >
-      {renderWord(word)}
-    </motion.span>
+      {index > 0 ? " " : null}
+      <motion.span
+        className="inline-block whitespace-nowrap will-change-transform"
+        aria-hidden="true"
+        initial="initial"
+        animate="animate"
+        transition={{
+          delayChildren: index * wordDelay + (artificialDelay ?? 0),
+          staggerChildren: 0.025,
+        }}
+      >
+        {renderWord(word)}
+      </motion.span>
+    </React.Fragment>
   ));
 
   return React.createElement(element, { className }, Children);

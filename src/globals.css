@@ -331,6 +331,10 @@ a:hover .link-icon-sparkle {
   letter-spacing: -0.011em;
 }
 
+::selection {
+  background: oklch(0.86 0.035 var(--ink-h));
+}
+
 html {
   @apply bg-stone-200!;
   color: var(--tone-ink);
