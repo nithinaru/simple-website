@@ -1,15 +1,11 @@
-import { WORK_ITEMS, PROJECTS } from "../src/utils/constants.ts";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { PROJECTS, WORK_ITEMS } from "../src/utils/constants.ts";
 
 const PREVIEWS_DIR = join(import.meta.dirname, "../public/images/previews");
 const MICROLINK_BASE = "https://api.microlink.io";
 
-// items without a url (e.g. stealth roles) keep a hand-made committed webp
-const items = [
-  ...WORK_ITEMS.filter((item) => !item.image && item.url),
-  ...PROJECTS.filter((item) => !item.image && item.url),
-];
+const items = [...WORK_ITEMS, ...PROJECTS].filter((item) => item.url);
 
 async function fetchScreenshot(
   url: string,

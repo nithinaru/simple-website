@@ -1,12 +1,5 @@
-const getPreviewUrl = (item: {
-  slug: string;
-  image?: string;
-}): string | null => {
-  if (item.image) {
-    return `/images/${item.image}`;
-  }
-
-  return `/images/previews/${item.slug}.webp`;
-};
+// screenshots are fetched by scripts/fetch-previews.ts and optimized to webp
+const getPreviewUrl = (item: { slug: string }): string =>
+  `/images/previews/${item.slug}.webp`;
 
 export default getPreviewUrl;

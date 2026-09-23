@@ -5,20 +5,8 @@ export type WorkItem = {
   date: string;
   about: string;
   url: string;
-  image?: string;
   /** ms to wait before screenshotting, for sites with an entrance animation */
   previewWaitMs?: number;
-};
-
-export type EducationItem = {
-  school: string;
-  slug: string;
-  degree: string;
-  location: string;
-  about: string;
-  url: string;
-  date?: string;
-  image?: string;
 };
 
 export type Project = {
@@ -28,7 +16,6 @@ export type Project = {
   date?: string;
   about: string;
   url: string;
-  image?: string;
   /** ms to wait before screenshotting, for sites with an entrance animation */
   previewWaitMs?: number;
 };
@@ -37,45 +24,13 @@ export type Paper = {
   title: string;
   venue: string;
   year: string;
-  status: "published" | "preprint";
   citations: number;
-  url: string;
 };
 
 export type Patent = {
   number: string;
   title: string;
   year: string;
-  status: string;
-};
-
-export type Award = {
-  title: string;
-  org: string;
-  year: string;
-};
-
-export type SkillGroup = {
-  title: string;
-  items: readonly string[];
-};
-
-export type MediaItem = {
-  title: string;
-  author: string;
-  year: string;
-  note?: string;
-};
-
-export type MediaGroup = {
-  title: string;
-  items: readonly MediaItem[];
-};
-
-export type Stamp = {
-  country: string;
-  code: string;
-  when: string;
 };
 
 export type Social = {
@@ -91,17 +46,6 @@ export const SOCIALS: readonly Social[] = [
     href: "https://scholar.google.com/citations?user=jqQkW0AAAAAJ&hl=en&oi=ao",
   },
   { label: "Email", href: "mailto:nithin.alaska@gmail.com" },
-];
-
-export const EDUCATION: readonly EducationItem[] = [
-  {
-    school: "UC Berkeley",
-    slug: "uc-berkeley",
-    degree: "B.A. Operations Research & Mathematics",
-    location: "Berkeley, CA",
-    about: "Berkeley, CA",
-    url: "https://www.berkeley.edu",
-  },
 ];
 
 export const WORK_ITEMS: readonly WorkItem[] = [
@@ -204,33 +148,25 @@ export const PAPERS: readonly Paper[] = [
     title: "Math Modeling & Geometry for Fabric Analysis",
     venue: "Transactions on Machine Learning Research",
     year: "2025",
-    status: "published",
     citations: 2,
-    url: "https://openreview.net/pdf/7a75b4e1e1528208c787ca2058ed083741cc29b7.pdf",
   },
   {
     title: "Textile Microtexture Dataset",
     venue: "Harvard Dataverse",
     year: "2025",
-    status: "published",
     citations: 320,
-    url: "https://doi.org/10.7910/DVN/KUDCQX",
   },
   {
     title: "Efficient Micro-Agriculture System",
     venue: "Youth Innovators Journal",
     year: "2024",
-    status: "published",
     citations: 3,
-    url: "https://static1.squarespace.com/static/68f03354b22f613e25f92137/t/6902d275baad1a1ef23948ee/1761792629466/YIJ+-+SHIELD.pdf",
   },
   {
     title: "Computer Vision Pipeline for MSE Microtextures",
     venue: "arXiv",
     year: "2024",
-    status: "preprint",
     citations: 12,
-    url: "https://github.com/nithinaru/microtexture",
   },
 ];
 
@@ -239,125 +175,5 @@ export const PATENTS: readonly Patent[] = [
     number: "63/742,004",
     title: "Sustainable Harvesting and Integrated Efficient Land Defense",
     year: "2023",
-    status: "Granted",
   },
 ];
-
-export const AWARDS: readonly Award[] = [
-  { title: "2nd Place · Design Hackathon", org: "CapCut", year: "2026" },
-  { title: "1st Place · Hackathon", org: "Apify", year: "2026" },
-  { title: "State Seal of Biliteracy", org: "Government of CA", year: "2026" },
-  { title: "2nd Place Pitch", org: "NFTE WSI", year: "2025" },
-  { title: "Top 100 Pitch", org: "Blue Ocean", year: "2025" },
-  { title: "Finalist", org: "Conrad Challenge", year: "2025" },
-  { title: "Finalist", org: "Genius Olympiad", year: "2025" },
-  { title: "Finalist", org: "Paradigm Challenge", year: "2025" },
-  { title: "1st Place Pitch", org: "Berkeley MET.ia", year: "2024" },
-  { title: "Top 10 Global Skills", org: "VEX Robotics", year: "2024" },
-  { title: "Worlds Quarterfinalist", org: "VEX Robotics", year: "2023" },
-];
-
-export const SKILLS: readonly SkillGroup[] = [
-  {
-    title: "Engineering",
-    items: [
-      "iOS App Development",
-      "Autonomous Systems",
-      "Control Systems (PID)",
-      "Stochastic Processes",
-      "Robotics",
-      "GPIO",
-    ],
-  },
-  {
-    title: "Systems",
-    items: [
-      "Embedded Systems",
-      "Sensor Integration",
-      "Bluetooth Low Energy",
-      "Hydroponic Systems",
-    ],
-  },
-  {
-    title: "Design",
-    items: ["UI/UX Design", "Hardware Prototyping", "Human-Centric Design"],
-  },
-  {
-    title: "Tools",
-    items: ["Nvidia Jetson", "CAD", "Xcode", "Figma", "GitHub", "Claude Code"],
-  },
-  {
-    title: "Languages",
-    items: ["Swift", "Java", "Python", "R", "C++"],
-  },
-];
-
-export const INTERESTS: readonly string[] = [
-  "Operations Research",
-  "Smart Wearable Tech",
-  "Autonomous Farming",
-  "Battery Cell Technology",
-  "Nuclear Energy",
-  "Global Travel",
-];
-
-export const MEDIA: readonly MediaGroup[] = [
-  {
-    title: "Books",
-    items: [
-      {
-        title: "Dune",
-        author: "Frank Herbert",
-        year: "1965",
-        note: "Currently reading",
-      },
-      { title: "Build", author: "Tony Fadell", year: "2022" },
-      { title: "Meditations", author: "Marcus Aurelius", year: "170 CE" },
-      { title: "Ikigai", author: "Francesc Miralles", year: "2018" },
-      {
-        title: "Prisoners of Geography",
-        author: "Tim Marshall",
-        year: "2015",
-      },
-    ],
-  },
-  {
-    title: "Films",
-    items: [
-      { title: "In Whose Name?", author: "Nico Ballesteros", year: "2025" },
-      {
-        title: "Captain America: The Winter Soldier",
-        author: "Russo Brothers",
-        year: "2014",
-      },
-      { title: "Schindler's List", author: "Steven Spielberg", year: "1993" },
-      { title: "Big Hero 6", author: "Don Hall", year: "2014" },
-      { title: "F1", author: "Joseph Kosinski", year: "2025" },
-    ],
-  },
-  {
-    title: "Albums",
-    items: [
-      {
-        title: "Yeezus",
-        author: "Kanye West",
-        year: "2013",
-        note: "On rotation",
-      },
-      { title: "Jackman.", author: "Jack Harlow", year: "2023" },
-      { title: "Honestly, Nevermind", author: "Drake", year: "2022" },
-      { title: "Diamante", author: "Gordo", year: "2024" },
-      { title: "IN LOVING MEMORY+", author: "Sean Leon", year: "2023" },
-    ],
-  },
-];
-
-export const STAMPS: readonly Stamp[] = [
-  { country: "Bolivia", code: "BO", when: "spring 2026" },
-  { country: "Chile", code: "CL", when: "spring 2026" },
-  { country: "Colombia", code: "CO", when: "summer 2025" },
-  { country: "Brazil", code: "BR", when: "summer 2025" },
-  { country: "Peru", code: "PE", when: "summer 2025" },
-];
-
-export const COUNTRIES_VISITED = 53;

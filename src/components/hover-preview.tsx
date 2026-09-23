@@ -2,8 +2,8 @@
 
 import {
   AnimatePresence,
+  type MotionNodeAnimationOptions,
   motion,
-  MotionNodeAnimationOptions,
 } from "motion/react";
 
 const PREVIEW_TRANSITION = {
@@ -49,6 +49,7 @@ function HoverPreview({
           exit={PREVIEW_TRANSITION.initial}
           transition={PREVIEW_TRANSITION}
         >
+          {/* biome-ignore lint/performance/noImgElement: static, pre-sized webp */}
           <img
             key={previewUrl}
             src={previewUrl}

@@ -20,20 +20,20 @@ import { useEffect, useRef, useState } from "react";
 
 const bodyFont = Instrument_Sans({
   subsets: ["latin"],
-  variable: "--font-body",
   display: "swap",
 });
 
-// the face the name settles on once the animation finishes. also used for the
-// section headings (see globals.css). exposed on :root so the 404 page, which
-// renders outside <main>, gets it too.
+// the face the name settles on once the animation finishes, also used for
+// the headings (see globals.css)
 const nameFont = Goudy_Bookletter_1911({
   subsets: ["latin"],
   weight: "400",
   display: "block",
 });
 
-const FONT_VARS = `:root{--font-name:${nameFont.style.fontFamily}}`;
+// exposed on :root (rather than via next/font's class) so the 404 page, which
+// renders outside <main>, gets the same fonts
+const FONT_VARS = `:root{--font-body:${bodyFont.style.fontFamily};--font-name:${nameFont.style.fontFamily}}`;
 
 const NAME_WRAPPER_SPRING_CONFIG = {
   type: "spring",
@@ -88,7 +88,7 @@ const STEP_SIZES = ANIMATION_STEPS.map((s) => s.size);
 const SITE_URL = "https://nithinaruswamy.com";
 const SITE_TITLE = "Nithin Aruswamy";
 const SITE_DESCRIPTION =
-  "Nithin studies Mathematics. He is an operations researcher at UC Davis GSB. He's an avid traveler (50+ countries) and a #1 Amazon New Release travel author.";
+  "Nithin studies OR & Mathematics. He is an operations researcher at UC Davis GSB. He's an avid traveler (50+ countries) and a #1 Amazon New Release travel author.";
 
 const JSON_LD = JSON.stringify({
   "@context": "https://schema.org",
@@ -267,9 +267,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
   }
 
   return (
-    <main
-      className={`${bodyFont.variable} font-body flex h-full w-full overflow-hidden`}
-    >
+    <main className="flex h-full w-full overflow-hidden">
       <Head>
         <title>{SITE_TITLE}</title>
         {/* biome-ignore lint/security/noDangerouslySetInnerHtml: font vars */}
@@ -292,11 +290,12 @@ export default function App({ Component, pageProps, router }: AppProps) {
 
         <script
           type="application/ld+json"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: static json-ld
           dangerouslySetInnerHTML={{ __html: JSON_LD }}
         />
       </Head>
 
-      <motion.div className="flex flex-1 bg-stone-200">
+      <div className="flex flex-1 bg-stone-200">
         <div className="flex-1 flex justify-center px-6 py-[15vh] overflow-y-auto">
           <LayoutGroup>
             <motion.div
@@ -312,7 +311,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
                 ref={ref}
                 // once the last name is in, let it drop to its own line on
                 // narrow screens instead of overflowing
-                className={`font-bold will-change-transform ${expanded ? "whitespace-normal" : "whitespace-nowrap"}`}
+                className={`will-change-transform ${expanded ? "whitespace-normal" : "whitespace-nowrap"}`}
                 style={{ fontSize: fontSizeRem }}
                 aria-label={`${NAME} ${LAST_NAME}`}
               >
@@ -389,7 +388,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
             </motion.div>
           </LayoutGroup>
         </div>
-      </motion.div>
+      </div>
     </main>
   );
 }

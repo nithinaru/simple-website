@@ -1,4 +1,4 @@
-import { motion, type Variants } from "framer-motion";
+import { motion, type Variants } from "motion/react";
 import React, { useLayoutEffect, useRef, useState } from "react";
 
 const CHARACTER_ANIMATION = {
@@ -14,6 +14,15 @@ const CHARACTER_ANIMATION = {
       ease: [0.2, 0.65, 0.3, 0.9],
     },
   }),
+} as const satisfies Variants;
+
+// a link's underline draws left to right alongside its letters
+const UNDERLINE_ANIMATION = {
+  initial: { scaleX: 0 },
+  animate: {
+    scaleX: 1,
+    transition: { duration: 0.8, ease: [0.2, 0.65, 0.3, 0.9] },
+  },
 } as const satisfies Variants;
 
 type IAnimatedTextProps = {
@@ -103,9 +112,7 @@ const AnimatedText = ({
           rel="noopener noreferrer"
           className="group"
         >
-          {/* a border, not text-decoration: underlines don't reach the
-              inline-block letter spans. runs under the icon too. */}
-          <span className="border-b border-stone-400 group-hover:border-current transition-colors">
+          <span className="relative">
             {renderCharacters(bare)}
             {link.icon ? (
               <motion.span
@@ -116,6 +123,14 @@ const AnimatedText = ({
                 {link.icon}
               </motion.span>
             ) : null}
+            {/* drawn as its own element, not text-decoration (which doesn't
+                reach the inline-block letters), so it can sweep in with them.
+                runs under the icon too. */}
+            <motion.span
+              aria-hidden="true"
+              className="absolute inset-x-0 -bottom-px h-px origin-left bg-stone-400 group-hover:bg-current transition-colors"
+              variants={UNDERLINE_ANIMATION}
+            />
           </span>
         </a>
         {renderCharacters(trailing)}

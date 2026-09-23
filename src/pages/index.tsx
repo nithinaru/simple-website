@@ -40,10 +40,10 @@ const ITEM_HOVER_TRANSITION = {
 
 // precompute preview urls since items are static
 const WORK_PREVIEW_URLS = new Map(
-  WORK_ITEMS.map((item) => [item.slug, getPreviewUrl(item) ?? ""]),
+  WORK_ITEMS.map((item) => [item.slug, getPreviewUrl(item)]),
 );
 const PROJECT_PREVIEW_URLS = new Map(
-  PROJECTS.map((item) => [item.slug, getPreviewUrl(item) ?? ""]),
+  PROJECTS.map((item) => [item.slug, getPreviewUrl(item)]),
 );
 
 type ItemRowProps = {
@@ -81,49 +81,47 @@ const ItemRow = memo(function ItemRow({
   );
 
   const content = (
-      <motion.div
-        className="relative flex flex-col items-start will-change-transform -mx-2 px-2 -my-1 py-1 text-left"
-        initial={ITEM_ANIMATION.initial}
-        animate={ITEM_ANIMATION.animate}
-        transition={{
-          ...ITEM_ANIMATION.transition,
-          delay,
-        }}
-        onMouseEnter={handleMouseEnter}
-      >
-        {isHovered ? (
-          <motion.div
-            layoutId={layoutId}
-            className="absolute inset-0 bg-stone-300/30 border border-stone-300/50 rounded-md"
-            transition={ITEM_HOVER_TRANSITION}
-          />
-        ) : null}
+    <motion.div
+      className="relative flex flex-col items-start will-change-transform -mx-2 px-2 -my-1 py-1 text-left"
+      initial={ITEM_ANIMATION.initial}
+      animate={ITEM_ANIMATION.animate}
+      transition={{
+        ...ITEM_ANIMATION.transition,
+        delay,
+      }}
+      onMouseEnter={handleMouseEnter}
+    >
+      {isHovered ? (
+        <motion.div
+          layoutId={layoutId}
+          className="absolute inset-0 bg-stone-300/30 border border-stone-300/50 rounded-md"
+          transition={ITEM_HOVER_TRANSITION}
+        />
+      ) : null}
 
-        <div className="relative flex items-baseline justify-between gap-2 sm:gap-8 w-full">
-          <div className="flex items-baseline gap-2 min-w-0">
-            <span className="font-display font-bold text-stone-700 truncate">
-              {label}
-            </span>
-            <span className="text-sm text-stone-500 hidden sm:inline">
-              {role}
-            </span>
-          </div>
-          {date ? (
-            <span className="text-sm text-stone-400 whitespace-nowrap hidden sm:inline">
-              {date}
-            </span>
-          ) : null}
+      <div className="relative flex items-baseline justify-between gap-2 sm:gap-8 w-full">
+        <div className="flex items-baseline gap-2 min-w-0">
+          <span className="font-display font-bold text-stone-700 truncate">
+            {label}
+          </span>
+          <span className="text-sm text-stone-500 hidden sm:inline">
+            {role}
+          </span>
         </div>
-
-        <span className="relative text-xs text-stone-500 sm:hidden">
-          {role}
-        </span>
-
-        <span className="relative text-xs text-stone-600">{about}</span>
-        {previewUrl ? (
-          <img src={previewUrl} alt="" className="hidden" fetchPriority="low" />
+        {date ? (
+          <span className="text-sm text-stone-400 whitespace-nowrap hidden sm:inline">
+            {date}
+          </span>
         ) : null}
-      </motion.div>
+      </div>
+
+      <span className="relative text-xs text-stone-500 sm:hidden">{role}</span>
+
+      <span className="relative text-xs text-stone-600">{about}</span>
+      {/* warm the cache so the hover preview shows instantly */}
+      {/* biome-ignore lint/performance/noImgElement: hidden preload, not displayed */}
+      <img src={previewUrl} alt="" className="hidden" fetchPriority="low" />
+    </motion.div>
   );
 
   if (!url) {
@@ -191,7 +189,11 @@ export default function Home() {
     <>
       <SectionHeading text="Experience" />
 
-      <div className="flex flex-col gap-3 mt-3 w-full" onMouseLeave={clearWorkHover}>
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: only clears hover styling */}
+      <div
+        className="flex flex-col gap-3 mt-3 w-full"
+        onMouseLeave={clearWorkHover}
+      >
         {WORK_ITEMS.map((item, i) => (
           <ItemRow
             key={item.slug}
@@ -212,6 +214,7 @@ export default function Home() {
 
       <SectionHeading text="Projects" />
 
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: only clears hover styling */}
       <div
         className="flex flex-col gap-3 mt-3 w-full"
         onMouseLeave={clearProjectHover}

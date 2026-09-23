@@ -1,20 +1,16 @@
 # simple-website
 
-A minimal single-page version of [nithinaruswamy.com](https://nithinaruswamy.com), built with Next.js, Tailwind and TypeScript.
+Source for [nithinaruswamy.com](https://nithinaruswamy.com): a single-page personal site built with Next.js (pages router), Tailwind v4, Motion and TypeScript.
 
-All content lives in [`src/utils/constants.ts`](src/utils/constants.ts) — work, projects, research, patents, awards, skills, interests, travel and media.
+All content — experience, projects, publications, patents and social links — lives in [`src/utils/constants.ts`](src/utils/constants.ts). The intro paragraph and its links are in [`src/pages/_app.tsx`](src/pages/_app.tsx).
 
-### theming
+### how the page works
 
-The palette is generated, not picked from a list. Every page load rolls a random hue and a small chroma value; every surface and text tone in [`src/globals.css`](src/globals.css) derives from those two numbers, keeping the lightness ramp of Tailwind's `stone` scale. That's what makes a random roll look deliberate — one hue, eight consistent tones, plus an off-hue accent for the equalizer.
-
-The roll happens in a blocking inline script in [`src/pages/_document.tsx`](src/pages/_document.tsx) so there's no flash before first paint. To make it calmer or more colourful, change the chroma range there; to bias toward certain hues, constrain the hue line.
-
-### the now-playing pill
-
-The playlist lives in [`scripts/playlist.json`](scripts/playlist.json). Running `node scripts/fetch-artwork.ts` resolves each track's cover art and real duration from the iTunes Search API and regenerates [`src/utils/songs.ts`](src/utils/songs.ts). Cover images are referenced from Apple's CDN by URL, not copied into this repo.
-
-The widget picks a random track on load, then moves through the list from there, looping. Tracks without cover art fall back to a gradient built from the page's generated hue.
+- **Intro animation.** The name cycles through cuts of Redaction (pixel to smooth) while shrinking, then lands on Goudy Bookletter 1911. Once it lands, the last name, intro, social stickers and sections animate in. See `ANIMATION_STEPS` in `_app.tsx`.
+- **Breathing name.** After landing, one random letter per word slowly swells and settles, with its neighbours swelling a little less, mostly slow with the odd quick burst. Goudy only has one weight, so the thickness is an animated same-colour text stroke on a registered CSS property (`--name-stroke` in [`src/globals.css`](src/globals.css)).
+- **Palette.** A fixed warm off-white matched to the favicon (`#f7f1e7`), with text tones on a faintly brown hue. All tones are CSS variables in `globals.css`, mapped onto Tailwind's `stone-*` utilities.
+- **Fonts.** Instrument Sans for body text and Goudy Bookletter 1911 for the name and headings, both via `next/font`; the Redaction cuts used by the intro are self-hosted in `public/fonts` and preloaded in [`src/pages/_document.tsx`](src/pages/_document.tsx).
+- **Hover previews.** Hovering an experience or project row shows a screenshot of its site from `public/images/previews/`.
 
 ### install & run
 
@@ -23,12 +19,14 @@ npm install
 npm run dev
 ```
 
-`npm run dev` and `npm run build` run `scripts/fetch-previews.ts` first, which fetches link-preview screenshots via microlink into `public/images/previews/`. Existing files are skipped.
+`npm run dev` and `npm run build` first run `scripts/fetch-previews.ts`, which fetches any missing link-preview screenshots via Microlink, then `scripts/optimize-previews.mjs`, which converts them to 800px WebP. Only the `.webp` files are committed.
 
 ### deploying
 
-Hosted on Vercel; see [`vercel.json`](vercel.json). The deploy runs `npm run build:ci`, which is `next build` *without* the preview fetch — screenshots are committed, so a deploy never depends on a third-party API. After adding an item to `constants.ts`, run `npm run prebuild` locally and commit the new screenshot.
+Hosted on Vercel; see [`vercel.json`](vercel.json). The deploy runs `npm run build:ci` — plain `next build`, without the preview fetch — so a deploy never depends on a third-party API. After adding an item to `constants.ts`, run `npm run prebuild` locally and commit the new screenshot.
+
+`npm run lint` runs Biome over the whole project.
 
 ### credits
 
-Design and codebase based on [Cody Miller's website](https://looskie.com) ([looskie/website](https://github.com/looskie/website)) — credited in the site footer. The Spotify/Discord presence widget from the original has been removed.
+Originally based on [Cody Miller's website](https://looskie.com) ([looskie/website](https://github.com/looskie/website)).

@@ -1,7 +1,7 @@
-import AnimatedText from "@/components/animated-text";
-import { motion, type MotionNodeAnimationOptions } from "motion/react";
+import { type MotionNodeAnimationOptions, motion } from "motion/react";
 import Head from "next/head";
 import Link from "next/link";
+import AnimatedText from "@/components/animated-text";
 
 const ELEMENT_ANIMATION = {
   initial: {
@@ -30,11 +30,7 @@ export default function NotFound() {
       </Head>
       <div className="flex items-center justify-center bg-stone-200 w-full">
         <div className="flex flex-col items-start">
-          <AnimatedText
-            className="text-6xl font-bold"
-            element="h1"
-            text="404"
-          />
+          <AnimatedText className="text-6xl" element="h1" text="404" />
 
           <motion.p
             className="text-stone-500 mt-2 will-change-[transform,opacity,filter]"
