@@ -365,7 +365,8 @@ export default function App({ Component, pageProps, router }: AppProps) {
                   <AnimatedText
                     text={INTRO}
                     links={INTRO_LINKS}
-                    wordDelay={0.045}
+                    wordDelay={0.03}
+                    lineDelay={0.5}
                     element="p"
                     // w-0 + min-w-full: fill the column without letting the
                     // long line widen it past the rows below

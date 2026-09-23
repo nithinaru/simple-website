@@ -1,5 +1,5 @@
 import { motion, type Variants } from "framer-motion";
-import React from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 
 const CHARACTER_ANIMATION = {
   initial: {
@@ -28,6 +28,11 @@ type IAnimatedTextProps = {
   links?: Record<string, { href: string; icon?: React.ReactNode }>;
   /** seconds between each word starting; keep small for long text */
   wordDelay?: number;
+  /**
+   * reveal wrapped text one line at a time: seconds between each line
+   * starting. wordDelay then staggers words within a line.
+   */
+  lineDelay?: number;
 };
 
 const AnimatedText = ({
@@ -37,7 +42,40 @@ const AnimatedText = ({
   artificialDelay,
   links,
   wordDelay = 0.25,
+  lineDelay,
 }: IAnimatedTextProps) => {
+  const ref = useRef<HTMLElement>(null);
+  // for line mode: [line, position in line] per word, measured before paint.
+  // words stay hidden until it's known.
+  const [layout, setLayout] = useState<Array<[number, number]> | null>(null);
+
+  useLayoutEffect(() => {
+    if (lineDelay === undefined || !ref.current) return;
+    const words = ref.current.querySelectorAll<HTMLElement>("[data-word]");
+    const result: Array<[number, number]> = [];
+    let line = -1;
+    let top = Number.NEGATIVE_INFINITY;
+    let pos = 0;
+    for (const word of words) {
+      // offsetTop ignores the entrance transform, so this is the resting line
+      if (word.offsetTop > top + 2) {
+        line += 1;
+        top = word.offsetTop;
+        pos = 0;
+      }
+      result.push([line, pos]);
+      pos += 1;
+    }
+    setLayout(result);
+  }, [lineDelay]);
+
+  const delayFor = (index: number) => {
+    if (lineDelay === undefined) return index * wordDelay;
+    const [line, pos] = layout?.[index] ?? [0, 0];
+    return line * lineDelay + pos * wordDelay;
+  };
+  const ready = lineDelay === undefined || layout !== null;
+
   const renderCharacters = (chars: string) =>
     [...chars].map((character, index) => (
       <motion.span
@@ -94,12 +132,13 @@ const AnimatedText = ({
     >
       {index > 0 ? " " : null}
       <motion.span
+        data-word
         className="inline-block whitespace-nowrap will-change-transform"
         aria-hidden="true"
         initial="initial"
-        animate="animate"
+        animate={ready ? "animate" : "initial"}
         transition={{
-          delayChildren: index * wordDelay + (artificialDelay ?? 0),
+          delayChildren: delayFor(index) + (artificialDelay ?? 0),
           staggerChildren: 0.025,
         }}
       >
@@ -108,7 +147,7 @@ const AnimatedText = ({
     </React.Fragment>
   ));
 
-  return React.createElement(element, { className }, Children);
+  return React.createElement(element, { className, ref }, Children);
 };
 
 export default AnimatedText;
