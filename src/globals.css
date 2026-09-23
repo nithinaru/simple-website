@@ -276,7 +276,7 @@ a:hover .link-icon {
 }
 
 a:hover .link-icon-plane {
-  animation: plane-takeoff 1.3s cubic-bezier(0.5, 0, 0.3, 1);
+  animation: plane-takeoff 0.7s cubic-bezier(0.5, 0, 0.3, 1);
 }
 
 @keyframes plane-takeoff {

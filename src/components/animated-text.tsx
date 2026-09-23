@@ -104,19 +104,19 @@ const AnimatedText = ({
           className="group"
         >
           {/* a border, not text-decoration: underlines don't reach the
-              inline-block letter spans. kept off the icon. */}
+              inline-block letter spans. runs under the icon too. */}
           <span className="border-b border-stone-400 group-hover:border-current transition-colors">
             {renderCharacters(bare)}
+            {link.icon ? (
+              <motion.span
+                className="inline-block"
+                variants={CHARACTER_ANIMATION}
+                custom={1}
+              >
+                {link.icon}
+              </motion.span>
+            ) : null}
           </span>
-          {link.icon ? (
-            <motion.span
-              className="inline-block"
-              variants={CHARACTER_ANIMATION}
-              custom={1}
-            >
-              {link.icon}
-            </motion.span>
-          ) : null}
         </a>
         {renderCharacters(trailing)}
       </>
