@@ -251,6 +251,12 @@ h3 {
   }
 }
 
+/* goudy only has one weight; a same-colour stroke gives the section
+   headings the heft of a bold cut */
+.section-heading {
+  -webkit-text-stroke: 0.028em currentColor;
+}
+
 /*
  * instrument sans for all body text. `font-display` is the item titles
  * (companies, project and publication names), set a touch tighter.

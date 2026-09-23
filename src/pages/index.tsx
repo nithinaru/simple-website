@@ -158,7 +158,7 @@ const Line = memo(function Line({ delay, children }: LineProps) {
 function SectionHeading({ text }: { text: string }) {
   return (
     <AnimatedText
-      className="text-xl mt-8 font-bold"
+      className="section-heading text-2xl mt-9"
       element="h2"
       text={text}
       artificialDelay={0.3}
