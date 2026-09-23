@@ -69,6 +69,10 @@ const ANIMATION_STEPS = [
 const NAME = "Nithin";
 const LAST_NAME = "Aruswamy";
 
+const INTRO =
+  "Hey, I'm Nithin. I study Operations Research and Mathematics and am currently on a gap year in San Francisco. I enjoy traveling, making ceramics & scrolling on Cosmos.";
+const INTRO_LINKS = { Cosmos: "https://www.cosmos.so/nithinaru" };
+
 // the last name arrives with the rest of the page once the intro has landed
 const LAST_NAME_LETTER_ANIMATION = {
   initial: { opacity: 0, y: "0.2em", filter: "blur(4px)" },
@@ -351,11 +355,16 @@ export default function App({ Component, pageProps, router }: AppProps) {
               {expanded ? (
                 <>
                   <AnimatedText
-                    text="Operations research & mathematics (on leave)"
+                    text={INTRO}
+                    links={INTRO_LINKS}
+                    wordDelay={0.045}
                     element="p"
+                    // w-0 + min-w-full: fill the column without letting the
+                    // long line widen it past the rows below
+                    className="w-0 min-w-full mt-1"
                   />
 
-                  <div className="flex items-center gap-2 mt-1">
+                  <div className="flex items-center gap-2 mt-2">
                     {SOCIALS.map((social, i) => (
                       <motion.a
                         key={social.label}
@@ -381,7 +390,12 @@ export default function App({ Component, pageProps, router }: AppProps) {
               ) : null}
 
               <noscript>
-                <p>Operations research &amp; mathematics (on leave)</p>
+                <p>
+                  Hey, I&apos;m Nithin. I study Operations Research and
+                  Mathematics and am currently on a gap year in San Francisco. I
+                  enjoy traveling, making ceramics &amp; scrolling on{" "}
+                  <a href={INTRO_LINKS.Cosmos}>Cosmos</a>.
+                </p>
                 <nav>
                   {SOCIALS.map((social) => (
                     <a key={social.label} href={social.href}>

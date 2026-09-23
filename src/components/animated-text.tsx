@@ -21,6 +21,10 @@ type IAnimatedTextProps = {
   element: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p" | "span";
   className?: string;
   artificialDelay?: number;
+  /** words to render as links, keyed by the word without trailing punctuation */
+  links?: Record<string, string>;
+  /** seconds between each word starting; keep small for long text */
+  wordDelay?: number;
 };
 
 const AnimatedText = ({
@@ -28,7 +32,45 @@ const AnimatedText = ({
   className,
   text,
   artificialDelay,
+  links,
+  wordDelay = 0.25,
 }: IAnimatedTextProps) => {
+  const renderCharacters = (chars: string) =>
+    [...chars].map((character, index) => (
+      <motion.span
+        // biome-ignore lint/suspicious/noArrayIndexKey: cry harder
+        key={index}
+        className="inline-block"
+        aria-hidden="true"
+        custom={chars.length}
+        variants={CHARACTER_ANIMATION}
+      >
+        {character}
+      </motion.span>
+    ));
+
+  const renderWord = (word: string) => {
+    const [, bare, trailing] = word.match(/^(.*?)([.,!?;:]*)$/) ?? [];
+    const href = links?.[bare];
+    if (!href) return renderCharacters(word);
+
+    return (
+      <>
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          // a border, not text-decoration: underlines don't reach the
+          // inline-block letter spans
+          className="border-b border-stone-400 hover:border-current transition-colors"
+        >
+          {renderCharacters(bare)}
+        </a>
+        {renderCharacters(trailing)}
+      </>
+    );
+  };
+
   const Children = text.split(" ").map((word, index) => (
     <motion.span
       // biome-ignore lint/suspicious/noArrayIndexKey: cry harder
@@ -38,22 +80,11 @@ const AnimatedText = ({
       initial="initial"
       animate="animate"
       transition={{
-        delayChildren: index * 0.25 + (artificialDelay ?? 0),
+        delayChildren: index * wordDelay + (artificialDelay ?? 0),
         staggerChildren: 0.025,
       }}
     >
-      {[...word].map((character, index) => (
-        <motion.span
-          // biome-ignore lint/suspicious/noArrayIndexKey: cry harder
-          key={index}
-          className="inline-block"
-          aria-hidden="true"
-          custom={word.length}
-          variants={CHARACTER_ANIMATION}
-        >
-          {character}
-        </motion.span>
-      ))}
+      {renderWord(word)}
     </motion.span>
   ));
 
