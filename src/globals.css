@@ -167,23 +167,19 @@
 }
 
 /*
- * generated pastel theme.
+ * fixed warm off-white theme, matched to the favicon background (#f7f1e7).
  *
  * every tone is the same hue at a fixed lightness, so the page reads as one
- * palette no matter which hue comes up. lightness is inherited from tailwind's
- * stone ramp (that's the look we're keeping); only hue and chroma are new.
- * chroma stays tiny — the big surfaces get the most tint and it tapers off
- * toward the text tones so type stays readable rather than colourful.
- *
- * the values below are the no-js fallback (neutral, ~ stone). the inline script
- * in _document.tsx overwrites --tone-h / --tone-c before first paint.
+ * palette. lightness is inherited from tailwind's stone ramp; chroma stays
+ * tiny and tapers off toward the text tones so type stays readable rather
+ * than colourful. --tone-200 is the page background, pinned to the favicon.
  */
 :root {
-  --tone-h: 60;
-  --tone-c: 0.004;
+  --tone-h: 80.7;
+  --tone-c: 0.0092;
 
-  --tone-100: oklch(0.97 calc(var(--tone-c) * 1.2) var(--tone-h));
-  --tone-200: oklch(0.923 calc(var(--tone-c) * 1.6) var(--tone-h));
+  --tone-100: oklch(0.975 calc(var(--tone-c) * 1.2) var(--tone-h));
+  --tone-200: #f7f1e7;
   --tone-300: oklch(0.869 calc(var(--tone-c) * 1.6) var(--tone-h));
   --tone-400: oklch(0.709 calc(var(--tone-c) * 1.3) var(--tone-h));
   --tone-500: oklch(0.553 calc(var(--tone-c) * 1.2) var(--tone-h));
@@ -196,9 +192,7 @@
   --tone-accent: oklch(0.62 0.09 calc(var(--tone-h) + 35));
 }
 
-/* `inline` so the utilities emit var(--tone-*) instead of copying the values —
-   that's what lets the runtime script re-theme the whole page by touching two
-   variables. */
+/* `inline` so the utilities emit var(--tone-*) instead of copying the values */
 @theme inline {
   --color-stone-100: var(--tone-100);
   --color-stone-200: var(--tone-200);
