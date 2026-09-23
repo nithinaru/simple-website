@@ -67,6 +67,13 @@ const ANIMATION_STEPS = [
 }>;
 
 const NAME = "Nithin";
+const LAST_NAME = "Aruswamy";
+
+// the last name arrives with the rest of the page once the intro has landed
+const LAST_NAME_LETTER_ANIMATION = {
+  initial: { opacity: 0, y: "0.2em", filter: "blur(4px)" },
+  animate: { opacity: 1, y: 0, filter: "blur(0px)" },
+} as const satisfies MotionNodeAnimationOptions;
 
 const LAST_STEP = ANIMATION_STEPS.length - 1;
 const STEP_INDICES = ANIMATION_STEPS.map((_, i) => i);
@@ -180,6 +187,26 @@ function BreathingName() {
   ));
 }
 
+function LastName() {
+  return [...LAST_NAME].map((letter, i) => (
+    <motion.span
+      // biome-ignore lint/suspicious/noArrayIndexKey: static string
+      key={i}
+      aria-hidden="true"
+      className="inline-block"
+      initial={LAST_NAME_LETTER_ANIMATION.initial}
+      animate={LAST_NAME_LETTER_ANIMATION.animate}
+      transition={{
+        duration: 1,
+        ease: [0.2, 0.65, 0.3, 0.9],
+        delay: 0.15 + i * 0.04,
+      }}
+    >
+      {letter}
+    </motion.span>
+  ));
+}
+
 export default function App({ Component, pageProps, router }: AppProps) {
   const ref = useRef<HTMLHeadingElement>(null);
   const progress = useMotionValue(0);
@@ -274,11 +301,24 @@ export default function App({ Component, pageProps, router }: AppProps) {
               <motion.h1
                 layout
                 ref={ref}
-                className="font-bold whitespace-nowrap will-change-transform"
+                // once the last name is in, let it drop to its own line on
+                // narrow screens instead of overflowing
+                className={`font-bold will-change-transform ${expanded ? "whitespace-normal" : "whitespace-nowrap"}`}
                 style={{ fontSize: fontSizeRem }}
-                aria-label={NAME}
+                aria-label={`${NAME} ${LAST_NAME}`}
               >
-                {expanded ? <BreathingName /> : NAME}
+                {expanded ? (
+                  <>
+                    <span className="whitespace-nowrap">
+                      <BreathingName />
+                    </span>{" "}
+                    <span className="whitespace-nowrap">
+                      <LastName />
+                    </span>
+                  </>
+                ) : (
+                  NAME
+                )}
               </motion.h1>
 
               {expanded ? (
