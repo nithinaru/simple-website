@@ -211,9 +211,9 @@ h3 {
 /*
  * the name slowly swells and thins — modelled on the dia browser hero. dia
  * animates a variable weight axis; goudy bookletter only ships one weight, so
- * the thickness comes from a same-colour text stroke instead. <BreathingName>
- * flips data-breathing on one random letter at a time; the transition does
- * the swell in and the settle back out.
+ * the thickness comes from a same-colour text stroke instead. useBreathing
+ * marks one random letter per word "main" and its neighbours "near"; the
+ * transition does the swell in and the settle back out.
  */
 
 /* registered so it interpolates — the stroke width itself snaps */
@@ -225,11 +225,15 @@ h3 {
 
 .name-letter {
   -webkit-text-stroke: var(--name-stroke) currentColor;
-  transition: --name-stroke 1.4s ease-in-out;
+  transition: --name-stroke 2.2s ease-in-out;
 }
 
-.name-letter[data-breathing] {
-  --name-stroke: 0.065em;
+.name-letter[data-breathing="main"] {
+  --name-stroke: 0.045em;
+}
+
+.name-letter[data-breathing="near"] {
+  --name-stroke: 0.02em;
 }
 
 @media (prefers-reduced-motion: reduce) {

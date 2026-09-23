@@ -121,58 +121,57 @@ const SOCIAL_ICONS: Record<string, React.ReactNode> = {
   Email: <MailIcon />,
 };
 
-// split per letter so each one can breathe on its own (see .name-letter in
-// globals.css). a timer picks one random letter at a time to swell and settle;
-// the next one starts before the last has fully thinned, so at most two are
-// ever mid-breath. never the same letter twice in a row.
-const BREATH_IN_MS = 1400;
-const BREATH_GAP_MIN_MS = 1300;
-const BREATH_GAP_MAX_MS = 2300;
+// each word breathes on its own: a timer swells one random letter at a time
+// (see .name-letter in globals.css), and the letters either side of it swell
+// a little less so the thickness spreads out instead of popping. the next
+// letter starts once the last one begins to settle, never the same one twice.
+const BREATH_IN_MS = 2200;
+const BREATH_PAUSE_MIN_MS = 300;
+const BREATH_PAUSE_MAX_MS = 1300;
 
-function BreathingName() {
-  const [active, setActive] = useState<ReadonlySet<number>>(new Set());
+type Breath = "main" | "near" | undefined;
+
+function useBreathing(length: number, startDelayMs: number) {
+  const [current, setCurrent] = useState(-1);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       return;
     }
 
-    const timers = new Set<ReturnType<typeof setTimeout>>();
-    const later = (fn: () => void, ms: number) => {
-      const t = setTimeout(() => {
-        timers.delete(t);
-        fn();
-      }, ms);
-      timers.add(t);
-    };
-
+    let timer: ReturnType<typeof setTimeout>;
     let last = -1;
+
     const breathe = () => {
-      let i = Math.floor(Math.random() * (NAME.length - 1));
+      let i = Math.floor(Math.random() * (length - 1));
       if (i >= last) i += 1;
       last = i;
+      setCurrent(i);
 
-      setActive((prev) => new Set(prev).add(i));
-      later(() => {
-        setActive((prev) => {
-          const next = new Set(prev);
-          next.delete(i);
-          return next;
-        });
+      timer = setTimeout(() => {
+        setCurrent(-1);
+        timer = setTimeout(
+          breathe,
+          BREATH_PAUSE_MIN_MS +
+            Math.random() * (BREATH_PAUSE_MAX_MS - BREATH_PAUSE_MIN_MS),
+        );
       }, BREATH_IN_MS);
-
-      later(
-        breathe,
-        BREATH_GAP_MIN_MS +
-          Math.random() * (BREATH_GAP_MAX_MS - BREATH_GAP_MIN_MS),
-      );
     };
-    later(breathe, 300);
+    timer = setTimeout(breathe, startDelayMs);
 
-    return () => {
-      for (const t of timers) clearTimeout(t);
-    };
-  }, []);
+    return () => clearTimeout(timer);
+  }, [length, startDelayMs]);
+
+  return (i: number): Breath => {
+    if (current < 0) return undefined;
+    if (i === current) return "main";
+    if (Math.abs(i - current) === 1) return "near";
+    return undefined;
+  };
+}
+
+function FirstName() {
+  const breathOf = useBreathing(NAME.length, 300);
 
   return [...NAME].map((letter, i) => (
     <span
@@ -180,7 +179,7 @@ function BreathingName() {
       key={i}
       aria-hidden="true"
       className="name-letter"
-      data-breathing={active.has(i) || undefined}
+      data-breathing={breathOf(i)}
     >
       {letter}
     </span>
@@ -188,12 +187,16 @@ function BreathingName() {
 }
 
 function LastName() {
+  // start once the letters have finished arriving
+  const breathOf = useBreathing(LAST_NAME.length, 1800);
+
   return [...LAST_NAME].map((letter, i) => (
     <motion.span
       // biome-ignore lint/suspicious/noArrayIndexKey: static string
       key={i}
       aria-hidden="true"
-      className="inline-block"
+      className="inline-block name-letter"
+      data-breathing={breathOf(i)}
       initial={LAST_NAME_LETTER_ANIMATION.initial}
       animate={LAST_NAME_LETTER_ANIMATION.animate}
       transition={{
@@ -310,7 +313,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
                 {expanded ? (
                   <>
                     <span className="whitespace-nowrap">
-                      <BreathingName />
+                      <FirstName />
                     </span>{" "}
                     <span className="whitespace-nowrap">
                       <LastName />
