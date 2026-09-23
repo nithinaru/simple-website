@@ -191,7 +191,7 @@ export default function Home() {
     <>
       <SectionHeading text="Experience" />
 
-      <div className="flex flex-col gap-3 mt-3" onMouseLeave={clearWorkHover}>
+      <div className="flex flex-col gap-3 mt-3 w-full" onMouseLeave={clearWorkHover}>
         {WORK_ITEMS.map((item, i) => (
           <ItemRow
             key={item.slug}
@@ -213,7 +213,7 @@ export default function Home() {
       <SectionHeading text="Projects" />
 
       <div
-        className="flex flex-col gap-3 mt-3"
+        className="flex flex-col gap-3 mt-3 w-full"
         onMouseLeave={clearProjectHover}
       >
         {PROJECTS.map((project, i) => (
@@ -236,7 +236,7 @@ export default function Home() {
 
       <SectionHeading text="Publications" />
 
-      <div className="flex flex-col gap-3 mt-3">
+      <div className="flex flex-col gap-3 mt-3 w-full">
         {PAPERS.map((paper, i) => (
           <Line key={paper.title} delay={0.5 + i * 0.15}>
             <div className="flex flex-col items-start text-left">
