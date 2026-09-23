@@ -189,7 +189,7 @@ export default function Home() {
 
   return (
     <>
-      <SectionHeading text="experience" />
+      <SectionHeading text="Experience" />
 
       <div className="flex flex-col gap-3 mt-3" onMouseLeave={clearWorkHover}>
         {WORK_ITEMS.map((item, i) => (
@@ -210,7 +210,7 @@ export default function Home() {
         ))}
       </div>
 
-      <SectionHeading text="projects" />
+      <SectionHeading text="Projects" />
 
       <div
         className="flex flex-col gap-3 mt-3"
@@ -233,7 +233,7 @@ export default function Home() {
         ))}
       </div>
 
-      <SectionHeading text="publications" />
+      <SectionHeading text="Publications" />
 
       <div className="flex flex-col gap-3 mt-3">
         {PAPERS.map((paper, i) => (
@@ -267,7 +267,7 @@ export default function Home() {
                 </span>
               </div>
               <span className="text-xs text-stone-600">
-                patent {patent.number}
+                Patent {patent.number}
               </span>
             </div>
           </Line>

@@ -70,7 +70,7 @@ const ANIMATION_STEPS = [
   size: number;
 }>;
 
-const NAME = "nithin";
+const NAME = "Nithin";
 
 const LAST_STEP = ANIMATION_STEPS.length - 1;
 const STEP_INDICES = ANIMATION_STEPS.map((_, i) => i);
@@ -288,7 +288,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
               {expanded ? (
                 <>
                   <AnimatedText
-                    text="operations research & mathematics (on leave)"
+                    text="Operations research & mathematics (on leave)"
                     element="p"
                   />
 
@@ -318,7 +318,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
               ) : null}
 
               <noscript>
-                <p>operations research &amp; mathematics (on leave)</p>
+                <p>Operations research &amp; mathematics (on leave)</p>
                 <nav>
                   {SOCIALS.map((social) => (
                     <a key={social.label} href={social.href}>
@@ -327,7 +327,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
                   ))}
                 </nav>
 
-                <h2>experience</h2>
+                <h2>Experience</h2>
                 {WORK_ITEMS.map((item) => (
                   <div key={item.slug}>
                     <a href={item.url}>
@@ -338,7 +338,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
                   </div>
                 ))}
 
-                <h2>projects</h2>
+                <h2>Projects</h2>
                 {PROJECTS.map((project) => (
                   <div key={project.slug}>
                     <a href={project.url}>

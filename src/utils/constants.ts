@@ -98,7 +98,7 @@ export const EDUCATION: readonly EducationItem[] = [
     slug: "uc-berkeley",
     degree: "B.A. Operations Research & Mathematics",
     location: "Berkeley, CA",
-    about: "berkeley, ca",
+    about: "Berkeley, CA",
     url: "https://www.berkeley.edu",
   },
 ];
@@ -107,46 +107,46 @@ export const WORK_ITEMS: readonly WorkItem[] = [
   {
     company: "UC Davis GSM",
     slug: "uc-davis-gsm",
-    role: "operations researcher",
-    date: "may 2026 — present",
+    role: "Operations Researcher",
+    date: "May 2026 — Present",
     about:
-      "donor allocation framework across 500k+ records to improve outreach ROI",
+      "Donor allocation framework across 500k+ records to improve outreach ROI",
     url: "https://gsm.ucdavis.edu",
   },
   {
     company: "UC Berkeley Haas",
     slug: "berkeley-haas-bbay",
-    role: "teacher assistant",
-    date: "sep 2025 — may 2026",
+    role: "Teacher Assistant",
+    date: "Sep 2025 — May 2026",
     about:
-      "guided student founders launching ventures at the Business Academy for Youth",
+      "Guided student founders launching ventures at the Business Academy for Youth",
     url: "https://haas.berkeley.edu/business-academy/careers/instructors/",
   },
   {
     company: "UC Irvine EECS",
     slug: "uc-irvine-eecs",
-    role: "machine learning researcher",
-    date: "aug 2025 — dec 2025",
+    role: "Machine Learning Researcher",
+    date: "Aug 2025 — Dec 2025",
     about:
-      "novel computer vision pipeline for fabric categorization and wear prediction",
+      "Novel computer vision pipeline for fabric categorization and wear prediction",
     url: "https://www.xia-lab.com/team",
   },
   {
     company: "Gamr",
     slug: "gamr",
-    role: "product engineer",
-    date: "jul 2024 — feb 2026",
+    role: "Product Engineer",
+    date: "Jul 2024 — Feb 2026",
     about:
-      "built AMA, an AI career guide for gamers at Africa's #1 gaming platform",
+      "Built AMA, an AI career guide for gamers at Africa's #1 gaming platform",
     url: "https://www.gamr.africa/",
   },
   {
     company: "Robolabs",
     slug: "robolabs",
-    role: "robotics instructor",
-    date: "jun 2023 — nov 2025",
+    role: "Robotics Instructor",
+    date: "Jun 2023 — Nov 2025",
     about:
-      "mentored 10+ middle school teams and ran logistics for VEX at UC Berkeley",
+      "Mentored 10+ middle school teams and ran logistics for VEX at UC Berkeley",
     url: "https://www.robolabs.org/",
   },
 ];
@@ -155,44 +155,44 @@ export const PROJECTS: readonly Project[] = [
   {
     name: "Priceflag",
     slug: "priceflag",
-    role: "co-founder",
-    about: "simulate & safely roll out price changes",
+    role: "Co-Founder",
+    about: "Simulate & safely roll out price changes",
     url: "https://priceflag.org/",
   },
   {
     name: "Tarsole (fka Therapeuo)",
     slug: "therapeuo",
-    role: "co-founder",
-    about: "building the world's first mass-market smart insole",
+    role: "Co-Founder",
+    about: "Building the world's first mass-market smart insole",
     url: "https://therapeuo.xyz/",
     previewWaitMs: 4000,
   },
   {
     name: "Jet-Set Teen",
     slug: "jet-set-teen",
-    role: "author",
-    about: "explored 50+ countries, Amazon #1 New Release in Travel Guides",
+    role: "Author",
+    about: "Explored 50+ countries, Amazon #1 New Release in Travel Guides",
     url: "https://www.amazon.com/Jet-Set-Teen-International-Travels-Budgeting/dp/B0DF6VKC18",
   },
   {
     name: "OneDay",
     slug: "oneday-app",
-    role: "founder",
-    about: "productivity iOS app, 5,000+ users across 30 countries",
+    role: "Founder",
+    about: "Productivity iOS app, 5,000+ users across 30 countries",
     url: "https://apps.apple.com/us/app/oneday-by-nithin-aruswamy/id6755661127",
   },
   {
     name: "Terran",
     slug: "terran",
-    role: "co-founder",
-    about: "autonomous farming system for efficient micro-agriculture",
+    role: "Co-Founder",
+    about: "Autonomous farming system for efficient micro-agriculture",
     url: "https://youtu.be/HTlI9NxZe-g?si=V1cE4Rpiqy2UMVoT",
   },
   {
     name: "Truffle",
     slug: "truffle",
-    role: "creator",
-    about: "a natural language optimizer for operations research problems",
+    role: "Creator",
+    about: "A natural language optimizer for operations research problems",
     url: "https://github.com/nithinaru/Truffle",
   },
 ];
@@ -237,7 +237,7 @@ export const PATENTS: readonly Patent[] = [
     number: "63/742,004",
     title: "Sustainable Harvesting and Integrated Efficient Land Defense",
     year: "2023",
-    status: "granted",
+    status: "Granted",
   },
 ];
 
@@ -257,7 +257,7 @@ export const AWARDS: readonly Award[] = [
 
 export const SKILLS: readonly SkillGroup[] = [
   {
-    title: "engineering",
+    title: "Engineering",
     items: [
       "iOS App Development",
       "Autonomous Systems",
@@ -268,7 +268,7 @@ export const SKILLS: readonly SkillGroup[] = [
     ],
   },
   {
-    title: "systems",
+    title: "Systems",
     items: [
       "Embedded Systems",
       "Sensor Integration",
@@ -277,15 +277,15 @@ export const SKILLS: readonly SkillGroup[] = [
     ],
   },
   {
-    title: "design",
+    title: "Design",
     items: ["UI/UX Design", "Hardware Prototyping", "Human-Centric Design"],
   },
   {
-    title: "tools",
+    title: "Tools",
     items: ["Nvidia Jetson", "CAD", "Xcode", "Figma", "GitHub", "Claude Code"],
   },
   {
-    title: "languages",
+    title: "Languages",
     items: ["Swift", "Java", "Python", "R", "C++"],
   },
 ];
@@ -301,13 +301,13 @@ export const INTERESTS: readonly string[] = [
 
 export const MEDIA: readonly MediaGroup[] = [
   {
-    title: "books",
+    title: "Books",
     items: [
       {
         title: "Dune",
         author: "Frank Herbert",
         year: "1965",
-        note: "currently reading",
+        note: "Currently reading",
       },
       { title: "Build", author: "Tony Fadell", year: "2022" },
       { title: "Meditations", author: "Marcus Aurelius", year: "170 CE" },
@@ -320,7 +320,7 @@ export const MEDIA: readonly MediaGroup[] = [
     ],
   },
   {
-    title: "films",
+    title: "Films",
     items: [
       { title: "In Whose Name?", author: "Nico Ballesteros", year: "2025" },
       {
@@ -334,13 +334,13 @@ export const MEDIA: readonly MediaGroup[] = [
     ],
   },
   {
-    title: "albums",
+    title: "Albums",
     items: [
       {
         title: "Yeezus",
         author: "Kanye West",
         year: "2013",
-        note: "on rotation",
+        note: "On rotation",
       },
       { title: "Jackman.", author: "Jack Harlow", year: "2023" },
       { title: "Honestly, Nevermind", author: "Drake", year: "2022" },

@@ -42,7 +42,7 @@ export default function NotFound() {
             initial={ELEMENT_ANIMATION.initial}
             transition={ELEMENT_ANIMATION.transition}
           >
-            this page doesn't exist
+            This page doesn't exist
           </motion.p>
 
           <motion.div
@@ -56,7 +56,7 @@ export default function NotFound() {
               href="/"
               className="text-sm text-stone-400 hover:text-stone-600 mt-4 inline-block"
             >
-              go home
+              Go home
             </Link>
           </motion.div>
         </div>
