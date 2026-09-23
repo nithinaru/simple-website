@@ -119,18 +119,57 @@ const SOCIAL_ICONS: Record<string, React.ReactNode> = {
 };
 
 // split per letter so each one can breathe on its own (see .name-letter in
-// globals.css). every letter gets its own random period and starting offset,
-// so they drift in and out of step instead of rolling left to right. rolled
-// once per mount; this only renders client-side after the intro, so there is
-// no hydration mismatch to worry about.
+// globals.css). a timer picks one random letter at a time to swell and settle;
+// the next one starts before the last has fully thinned, so at most two are
+// ever mid-breath. never the same letter twice in a row.
+const BREATH_IN_MS = 1400;
+const BREATH_GAP_MIN_MS = 1300;
+const BREATH_GAP_MAX_MS = 2300;
+
 function BreathingName() {
-  const [timings] = useState(() =>
-    [...NAME].map(() => ({
-      "--dur": `${(2.4 + Math.random() * 2.6).toFixed(2)}s`,
-      "--delay": `${(-Math.random() * 5).toFixed(2)}s`,
-      "--pulse-delay": `${(Math.random() * 0.5).toFixed(2)}s`,
-    })),
-  );
+  const [active, setActive] = useState<ReadonlySet<number>>(new Set());
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
+    const timers = new Set<ReturnType<typeof setTimeout>>();
+    const later = (fn: () => void, ms: number) => {
+      const t = setTimeout(() => {
+        timers.delete(t);
+        fn();
+      }, ms);
+      timers.add(t);
+    };
+
+    let last = -1;
+    const breathe = () => {
+      let i = Math.floor(Math.random() * (NAME.length - 1));
+      if (i >= last) i += 1;
+      last = i;
+
+      setActive((prev) => new Set(prev).add(i));
+      later(() => {
+        setActive((prev) => {
+          const next = new Set(prev);
+          next.delete(i);
+          return next;
+        });
+      }, BREATH_IN_MS);
+
+      later(
+        breathe,
+        BREATH_GAP_MIN_MS +
+          Math.random() * (BREATH_GAP_MAX_MS - BREATH_GAP_MIN_MS),
+      );
+    };
+    later(breathe, 300);
+
+    return () => {
+      for (const t of timers) clearTimeout(t);
+    };
+  }, []);
 
   return [...NAME].map((letter, i) => (
     <span
@@ -138,7 +177,7 @@ function BreathingName() {
       key={i}
       aria-hidden="true"
       className="name-letter"
-      style={timings[i] as React.CSSProperties}
+      data-breathing={active.has(i) || undefined}
     >
       {letter}
     </span>
