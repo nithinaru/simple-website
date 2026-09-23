@@ -1,12 +1,6 @@
 import AnimatedText from "@/components/animated-text";
-import {
-  GitHubIcon,
-  GoogleScholarIcon,
-  LinkedInIcon,
-  MailIcon,
-  PlaneIcon,
-  SparkleIcon,
-} from "@/components/icons";
+import { PlaneIcon, SparkleIcon } from "@/components/icons";
+import { SocialStickers } from "@/components/social-stickers";
 import { PROJECTS, SOCIALS, WORK_ITEMS } from "@/utils/constants";
 import "@/globals.css";
 import {
@@ -108,30 +102,6 @@ const JSON_LD = JSON.stringify({
     "https://www.linkedin.com/in/aruswamy",
   ],
 });
-
-const SOCIAL_ANIMATION = {
-  initial: {
-    opacity: 0,
-    y: 5,
-    filter: "blur(4px)",
-  },
-  animate: {
-    opacity: 1,
-    y: 0,
-    filter: "blur(0px)",
-  },
-  transition: {
-    duration: 1,
-    ease: [0.2, 0.65, 0.3, 0.9],
-  },
-} as const satisfies MotionNodeAnimationOptions;
-
-const SOCIAL_ICONS: Record<string, React.ReactNode> = {
-  GitHub: <GitHubIcon />,
-  "Google Scholar": <GoogleScholarIcon />,
-  LinkedIn: <LinkedInIcon />,
-  Email: <MailIcon />,
-};
 
 // each word breathes on its own: a timer swells one random letter at a time
 // (see .name-letter in globals.css), and the letters either side of it swell
@@ -373,26 +343,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
                     className="w-0 min-w-full mt-1"
                   />
 
-                  <div className="flex items-center gap-2 mt-2">
-                    {SOCIALS.map((social, i) => (
-                      <motion.a
-                        key={social.label}
-                        href={social.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label={social.label}
-                        className="text-stone-400 hover:text-stone-600 transition-colors"
-                        initial={SOCIAL_ANIMATION.initial}
-                        animate={SOCIAL_ANIMATION.animate}
-                        transition={{
-                          ...SOCIAL_ANIMATION.transition,
-                          delay: 0.3 + i * 0.1,
-                        }}
-                      >
-                        {SOCIAL_ICONS[social.label]}
-                      </motion.a>
-                    ))}
-                  </div>
+                  <SocialStickers />
 
                   <Component {...pageProps} />
                 </>
