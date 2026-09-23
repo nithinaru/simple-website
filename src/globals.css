@@ -186,10 +186,6 @@
   --tone-600: oklch(0.444 calc(var(--tone-c) * 1.1) var(--tone-h));
   --tone-700: oklch(0.374 var(--tone-c) var(--tone-h));
   --tone-800: oklch(0.268 calc(var(--tone-c) * 0.9) var(--tone-h));
-
-  /* the one saturated element (the equalizer), nudged off-hue so it reads as
-     an accent instead of another shade of the background */
-  --tone-accent: oklch(0.62 0.09 calc(var(--tone-h) + 35));
 }
 
 /* `inline` so the utilities emit var(--tone-*) instead of copying the values */
@@ -202,7 +198,6 @@
   --color-stone-600: var(--tone-600);
   --color-stone-700: var(--tone-700);
   --color-stone-800: var(--tone-800);
-  --color-green-500: var(--tone-accent);
 }
 
 h1,
