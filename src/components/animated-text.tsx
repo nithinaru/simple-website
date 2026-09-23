@@ -85,19 +85,27 @@ const AnimatedText = ({
   };
   const ready = lineDelay === undefined || layout !== null;
 
+  // the animated letters are hidden from assistive tech and a plain copy of
+  // the text is read instead, so screen readers and agents get whole words
+  // (and the links stay reachable rather than buried in aria-hidden)
   const renderCharacters = (chars: string) =>
-    [...chars].map((character, index) => (
-      <motion.span
-        // biome-ignore lint/suspicious/noArrayIndexKey: cry harder
-        key={index}
-        className="inline-block"
-        aria-hidden="true"
-        custom={chars.length}
-        variants={CHARACTER_ANIMATION}
-      >
-        {character}
-      </motion.span>
-    ));
+    chars ? (
+      <>
+        <span className="sr-only">{chars}</span>
+        {[...chars].map((character, index) => (
+          <motion.span
+            // biome-ignore lint/suspicious/noArrayIndexKey: cry harder
+            key={index}
+            className="inline-block"
+            aria-hidden="true"
+            custom={chars.length}
+            variants={CHARACTER_ANIMATION}
+          >
+            {character}
+          </motion.span>
+        ))}
+      </>
+    ) : null;
 
   const renderWord = (word: string) => {
     const [, bare, trailing] = word.match(/^(.*?)([.,!?;:]*)$/) ?? [];
@@ -149,7 +157,6 @@ const AnimatedText = ({
       <motion.span
         data-word
         className="inline-block whitespace-nowrap will-change-transform"
-        aria-hidden="true"
         initial="initial"
         animate={ready ? "animate" : "initial"}
         transition={{

@@ -223,7 +223,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
   const fontSizeRem = useTransform(
     fontSize,
     (v) =>
-      `clamp(${(v * 0.3).toFixed(2)}rem, ${(v * 3.5).toFixed(2)}vw, ${v}rem)`,
+      `clamp(${(v * 0.3).toFixed(2)}rem, ${(v * 2.9).toFixed(2)}vw, ${v}rem)`,
   );
 
   useMotionValueEvent(spring, "change", (v) => {
@@ -309,9 +309,9 @@ export default function App({ Component, pageProps, router }: AppProps) {
                 // scaling — visibly stretching the first name
                 layout="position"
                 ref={ref}
-                // once the last name is in, let it drop to its own line on
-                // narrow screens instead of overflowing
-                className={`will-change-transform ${expanded ? "whitespace-normal" : "whitespace-nowrap"}`}
+                // the vw term above is sized so the full name fits on one
+                // line even on the narrowest phones
+                className="will-change-transform whitespace-nowrap"
                 style={{ fontSize: fontSizeRem }}
                 aria-label={`${NAME} ${LAST_NAME}`}
               >

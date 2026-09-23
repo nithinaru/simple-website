@@ -2,7 +2,9 @@
 
 /*
  * redaction, only the cuts the intro animation steps through (see
- * ANIMATION_STEPS in _app.tsx). all are preloaded in _document.tsx.
+ * ANIMATION_STEPS in _app.tsx). all are preloaded in _document.tsx, so
+ * each file is subset to just the letters of "Nithin" (the only text they
+ * ever render) to keep that preload tiny.
  */
 @font-face {
   font-family: "Redaction";
@@ -82,7 +84,7 @@
   --ink-c: 0.016;
 
   --tone-400: oklch(0.709 var(--ink-c) var(--ink-h));
-  --tone-500: oklch(0.553 var(--ink-c) var(--ink-h));
+  --tone-500: oklch(0.5 var(--ink-c) var(--ink-h));
   --tone-600: oklch(0.444 var(--ink-c) var(--ink-h));
   --tone-700: oklch(0.374 var(--ink-c) var(--ink-h));
   --tone-800: oklch(0.268 var(--ink-c) var(--ink-h));
