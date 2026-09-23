@@ -96,11 +96,23 @@ const JSON_LD = JSON.stringify({
   name: "Nithin Aruswamy",
   url: SITE_URL,
   jobTitle: "Operations Researcher & Student",
+  description: SITE_DESCRIPTION,
+  // every profile and site that is Nithin's, so search engines can tie them
+  // to the one person
   sameAs: [
+    "https://www.linkedin.com/in/aruswamy",
     "https://github.com/nithinaru",
     "https://scholar.google.com/citations?user=jqQkW0AAAAAJ&hl=en&oi=ao",
-    "https://www.linkedin.com/in/aruswamy",
+    "https://x.com/nithinaru",
+    "https://www.cosmos.so/nithinaru",
+    "https://travel.nithinaruswamy.com/",
   ],
+  workExample: {
+    "@type": "Book",
+    name: "Jet-Set Teen",
+    url: "https://www.amazon.com/dp/B0DF68HLGD",
+    author: { "@type": "Person", name: "Nithin Aruswamy" },
+  },
 });
 
 // each word breathes on its own: a timer swells one random letter at a time
