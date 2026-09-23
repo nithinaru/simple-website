@@ -72,7 +72,7 @@ const NAME = "Nithin";
 const LAST_NAME = "Aruswamy";
 
 const INTRO =
-  "Hey, I'm Nithin. I study Operations Research and Mathematics and currently on a gap year in San Francisco. I enjoy traveling, making ceramics & scrolling on Cosmos.";
+  "Hey, I'm Nithin. I study Operations Research & Mathematics and currently on a gap year in San Francisco. I enjoy traveling, making ceramics & scrolling on Cosmos.";
 const INTRO_LINKS = {
   traveling: {
     href: "https://travel.nithinaruswamy.com/",
@@ -400,7 +400,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
 
               <noscript>
                 <p>
-                  Hey, I&apos;m Nithin. I study Operations Research and
+                  Hey, I&apos;m Nithin. I study Operations Research &amp;
                   Mathematics and currently on a gap year in San Francisco. I
                   enjoy <a href={INTRO_LINKS.traveling.href}>traveling</a>,
                   making ceramics &amp; scrolling on{" "}
