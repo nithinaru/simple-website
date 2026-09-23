@@ -123,16 +123,23 @@ const SOCIAL_ICONS: Record<string, React.ReactNode> = {
 
 // each word breathes on its own: a timer swells one random letter at a time
 // (see .name-letter in globals.css), and the letters either side of it swell
-// a little less so the thickness spreads out instead of popping. the next
-// letter starts once the last one begins to settle, never the same one twice.
-const BREATH_IN_MS = 2200;
-const BREATH_PAUSE_MIN_MS = 300;
-const BREATH_PAUSE_MAX_MS = 1300;
+// a little less so it reads as one soft bulge. the next letter only starts
+// once the last has mostly settled, so there's only ever one bulge. mostly
+// slow, with the occasional burst of two or three quick breaths.
+const SLOW_MS = [2200, 3200] as const;
+const FAST_MS = [550, 850] as const;
+// how far into the previous letter's settle the next one starts
+const OVERLAP = 0.75;
+const BURST_CHANCE = 0.22;
+
+const between = ([min, max]: readonly [number, number]) =>
+  min + Math.random() * (max - min);
 
 type Breath = "main" | "near" | undefined;
 
 function useBreathing(length: number, startDelayMs: number) {
   const [current, setCurrent] = useState(-1);
+  const [durationMs, setDurationMs] = useState(SLOW_MS[0]);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -141,37 +148,49 @@ function useBreathing(length: number, startDelayMs: number) {
 
     let timer: ReturnType<typeof setTimeout>;
     let last = -1;
+    let burstLeft = 0;
 
     const breathe = () => {
+      if (burstLeft === 0 && Math.random() < BURST_CHANCE) {
+        burstLeft = 2 + Math.floor(Math.random() * 2);
+      }
+      const fast = burstLeft > 0;
+      if (fast) burstLeft -= 1;
+      const duration = between(fast ? FAST_MS : SLOW_MS);
+
       let i = Math.floor(Math.random() * (length - 1));
       if (i >= last) i += 1;
       last = i;
+      setDurationMs(duration);
       setCurrent(i);
 
       timer = setTimeout(() => {
         setCurrent(-1);
-        timer = setTimeout(
-          breathe,
-          BREATH_PAUSE_MIN_MS +
-            Math.random() * (BREATH_PAUSE_MAX_MS - BREATH_PAUSE_MIN_MS),
-        );
-      }, BREATH_IN_MS);
+        timer = setTimeout(breathe, duration * OVERLAP);
+      }, duration);
     };
     timer = setTimeout(breathe, startDelayMs);
 
     return () => clearTimeout(timer);
   }, [length, startDelayMs]);
 
-  return (i: number): Breath => {
+  const breathOf = (i: number): Breath => {
     if (current < 0) return undefined;
     if (i === current) return "main";
     if (Math.abs(i - current) === 1) return "near";
     return undefined;
   };
+
+  // the transition runs at the current breath's pace, in and back out
+  const style = {
+    "--breath-ms": `${Math.round(durationMs)}ms`,
+  } as React.CSSProperties;
+
+  return { breathOf, style };
 }
 
 function FirstName() {
-  const breathOf = useBreathing(NAME.length, 300);
+  const { breathOf, style } = useBreathing(NAME.length, 300);
 
   return [...NAME].map((letter, i) => (
     <span
@@ -180,6 +199,7 @@ function FirstName() {
       aria-hidden="true"
       className="name-letter"
       data-breathing={breathOf(i)}
+      style={style}
     >
       {letter}
     </span>
@@ -188,7 +208,7 @@ function FirstName() {
 
 function LastName() {
   // start once the letters have finished arriving
-  const breathOf = useBreathing(LAST_NAME.length, 1800);
+  const { breathOf, style } = useBreathing(LAST_NAME.length, 1800);
 
   return [...LAST_NAME].map((letter, i) => (
     <motion.span
@@ -197,6 +217,7 @@ function LastName() {
       aria-hidden="true"
       className="inline-block name-letter"
       data-breathing={breathOf(i)}
+      style={style}
       initial={LAST_NAME_LETTER_ANIMATION.initial}
       animate={LAST_NAME_LETTER_ANIMATION.animate}
       transition={{

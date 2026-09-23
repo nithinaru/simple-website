@@ -234,7 +234,7 @@ h3 {
 
 .name-letter {
   -webkit-text-stroke: var(--name-stroke) currentColor;
-  transition: --name-stroke 2.2s ease-in-out;
+  transition: --name-stroke var(--breath-ms, 2200ms) ease-in-out;
 }
 
 .name-letter[data-breathing="main"] {
