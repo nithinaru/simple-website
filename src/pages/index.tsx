@@ -223,6 +223,7 @@ export default function Home() {
             label={project.name}
             role={project.role}
             about={project.about}
+            date={project.date}
             url={project.url}
             isHovered={hoveredProject?.id === project.name}
             layoutId="project-hover"

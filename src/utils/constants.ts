@@ -25,6 +25,7 @@ export type Project = {
   name: string;
   slug: string;
   role: string;
+  date?: string;
   about: string;
   url: string;
   image?: string;
@@ -116,7 +117,7 @@ export const WORK_ITEMS: readonly WorkItem[] = [
   {
     company: "UC Berkeley Haas",
     slug: "berkeley-haas-bbay",
-    role: "Teacher Assistant",
+    role: "Teaching Assistant",
     date: "Sep 2025 — May 2026",
     about:
       "Guided student founders launching ventures at the Business Academy for Youth",
@@ -156,6 +157,7 @@ export const PROJECTS: readonly Project[] = [
     name: "Priceflag",
     slug: "priceflag",
     role: "Co-Founder",
+    date: "Present",
     about: "Simulate & safely roll out price changes",
     url: "https://priceflag.org/",
   },
