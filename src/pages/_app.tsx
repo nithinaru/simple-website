@@ -4,6 +4,8 @@ import {
   GoogleScholarIcon,
   LinkedInIcon,
   MailIcon,
+  PlaneIcon,
+  SparkleIcon,
 } from "@/components/icons";
 import { PROJECTS, SOCIALS, WORK_ITEMS } from "@/utils/constants";
 import "@/globals.css";
@@ -71,7 +73,13 @@ const LAST_NAME = "Aruswamy";
 
 const INTRO =
   "Hey, I'm Nithin. I study Operations Research and Mathematics and am currently on a gap year in San Francisco. I enjoy traveling, making ceramics & scrolling on Cosmos.";
-const INTRO_LINKS = { Cosmos: "https://www.cosmos.so/nithinaru" };
+const INTRO_LINKS = {
+  traveling: {
+    href: "https://travel.nithinaruswamy.com/",
+    icon: <PlaneIcon />,
+  },
+  Cosmos: { href: "https://www.cosmos.so/nithinaru", icon: <SparkleIcon /> },
+};
 
 // the last name arrives with the rest of the page once the intro has landed
 const LAST_NAME_LETTER_ANIMATION = {
@@ -393,8 +401,9 @@ export default function App({ Component, pageProps, router }: AppProps) {
                 <p>
                   Hey, I&apos;m Nithin. I study Operations Research and
                   Mathematics and am currently on a gap year in San Francisco. I
-                  enjoy traveling, making ceramics &amp; scrolling on{" "}
-                  <a href={INTRO_LINKS.Cosmos}>Cosmos</a>.
+                  enjoy <a href={INTRO_LINKS.traveling.href}>traveling</a>,
+                  making ceramics &amp; scrolling on{" "}
+                  <a href={INTRO_LINKS.Cosmos.href}>Cosmos</a>.
                 </p>
                 <nav>
                   {SOCIALS.map((social) => (

@@ -21,8 +21,11 @@ type IAnimatedTextProps = {
   element: "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p" | "span";
   className?: string;
   artificialDelay?: number;
-  /** words to render as links, keyed by the word without trailing punctuation */
-  links?: Record<string, string>;
+  /**
+   * words to render as links, keyed by the word without trailing punctuation.
+   * an optional icon sits after the word, inside the link.
+   */
+  links?: Record<string, { href: string; icon?: React.ReactNode }>;
   /** seconds between each word starting; keep small for long text */
   wordDelay?: number;
 };
@@ -51,20 +54,31 @@ const AnimatedText = ({
 
   const renderWord = (word: string) => {
     const [, bare, trailing] = word.match(/^(.*?)([.,!?;:]*)$/) ?? [];
-    const href = links?.[bare];
-    if (!href) return renderCharacters(word);
+    const link = links?.[bare];
+    if (!link) return renderCharacters(word);
 
     return (
       <>
         <a
-          href={href}
+          href={link.href}
           target="_blank"
           rel="noopener noreferrer"
-          // a border, not text-decoration: underlines don't reach the
-          // inline-block letter spans
-          className="border-b border-stone-400 hover:border-current transition-colors"
+          className="group"
         >
-          {renderCharacters(bare)}
+          {/* a border, not text-decoration: underlines don't reach the
+              inline-block letter spans. kept off the icon. */}
+          <span className="border-b border-stone-400 group-hover:border-current transition-colors">
+            {renderCharacters(bare)}
+          </span>
+          {link.icon ? (
+            <motion.span
+              className="inline-block"
+              variants={CHARACTER_ANIMATION}
+              custom={1}
+            >
+              {link.icon}
+            </motion.span>
+          ) : null}
         </a>
         {renderCharacters(trailing)}
       </>
