@@ -131,6 +131,19 @@ h3 {
 .name-letter {
   -webkit-text-stroke: var(--name-stroke) currentColor;
   transition: --name-stroke var(--breath-ms, 2200ms) ease-in-out;
+  /* one quick left-to-right burst after load; each letter's delay is set
+     inline, and the runs overlap so neighbours swell together */
+  animation: name-wave var(--wave-ms, 600ms) ease-in-out var(--wave-delay, 0ms);
+}
+
+@keyframes name-wave {
+  0%,
+  100% {
+    --name-stroke: 0px;
+  }
+  45% {
+    --name-stroke: 0.05em;
+  }
 }
 
 .name-letter[data-breathing="main"] {
@@ -144,6 +157,7 @@ h3 {
 @media (prefers-reduced-motion: reduce) {
   .name-letter {
     transition: none;
+    animation: none;
   }
 }
 

@@ -126,6 +126,22 @@ const FAST_MS = [550, 850] as const;
 const OVERLAP = 0.75;
 const BURST_CHANCE = 0.22;
 
+// once the name has arrived, a single wave runs left to right across both
+// words (see .name-letter in globals.css); breathing waits until it's done
+const WAVE_START_MS = 3500;
+const WAVE_STEP_MS = 55;
+const WAVE_LETTER_MS = 600;
+const WAVE_END_MS =
+  WAVE_START_MS +
+  (NAME.length + LAST_NAME.length) * WAVE_STEP_MS +
+  WAVE_LETTER_MS;
+
+const waveStyle = (i: number) =>
+  ({
+    "--wave-delay": `${WAVE_START_MS + i * WAVE_STEP_MS}ms`,
+    "--wave-ms": `${WAVE_LETTER_MS}ms`,
+  }) as React.CSSProperties;
+
 const between = ([min, max]: readonly [number, number]) =>
   min + Math.random() * (max - min);
 
@@ -184,7 +200,7 @@ function useBreathing(length: number, startDelayMs: number) {
 }
 
 function FirstName() {
-  const { breathOf, style } = useBreathing(NAME.length, 300);
+  const { breathOf, style } = useBreathing(NAME.length, WAVE_END_MS);
 
   return [...NAME].map((letter, i) => (
     <span
@@ -193,7 +209,7 @@ function FirstName() {
       aria-hidden="true"
       className="name-letter"
       data-breathing={breathOf(i)}
-      style={style}
+      style={{ ...style, ...waveStyle(i) }}
     >
       {letter}
     </span>
@@ -201,8 +217,10 @@ function FirstName() {
 }
 
 function LastName() {
-  // start once the letters have finished arriving
-  const { breathOf, style } = useBreathing(LAST_NAME.length, 1800);
+  const { breathOf, style } = useBreathing(
+    LAST_NAME.length,
+    WAVE_END_MS + 1500,
+  );
 
   return [...LAST_NAME].map((letter, i) => (
     <motion.span
@@ -211,7 +229,7 @@ function LastName() {
       aria-hidden="true"
       className="inline-block name-letter"
       data-breathing={breathOf(i)}
-      style={style}
+      style={{ ...style, ...waveStyle(NAME.length + i) }}
       initial={LAST_NAME_LETTER_ANIMATION.initial}
       animate={LAST_NAME_LETTER_ANIMATION.animate}
       transition={{
