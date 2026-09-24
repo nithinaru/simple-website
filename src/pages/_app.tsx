@@ -126,21 +126,35 @@ const FAST_MS = [550, 850] as const;
 const OVERLAP = 0.75;
 const BURST_CHANCE = 0.22;
 
-// once the name has arrived, a single wave runs left to right across both
-// words (see .name-letter in globals.css); breathing waits until it's done
+// once the name has arrived, a wave swells the letters one by one left to
+// right, holds them all big, then settles them the same way (see
+// .name-letter in globals.css). every letter holds for the same time, so
+// each one's keyframes only differ by their delay. breathing waits until
+// the wave is done.
+const LETTER_COUNT = NAME.length + LAST_NAME.length;
 const WAVE_START_MS = 3500;
 const WAVE_STEP_MS = 55;
-const WAVE_LETTER_MS = 600;
+// the name-wave keyframes assume the rise and fall are 13% of the run each
+const WAVE_RISE_MS = 300;
+const WAVE_HOLD_MS = 1000;
+const WAVE_LETTER_MS =
+  2 * WAVE_RISE_MS + (LETTER_COUNT - 1) * WAVE_STEP_MS + WAVE_HOLD_MS;
 const WAVE_END_MS =
-  WAVE_START_MS +
-  (NAME.length + LAST_NAME.length) * WAVE_STEP_MS +
-  WAVE_LETTER_MS;
+  WAVE_START_MS + (LETTER_COUNT - 1) * WAVE_STEP_MS + WAVE_LETTER_MS;
+// outermost letters peak at the edge stroke, the middle ones at the centre
+const WAVE_EDGE_EM = 0.05;
+const WAVE_CENTRE_EM = 0.09;
 
-const waveStyle = (i: number) =>
-  ({
+const waveStyle = (i: number) => {
+  const mid = (LETTER_COUNT - 1) / 2;
+  const nearness = 1 - Math.abs(i - mid) / mid;
+  const peak = WAVE_EDGE_EM + (WAVE_CENTRE_EM - WAVE_EDGE_EM) * nearness;
+  return {
     "--wave-delay": `${WAVE_START_MS + i * WAVE_STEP_MS}ms`,
     "--wave-ms": `${WAVE_LETTER_MS}ms`,
-  }) as React.CSSProperties;
+    "--wave-peak": `${peak.toFixed(3)}em`,
+  } as React.CSSProperties;
+};
 
 const between = ([min, max]: readonly [number, number]) =>
   min + Math.random() * (max - min);
