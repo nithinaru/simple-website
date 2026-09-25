@@ -104,17 +104,12 @@ const ItemRow = memo(function ItemRow({
           <span className="font-display font-bold text-stone-700 truncate">
             {label}
           </span>
-          {date ? (
-            <span className="text-xs text-stone-400 whitespace-nowrap shrink-0 sm:hidden">
-              {date}
-            </span>
-          ) : null}
           <span className="text-sm text-stone-500 hidden sm:inline">
             {role}
           </span>
         </div>
         {date ? (
-          <span className="text-sm text-stone-400 whitespace-nowrap hidden sm:inline">
+          <span className="text-xs sm:text-sm text-stone-400 whitespace-nowrap shrink-0">
             {date}
           </span>
         ) : null}
@@ -249,15 +244,10 @@ export default function Home() {
           <Line key={paper.title} delay={0.5 + i * 0.15}>
             <div className="flex flex-col items-start text-left w-full">
               <div className="flex items-baseline justify-between gap-2 sm:gap-8 w-full">
-                <div className="flex items-baseline gap-2 min-w-0">
-                  <span className="font-display font-bold text-stone-700 truncate">
-                    {paper.title}
-                  </span>
-                  <span className="text-xs text-stone-400 whitespace-nowrap shrink-0 sm:hidden">
-                    {paper.year}
-                  </span>
-                </div>
-                <span className="text-sm text-stone-400 whitespace-nowrap hidden sm:inline">
+                <span className="font-display font-bold text-stone-700 truncate min-w-0">
+                  {paper.title}
+                </span>
+                <span className="text-xs sm:text-sm text-stone-400 whitespace-nowrap shrink-0">
                   {paper.year}
                 </span>
               </div>
@@ -273,15 +263,10 @@ export default function Home() {
           <Line key={patent.number} delay={0.5 + (PAPERS.length + i) * 0.15}>
             <div className="flex flex-col items-start text-left w-full">
               <div className="flex items-baseline justify-between gap-2 sm:gap-8 w-full">
-                <div className="flex items-baseline gap-2 min-w-0">
-                  <span className="font-display font-bold text-stone-700 truncate">
-                    {patent.title}
-                  </span>
-                  <span className="text-xs text-stone-400 whitespace-nowrap shrink-0 sm:hidden">
-                    {patent.year}
-                  </span>
-                </div>
-                <span className="text-sm text-stone-400 whitespace-nowrap hidden sm:inline">
+                <span className="font-display font-bold text-stone-700 truncate min-w-0">
+                  {patent.title}
+                </span>
+                <span className="text-xs sm:text-sm text-stone-400 whitespace-nowrap shrink-0">
                   {patent.year}
                 </span>
               </div>
