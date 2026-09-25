@@ -104,6 +104,11 @@ const ItemRow = memo(function ItemRow({
           <span className="font-display font-bold text-stone-700 truncate">
             {label}
           </span>
+          {date ? (
+            <span className="text-xs text-stone-400 whitespace-nowrap shrink-0 sm:hidden">
+              {date}
+            </span>
+          ) : null}
           <span className="text-sm text-stone-500 hidden sm:inline">
             {role}
           </span>
@@ -115,10 +120,7 @@ const ItemRow = memo(function ItemRow({
         ) : null}
       </div>
 
-      <span className="relative text-xs text-stone-500 sm:hidden">
-        {role}
-        {date ? ` · ${date}` : null}
-      </span>
+      <span className="relative text-xs text-stone-500 sm:hidden">{role}</span>
 
       <span className="relative text-xs text-stone-600">{about}</span>
       {/* warm the cache so the hover preview shows instantly */}
@@ -247,15 +249,19 @@ export default function Home() {
           <Line key={paper.title} delay={0.5 + i * 0.15}>
             <div className="flex flex-col items-start text-left w-full">
               <div className="flex items-baseline justify-between gap-2 sm:gap-8 w-full">
-                <span className="font-display font-bold text-stone-700 truncate min-w-0">
-                  {paper.title}
-                </span>
+                <div className="flex items-baseline gap-2 min-w-0">
+                  <span className="font-display font-bold text-stone-700 truncate">
+                    {paper.title}
+                  </span>
+                  <span className="text-xs text-stone-400 whitespace-nowrap shrink-0 sm:hidden">
+                    {paper.year}
+                  </span>
+                </div>
                 <span className="text-sm text-stone-400 whitespace-nowrap hidden sm:inline">
                   {paper.year}
                 </span>
               </div>
               <span className="text-xs text-stone-600 mt-1">
-                <span className="sm:hidden">{paper.year} · </span>
                 {paper.venue}
                 {paper.citations > 0 ? ` · ${paper.citations} citations` : null}
               </span>
@@ -267,15 +273,19 @@ export default function Home() {
           <Line key={patent.number} delay={0.5 + (PAPERS.length + i) * 0.15}>
             <div className="flex flex-col items-start text-left w-full">
               <div className="flex items-baseline justify-between gap-2 sm:gap-8 w-full">
-                <span className="font-display font-bold text-stone-700 truncate min-w-0">
-                  {patent.title}
-                </span>
+                <div className="flex items-baseline gap-2 min-w-0">
+                  <span className="font-display font-bold text-stone-700 truncate">
+                    {patent.title}
+                  </span>
+                  <span className="text-xs text-stone-400 whitespace-nowrap shrink-0 sm:hidden">
+                    {patent.year}
+                  </span>
+                </div>
                 <span className="text-sm text-stone-400 whitespace-nowrap hidden sm:inline">
                   {patent.year}
                 </span>
               </div>
               <span className="text-xs text-stone-600 mt-1">
-                <span className="sm:hidden">{patent.year} · </span>
                 Patent {patent.number}
               </span>
             </div>
