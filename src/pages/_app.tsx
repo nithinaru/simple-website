@@ -339,12 +339,12 @@ export default function App({ Component, pageProps, router }: AppProps) {
         />
       </Head>
 
-      <div className="flex flex-1 bg-stone-200">
-        <div className="flex-1 flex justify-center px-6 py-[15vh] overflow-y-auto">
+      <div className="flex flex-1 min-w-0 bg-stone-200">
+        <div className="flex-1 min-w-0 flex justify-center px-6 py-[15vh] overflow-y-auto">
           <LayoutGroup>
             <motion.div
               layout
-              className="relative flex flex-col items-start w-full md:w-auto max-w-md md:max-w-none"
+              className="relative flex flex-col items-start w-full min-w-0 md:w-auto max-w-md md:max-w-none"
               transition={NAME_WRAPPER_SPRING_CONFIG}
             >
               <motion.h1

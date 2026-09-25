@@ -115,7 +115,10 @@ const ItemRow = memo(function ItemRow({
         ) : null}
       </div>
 
-      <span className="relative text-xs text-stone-500 sm:hidden">{role}</span>
+      <span className="relative text-xs text-stone-500 sm:hidden">
+        {role}
+        {date ? ` · ${date}` : null}
+      </span>
 
       <span className="relative text-xs text-stone-600">{about}</span>
       {/* warm the cache so the hover preview shows instantly */}
@@ -242,9 +245,9 @@ export default function Home() {
       <div className="flex flex-col gap-3 mt-3 w-full">
         {PAPERS.map((paper, i) => (
           <Line key={paper.title} delay={0.5 + i * 0.15}>
-            <div className="flex flex-col items-start text-left">
+            <div className="flex flex-col items-start text-left w-full">
               <div className="flex items-baseline justify-between gap-2 sm:gap-8 w-full">
-                <span className="font-display font-bold text-stone-700">
+                <span className="font-display font-bold text-stone-700 truncate min-w-0">
                   {paper.title}
                 </span>
                 <span className="text-sm text-stone-400 whitespace-nowrap hidden sm:inline">
@@ -252,6 +255,7 @@ export default function Home() {
                 </span>
               </div>
               <span className="text-xs text-stone-600 mt-1">
+                <span className="sm:hidden">{paper.year} · </span>
                 {paper.venue}
                 {paper.citations > 0 ? ` · ${paper.citations} citations` : null}
               </span>
@@ -261,9 +265,9 @@ export default function Home() {
 
         {PATENTS.map((patent, i) => (
           <Line key={patent.number} delay={0.5 + (PAPERS.length + i) * 0.15}>
-            <div className="flex flex-col items-start text-left">
+            <div className="flex flex-col items-start text-left w-full">
               <div className="flex items-baseline justify-between gap-2 sm:gap-8 w-full">
-                <span className="font-display font-bold text-stone-700">
+                <span className="font-display font-bold text-stone-700 truncate min-w-0">
                   {patent.title}
                 </span>
                 <span className="text-sm text-stone-400 whitespace-nowrap hidden sm:inline">
@@ -271,6 +275,7 @@ export default function Home() {
                 </span>
               </div>
               <span className="text-xs text-stone-600 mt-1">
+                <span className="sm:hidden">{patent.year} · </span>
                 Patent {patent.number}
               </span>
             </div>
