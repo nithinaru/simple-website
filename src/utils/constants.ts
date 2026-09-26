@@ -50,9 +50,18 @@ export const SOCIALS: readonly Social[] = [
 
 export const WORK_ITEMS: readonly WorkItem[] = [
   {
+    company: "Idler / Widget Factory",
+    slug: "idler-widget-factory",
+    role: "Software Engineer",
+    date: "Sep 2026 — Present",
+    about:
+      "Stress-testing frontier AI agents across RL environments & coding benchmarks",
+    url: "https://idler.ai/",
+  },
+  {
     company: "UC Davis GSM",
     slug: "uc-davis-gsm",
-    role: "Operations Researcher",
+    role: "Researcher",
     date: "May 2026 — Present",
     about:
       "Donor allocation framework across 500k+ records to improve outreach ROI",
@@ -70,7 +79,7 @@ export const WORK_ITEMS: readonly WorkItem[] = [
   {
     company: "UC Irvine EECS",
     slug: "uc-irvine-eecs",
-    role: "Machine Learning Researcher",
+    role: "Researcher",
     date: "Aug 2025 — Dec 2025",
     about:
       "Novel computer vision pipeline for fabric categorization and wear prediction",
@@ -79,7 +88,7 @@ export const WORK_ITEMS: readonly WorkItem[] = [
   {
     company: "Gamr",
     slug: "gamr",
-    role: "Product Engineer",
+    role: "Software Engineer",
     date: "Jul 2024 — Feb 2026",
     about:
       "Built AMA, an AI career guide for gamers at Africa's #1 gaming platform",
@@ -88,7 +97,7 @@ export const WORK_ITEMS: readonly WorkItem[] = [
   {
     company: "Robolabs",
     slug: "robolabs",
-    role: "Robotics Instructor",
+    role: "Instructor",
     date: "Jun 2023 — Nov 2025",
     about:
       "Mentored 10+ middle school teams and ran logistics for VEX at UC Berkeley",
