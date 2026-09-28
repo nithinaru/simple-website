@@ -59,8 +59,6 @@ const ALL_WORK_ITEMS: readonly WorkItem[] = [
     about:
       "Stress-testing frontier AI agents across RL environments & coding benchmarks",
     url: "https://idler.ai/",
-    // off the site until onboarding is done and the details are updated
-    hidden: true,
   },
   {
     company: "UC Davis GSM",

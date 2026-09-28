@@ -2,6 +2,8 @@ import AnimatedText from "@/components/animated-text";
 import { PlaneIcon, SparkleIcon } from "@/components/icons";
 import { SocialStickers } from "@/components/social-stickers";
 import { PROJECTS, SOCIALS, WORK_ITEMS } from "@/utils/constants";
+import { SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from "@/utils/site";
+import { JSON_LD } from "@/utils/structured-data";
 import "@/globals.css";
 import {
   LayoutGroup,
@@ -84,36 +86,6 @@ const LAST_NAME_LETTER_ANIMATION = {
 const LAST_STEP = ANIMATION_STEPS.length - 1;
 const STEP_INDICES = ANIMATION_STEPS.map((_, i) => i);
 const STEP_SIZES = ANIMATION_STEPS.map((s) => s.size);
-
-const SITE_URL = "https://nithinaruswamy.com";
-const SITE_TITLE = "Nithin Aruswamy";
-const SITE_DESCRIPTION =
-  "Nithin studies OR & Mathematics. He is an operations researcher at UC Davis GSM. He's an avid traveler (50+ countries) and a #1 Amazon New Release travel author.";
-
-const JSON_LD = JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "Person",
-  name: "Nithin Aruswamy",
-  url: SITE_URL,
-  jobTitle: "Operations Researcher & Student",
-  description: SITE_DESCRIPTION,
-  // every profile and site that is Nithin's, so search engines can tie them
-  // to the one person
-  sameAs: [
-    "https://www.linkedin.com/in/aruswamy",
-    "https://github.com/nithinaru",
-    "https://scholar.google.com/citations?user=jqQkW0AAAAAJ&hl=en&oi=ao",
-    "https://x.com/nithinaru",
-    "https://www.cosmos.so/nithinaru",
-    "https://travel.nithinaruswamy.com/",
-  ],
-  workExample: {
-    "@type": "Book",
-    name: "Jet-Set Teen",
-    url: "https://www.amazon.com/dp/B0DF68HLGD",
-    author: { "@type": "Person", name: "Nithin Aruswamy" },
-  },
-});
 
 // each word breathes on its own: a timer swells one random letter at a time
 // (see .name-letter in globals.css), and the letters either side of it swell
@@ -317,6 +289,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
         {/* biome-ignore lint/security/noDangerouslySetInnerHtml: font vars */}
         <style dangerouslySetInnerHTML={{ __html: FONT_VARS }} />
         <meta name="description" content={SITE_DESCRIPTION} />
+        <meta name="author" content={SITE_TITLE} />
         <link rel="canonical" href={SITE_URL} />
 
         <meta property="og:type" content="website" />
