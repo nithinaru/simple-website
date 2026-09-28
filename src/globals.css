@@ -1,61 +1,5 @@
 @import "tailwindcss";
 
-/*
- * redaction, only the cuts the intro animation steps through (see
- * ANIMATION_STEPS in _app.tsx). all are preloaded in _document.tsx, so
- * each file is subset to just the letters of "Nithin" (the only text they
- * ever render) to keep that preload tiny.
- */
-@font-face {
-  font-family: "Redaction";
-  src: url("/fonts/Redaction-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: block;
-}
-@font-face {
-  font-family: "Redaction 10";
-  src: url("/fonts/Redaction_10-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: block;
-}
-@font-face {
-  font-family: "Redaction 20";
-  src: url("/fonts/Redaction_20-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: block;
-}
-@font-face {
-  font-family: "Redaction 35";
-  src: url("/fonts/Redaction_35-Bold.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-  font-display: block;
-}
-@font-face {
-  font-family: "Redaction 70";
-  src: url("/fonts/Redaction_70-Bold.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-  font-display: block;
-}
-@font-face {
-  font-family: "Redaction 100";
-  src: url("/fonts/Redaction_100-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: block;
-}
-@font-face {
-  font-family: "Redaction 100";
-  src: url("/fonts/Redaction_100-Bold.woff2") format("woff2");
-  font-weight: 700;
-  font-style: normal;
-  font-display: block;
-}
-
 /* --font-body and --font-name come from next/font, set on :root in _app.tsx */
 @theme {
   --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
@@ -111,56 +55,6 @@ h3 {
   font-family: var(--font-heading);
   /* the heading face only ships one weight; don't let `font-bold` smear it */
   font-synthesis: none;
-}
-
-/*
- * the name slowly swells and thins — modelled on the dia browser hero. dia
- * animates a variable weight axis; goudy bookletter only ships one weight, so
- * the thickness comes from a same-colour text stroke instead. useBreathing
- * marks one random letter per word "main" and its neighbours "near"; the
- * transition does the swell in and the settle back out.
- */
-
-/* registered so it interpolates — the stroke width itself snaps */
-@property --name-stroke {
-  syntax: "<length>";
-  inherits: false;
-  initial-value: 0px;
-}
-
-.name-letter {
-  -webkit-text-stroke: var(--name-stroke) currentColor;
-  transition: --name-stroke var(--breath-ms, 2200ms) ease-in-out;
-  /* one left-to-right swell after load, a hold, then a left-to-right
-     settle; each letter's delay and peak (thicker toward the middle of the
-     name) are set inline */
-  animation: name-wave var(--wave-ms, 2315ms) ease-in-out var(--wave-delay, 0ms);
-}
-
-@keyframes name-wave {
-  0%,
-  100% {
-    --name-stroke: 0px;
-  }
-  13%,
-  87% {
-    --name-stroke: var(--wave-peak, 0.05em);
-  }
-}
-
-.name-letter[data-breathing="main"] {
-  --name-stroke: 0.045em;
-}
-
-.name-letter[data-breathing="near"] {
-  --name-stroke: 0.02em;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .name-letter {
-    transition: none;
-    animation: none;
-  }
 }
 
 /* goudy only has one weight; a same-colour stroke gives the section

@@ -1,16 +1,21 @@
 import { motion, type Variants } from "motion/react";
 import React, { useLayoutEffect, useRef, useState } from "react";
+import { REVEAL_DURATION } from "@/utils/reveal";
 
 const CHARACTER_ANIMATION = {
+  // same fade-up + blur as the rows and stickers below, so the whole page
+  // reads as one entrance
   initial: {
     opacity: 0,
     y: 5,
+    filter: "blur(4px)",
   },
   animate: (charCount: number) => ({
     opacity: 1,
     y: 0,
+    filter: "blur(0px)",
     transition: {
-      duration: charCount === 1 ? 0.25 : 1, // if its just like "&", make the duration rlly small
+      duration: charCount === 1 ? 0.25 : REVEAL_DURATION, // if its just like "&", make the duration rlly small
       ease: [0.2, 0.65, 0.3, 0.9],
     },
   }),
@@ -161,7 +166,7 @@ const AnimatedText = ({
         animate={ready ? "animate" : "initial"}
         transition={{
           delayChildren: delayFor(index) + (artificialDelay ?? 0),
-          staggerChildren: 0.025,
+          staggerChildren: 0.015,
         }}
       >
         {renderWord(word)}

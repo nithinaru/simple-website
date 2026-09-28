@@ -8,6 +8,13 @@ import AnimatedText from "@/components/animated-text";
 import HoverPreview from "@/components/hover-preview";
 import { PAPERS, PATENTS, PROJECTS, WORK_ITEMS } from "@/utils/constants";
 import getPreviewUrl from "@/utils/get-preview-url";
+import {
+  FIRST_SECTION_START,
+  nextSectionStart,
+  REVEAL_DURATION,
+  ROW_STEP,
+  rowsStart,
+} from "@/utils/reveal";
 
 type HoverState = {
   id: string;
@@ -27,7 +34,7 @@ const ITEM_ANIMATION = {
     filter: "blur(0px)",
   },
   transition: {
-    duration: 1,
+    duration: REVEAL_DURATION,
     ease: [0.2, 0.65, 0.3, 0.9],
   },
 } as const satisfies MotionNodeAnimationOptions;
@@ -153,16 +160,22 @@ const Line = memo(function Line({ delay, children }: LineProps) {
   );
 });
 
-function SectionHeading({ text }: { text: string }) {
+function SectionHeading({ text, delay }: { text: string; delay: number }) {
   return (
     <AnimatedText
       className="section-heading text-2xl mt-9"
       element="h2"
       text={text}
-      artificialDelay={0.3}
+      wordDelay={0.06}
+      artificialDelay={delay}
     />
   );
 }
+
+// each section starts once the one above has mostly landed (see reveal.ts)
+const WORK_START = FIRST_SECTION_START;
+const PROJECTS_START = nextSectionStart(WORK_START, WORK_ITEMS.length);
+const PUBLICATIONS_START = nextSectionStart(PROJECTS_START, PROJECTS.length);
 
 export default function Home() {
   const [hoveredWork, setHoveredWork] = useState<HoverState>(null);
@@ -187,7 +200,7 @@ export default function Home() {
 
   return (
     <>
-      <SectionHeading text="Experience" />
+      <SectionHeading text="Experience" delay={WORK_START} />
 
       {/* biome-ignore lint/a11y/noStaticElementInteractions: only clears hover styling */}
       <div
@@ -205,14 +218,14 @@ export default function Home() {
             url={item.url}
             isHovered={hoveredWork?.id === item.company}
             layoutId="work-hover"
-            delay={0.5 + i * 0.15}
+            delay={rowsStart(WORK_START) + i * ROW_STEP}
             previewUrl={WORK_PREVIEW_URLS.get(item.slug) ?? ""}
             onHover={handleWorkHover}
           />
         ))}
       </div>
 
-      <SectionHeading text="Projects" />
+      <SectionHeading text="Projects" delay={PROJECTS_START} />
 
       {/* biome-ignore lint/a11y/noStaticElementInteractions: only clears hover styling */}
       <div
@@ -230,18 +243,21 @@ export default function Home() {
             url={project.url}
             isHovered={hoveredProject?.id === project.name}
             layoutId="project-hover"
-            delay={0.5 + i * 0.15}
+            delay={rowsStart(PROJECTS_START) + i * ROW_STEP}
             previewUrl={PROJECT_PREVIEW_URLS.get(project.slug) ?? ""}
             onHover={handleProjectHover}
           />
         ))}
       </div>
 
-      <SectionHeading text="Publications" />
+      <SectionHeading text="Publications" delay={PUBLICATIONS_START} />
 
       <div className="flex flex-col gap-3 mt-3 w-full">
         {PAPERS.map((paper, i) => (
-          <Line key={paper.title} delay={0.5 + i * 0.15}>
+          <Line
+            key={paper.title}
+            delay={rowsStart(PUBLICATIONS_START) + i * ROW_STEP}
+          >
             <div className="flex flex-col items-start text-left w-full">
               <div className="flex items-baseline justify-between gap-2 sm:gap-8 w-full">
                 <span className="font-display font-bold text-stone-700 truncate min-w-0">
@@ -260,7 +276,12 @@ export default function Home() {
         ))}
 
         {PATENTS.map((patent, i) => (
-          <Line key={patent.number} delay={0.5 + (PAPERS.length + i) * 0.15}>
+          <Line
+            key={patent.number}
+            delay={
+              rowsStart(PUBLICATIONS_START) + (PAPERS.length + i) * ROW_STEP
+            }
+          >
             <div className="flex flex-col items-start text-left w-full">
               <div className="flex items-baseline justify-between gap-2 sm:gap-8 w-full">
                 <span className="font-display font-bold text-stone-700 truncate min-w-0">
