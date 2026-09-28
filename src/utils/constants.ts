@@ -7,6 +7,8 @@ export type WorkItem = {
   url: string;
   /** ms to wait before screenshotting, for sites with an entrance animation */
   previewWaitMs?: number;
+  /** keep the entry here but leave it off the site (and out of previews) */
+  hidden?: boolean;
 };
 
 export type Project = {
@@ -48,7 +50,7 @@ export const SOCIALS: readonly Social[] = [
   { label: "Email", href: "mailto:nithin.alaska@gmail.com" },
 ];
 
-export const WORK_ITEMS: readonly WorkItem[] = [
+const ALL_WORK_ITEMS: readonly WorkItem[] = [
   {
     company: "Idler / Widget Factory",
     slug: "idler-widget-factory",
@@ -57,6 +59,8 @@ export const WORK_ITEMS: readonly WorkItem[] = [
     about:
       "Stress-testing frontier AI agents across RL environments & coding benchmarks",
     url: "https://idler.ai/",
+    // off the site until onboarding is done and the details are updated
+    hidden: true,
   },
   {
     company: "UC Davis GSM",
@@ -105,6 +109,10 @@ export const WORK_ITEMS: readonly WorkItem[] = [
   },
 ];
 
+export const WORK_ITEMS: readonly WorkItem[] = ALL_WORK_ITEMS.filter(
+  (item) => !item.hidden,
+);
+
 export const PROJECTS: readonly Project[] = [
   {
     name: "Priceflag",
@@ -113,14 +121,6 @@ export const PROJECTS: readonly Project[] = [
     date: "Present",
     about: "Simulate & safely roll out price changes for eCommerce platforms",
     url: "https://priceflag.org/",
-  },
-  {
-    name: "Tarsole (fka Therapeuo)",
-    slug: "therapeuo",
-    role: "Co-Founder",
-    about: "Building the world's first mass-market smart insole",
-    url: "https://therapeuo.xyz/",
-    previewWaitMs: 4000,
   },
   {
     name: "Jet-Set Teen",
@@ -142,13 +142,6 @@ export const PROJECTS: readonly Project[] = [
     role: "Co-Founder",
     about: "Autonomous farming system for efficient micro-agriculture",
     url: "https://youtu.be/HTlI9NxZe-g?si=V1cE4Rpiqy2UMVoT",
-  },
-  {
-    name: "Truffle",
-    slug: "truffle",
-    role: "Creator",
-    about: "A natural language optimizer for operations research problems",
-    url: "https://github.com/nithinaru/Truffle",
   },
 ];
 
