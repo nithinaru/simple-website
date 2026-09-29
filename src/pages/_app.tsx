@@ -290,6 +290,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
         <style dangerouslySetInnerHTML={{ __html: FONT_VARS }} />
         <meta name="description" content={SITE_DESCRIPTION} />
         <meta name="author" content={SITE_TITLE} />
+        <meta name="msvalidate.01" content="BC46D7CD921CD032F8BB1AC091B33313" />
         <link rel="canonical" href={SITE_URL} />
 
         <meta property="og:type" content="website" />
