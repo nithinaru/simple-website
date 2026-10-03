@@ -6,6 +6,7 @@ import {
   MailIcon,
 } from "@/components/icons";
 import { SOCIALS } from "@/utils/constants";
+import { BUTTON_DELAY, BUTTON_STEP } from "@/utils/entrance";
 
 // paper-toned stickers, each at a slight tilt so the row looks hand-placed.
 // hovering snaps one straight and lifts it.
@@ -45,9 +46,9 @@ export function SocialStickers() {
             whileTap={{ scale: 0.95 }}
             transition={{
               default: {
-                duration: 1,
+                duration: 0.92,
                 ease: ENTRANCE_EASE,
-                delay: 0.3 + i * 0.08,
+                delay: BUTTON_DELAY + i * BUTTON_STEP,
               },
               rotate: SNAP,
               scale: SNAP,

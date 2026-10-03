@@ -35,6 +35,25 @@ export type Patent = {
   year: string;
 };
 
+/**
+ * press and mentions. not rendered in the page UI: they feed the JSON-LD (see
+ * structured-data.ts) and the <noscript> fallback in _app.tsx.
+ *
+ * "article" is a piece about Nithin; "podcast" is an episode about the book,
+ * not an appearance by him, so it stays off his own press.
+ */
+export type PressItem = {
+  slug: string;
+  kind: "article" | "podcast";
+  title: string;
+  outlet: string;
+  url: string;
+  /** ISO date; leave out if unknown */
+  date?: string;
+  author?: string;
+  outletUrl?: string;
+};
+
 export type Social = {
   label: string;
   href: string;
@@ -141,6 +160,64 @@ export const PROJECTS: readonly Project[] = [
     about: "Autonomous farming system for efficient micro-agriculture",
     url: "https://youtu.be/HTlI9NxZe-g?si=V1cE4Rpiqy2UMVoT",
   },
+];
+
+export const PRESS: readonly PressItem[] = [
+  {
+    slug: "pleasanton-weekly-terran",
+    kind: "article",
+    title: "Dublin teen leads agriculture tech startup",
+    outlet: "Pleasanton Weekly",
+    outletUrl: "https://www.pleasantonweekly.com",
+    url: "https://www.pleasantonweekly.com/technology/2025/12/22/dublin-teen-leads-agriculture-tech-startup/",
+    date: "2025-12-22",
+    author: "Jude Strzemp",
+  },
+  {
+    slug: "agritech-insights-terran",
+    kind: "article",
+    title:
+      "Dublin High Senior Revolutionizes Farming with Agritech Innovations",
+    outlet: "AgriTech Insights",
+    outletUrl: "https://agritechinsights.com",
+    url: "https://agritechinsights.com/index.php/2025/12/23/dublin-high-senior-revolutionizes-farming-with-agritech-innovations/",
+    date: "2025-12-23",
+    author: "John Hutton",
+  },
+  {
+    slug: "independent-terran",
+    kind: "article",
+    title:
+      "Startup Company Led by Students Develops Hydroponics System for Small-Scale Farms",
+    outlet: "The Independent",
+    outletUrl: "https://www.independentnews.com",
+    url: "https://www.independentnews.com/news/dublin_news/startup-company-led-by-students-develops-hydroponics-system-for-small-scale-farms/article_ef16be81-3b20-4c67-8d80-ae59f3b0e4d3.html",
+    date: "2026-01-15",
+    author: "Sanestina Hunter",
+  },
+  {
+    slug: "spotify-jet-set-teen",
+    kind: "podcast",
+    title:
+      "FYP Jet-Set Teen: Plan an International Trip in an hour! 30+ International Travels & Budgeting Tips Online",
+    outlet: "Spotify",
+    url: "https://open.spotify.com/episode/7cADtaNyxwdHCYx8VSfZB2",
+  },
+];
+
+/** public videos on Nithin's YouTube channel; feed the JSON-LD only */
+export type Video = {
+  /** the YouTube video id (the part after v= or youtu.be/) */
+  id: string;
+  title: string;
+};
+
+export const VIDEOS: readonly Video[] = [
+  {
+    id: "HTlI9NxZe-g",
+    title: "Terran | Scalable Farming for Small-Scale Farmers",
+  },
+  { id: "kmYGtSsVqA0", title: "Introducing Therapeuo" },
 ];
 
 export const PAPERS: readonly Paper[] = [

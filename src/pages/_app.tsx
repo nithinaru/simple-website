@@ -1,7 +1,7 @@
 import AnimatedText from "@/components/animated-text";
 import { PlaneIcon, SparkleIcon } from "@/components/icons";
 import { SocialStickers } from "@/components/social-stickers";
-import { PROJECTS, SOCIALS, WORK_ITEMS } from "@/utils/constants";
+import { PRESS, PROJECTS, SOCIALS, WORK_ITEMS } from "@/utils/constants";
 import { SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from "@/utils/site";
 import { JSON_LD } from "@/utils/structured-data";
 import "@/globals.css";
@@ -16,7 +16,24 @@ import {
   useTransform,
 } from "motion/react";
 import type { AppProps } from "next/app";
-import { Goudy_Bookletter_1911, Instrument_Sans } from "next/font/google";
+import {
+  Abril_Fatface,
+  Bodoni_Moda,
+  Cinzel,
+  Cormorant_Garamond,
+  Fraunces,
+  Goudy_Bookletter_1911,
+  IM_Fell_English,
+  Instrument_Sans,
+  Libre_Baskerville,
+  Marcellus,
+  Playfair_Display,
+  Rye,
+  Ultra,
+  UnifrakturCook,
+  UnifrakturMaguntia,
+  Yeseva_One,
+} from "next/font/google";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 
@@ -30,6 +47,65 @@ const bodyFont = Instrument_Sans({
 const nameFont = Goudy_Bookletter_1911({
   subsets: ["latin"],
   weight: "400",
+  display: "block",
+});
+
+const unifraktur = UnifrakturMaguntia({
+  subsets: ["latin"],
+  weight: "400",
+  display: "block",
+});
+const unifrakturCook = UnifrakturCook({
+  subsets: ["latin"],
+  weight: "700",
+  display: "block",
+});
+const abrilFatface = Abril_Fatface({
+  subsets: ["latin"],
+  weight: "400",
+  display: "block",
+});
+const ultra = Ultra({ subsets: ["latin"], weight: "400", display: "block" });
+const yesevaOne = Yeseva_One({
+  subsets: ["latin"],
+  weight: "400",
+  display: "block",
+});
+const marcellus = Marcellus({
+  subsets: ["latin"],
+  weight: "400",
+  display: "block",
+});
+const cinzel = Cinzel({ subsets: ["latin"], weight: "400", display: "block" });
+const rye = Rye({ subsets: ["latin"], weight: "400", display: "block" });
+const imFellEnglish = IM_Fell_English({
+  subsets: ["latin"],
+  weight: "400",
+  display: "block",
+});
+const libreBaskerville = Libre_Baskerville({
+  subsets: ["latin"],
+  weight: "400",
+  display: "block",
+});
+const cormorantGaramond = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: "600",
+  display: "block",
+});
+const playfairDisplay = Playfair_Display({
+  subsets: ["latin"],
+  weight: "700",
+  display: "block",
+});
+const bodoniModa = Bodoni_Moda({
+  subsets: ["latin"],
+  weight: "700",
+  display: "block",
+});
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  weight: "900",
   display: "block",
 });
 
@@ -49,26 +125,33 @@ const NAME_SPRING_CONFIG = {
   mass: 3,
 } as const satisfies Transition;
 
-const ANIMATION_STEPS = [
-  { font: '"Redaction 100"', weight: 700, size: 16 },
-  { font: '"Redaction 10"', weight: 400, size: 13 },
-  { font: '"Redaction 70"', weight: 700, size: 10 },
-  { font: '"Redaction"', weight: 400, size: 8 },
-  { font: '"Redaction 35"', weight: 700, size: 6.5 },
-  { font: '"Redaction 100"', weight: 400, size: 5.2 },
-  { font: '"Redaction 20"', weight: 400, size: 4.2 },
-  { font: "var(--font-name), serif", weight: 400, size: 3.75 },
-] as const satisfies Array<{
-  font: string;
-  weight: number;
-  size: number;
-}>;
+// shrink keyframes only. the spring still runs 0 → last index at the
+// original speed; faces are a separate list below.
+const SIZE_STEPS = [16, 13, 10, 8, 6.5, 5.2, 4.2, 3.75] as const;
+
+const FLICKER_FONTS = [
+  { font: unifraktur.style.fontFamily, weight: 400 },
+  { font: unifrakturCook.style.fontFamily, weight: 700 },
+  { font: abrilFatface.style.fontFamily, weight: 400 },
+  { font: ultra.style.fontFamily, weight: 400 },
+  { font: yesevaOne.style.fontFamily, weight: 400 },
+  { font: marcellus.style.fontFamily, weight: 400 },
+  { font: cinzel.style.fontFamily, weight: 400 },
+  { font: rye.style.fontFamily, weight: 400 },
+  { font: imFellEnglish.style.fontFamily, weight: 400 },
+  { font: libreBaskerville.style.fontFamily, weight: 400 },
+  { font: cormorantGaramond.style.fontFamily, weight: 600 },
+  { font: playfairDisplay.style.fontFamily, weight: 700 },
+  { font: bodoniModa.style.fontFamily, weight: 700 },
+  { font: fraunces.style.fontFamily, weight: 900 },
+  { font: "var(--font-name), serif", weight: 400 },
+] as const;
 
 const NAME = "Nithin";
 const LAST_NAME = "Aruswamy";
 
 const INTRO =
-  "Hey, I'm Nithin. I study Operations Research & Mathematics and currently on a gap year in San Francisco. I enjoy traveling, making ceramics & scrolling on Cosmos.";
+  "Hey, I'm Nithin. I study Operations Research & Mathematics and work on AI in San Francisco. I enjoy traveling, making ceramics & scrolling on Cosmos.";
 const INTRO_LINKS = {
   traveling: {
     href: "https://travel.nithinaruswamy.com/",
@@ -83,9 +166,32 @@ const LAST_NAME_LETTER_ANIMATION = {
   animate: { opacity: 1, y: 0, filter: "blur(0px)" },
 } as const satisfies MotionNodeAnimationOptions;
 
-const LAST_STEP = ANIMATION_STEPS.length - 1;
-const STEP_INDICES = ANIMATION_STEPS.map((_, i) => i);
-const STEP_SIZES = ANIMATION_STEPS.map((s) => s.size);
+const LAST_STEP = SIZE_STEPS.length - 1;
+const STEP_INDICES = SIZE_STEPS.map((_, i) => i);
+const STEP_SIZES = SIZE_STEPS.map((size) => size);
+
+const LAST_FONT = FLICKER_FONTS.length - 1;
+
+// time each face takes over. early holds are long enough to read, and the
+// gap widens toward the resting face.
+const FLICKER_AT_MS = (() => {
+  const gaps = LAST_FONT;
+  const at = [0];
+  for (let i = 0; i < gaps; i++) {
+    const t = i / (gaps - 1);
+    at.push(at[at.length - 1] + Math.round(100 + t ** 3 * 200));
+  }
+  return at;
+})();
+
+const applyFontStep = (el: HTMLElement, step: number) => {
+  const face = FLICKER_FONTS[step];
+  if (!face) {
+    return;
+  }
+  el.style.setProperty("font-family", face.font, "important");
+  el.style.setProperty("font-weight", String(face.weight), "important");
+};
 
 // each word breathes on its own: a timer swells one random letter at a time
 // (see .name-letter in globals.css), and the letters either side of it swell
@@ -231,6 +337,7 @@ function LastName() {
 
 export default function App({ Component, pageProps, router }: AppProps) {
   const ref = useRef<HTMLHeadingElement>(null);
+  const fontsSettled = useRef(false);
   const progress = useMotionValue(0);
   const spring = useSpring(progress, NAME_SPRING_CONFIG);
   const [expanded, setExpanded] = useState(false);
@@ -247,17 +354,13 @@ export default function App({ Component, pageProps, router }: AppProps) {
       return;
     }
 
-    const i = Math.max(0, Math.min(Math.round(v), LAST_STEP));
-    ref.current.style.setProperty(
-      "font-family",
-      ANIMATION_STEPS[i].font,
-      "important",
-    );
-    ref.current.style.setProperty(
-      "font-weight",
-      String(ANIMATION_STEPS[i].weight),
-      "important",
-    );
+    // lock the resting face before the last name mounts, then leave it
+    // alone. the flicker clock would otherwise keep going after the name
+    // is already on screen.
+    if (!fontsSettled.current && v >= LAST_STEP - 1) {
+      fontsSettled.current = true;
+      applyFontStep(ref.current, LAST_FONT);
+    }
 
     // the spring may settle on LAST_STEP without ever overshooting it, so
     // expand as soon as it's effectively there rather than strictly past it
@@ -269,6 +372,45 @@ export default function App({ Component, pageProps, router }: AppProps) {
   useEffect(() => {
     progress.set(LAST_STEP);
   }, [progress]);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) {
+      return;
+    }
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      applyFontStep(el, LAST_FONT);
+      return;
+    }
+
+    let frame = 0;
+    const start = performance.now();
+    let current = 0;
+    applyFontStep(el, 0);
+
+    // one face per frame when the clock is due, so a late frame can't skip
+    // the early ones
+    const tick = (now: number) => {
+      if (fontsSettled.current) {
+        return;
+      }
+      const elapsed = now - start;
+      const nextAt = FLICKER_AT_MS[current + 1];
+      if (current < LAST_FONT && nextAt !== undefined && elapsed >= nextAt) {
+        current += 1;
+        if (ref.current && !fontsSettled.current) {
+          applyFontStep(ref.current, current);
+        }
+      }
+      if (current < LAST_FONT && !fontsSettled.current) {
+        frame = requestAnimationFrame(tick);
+      }
+    };
+
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, []);
 
   if (router.pathname === "/404") {
     return (
@@ -352,8 +494,8 @@ export default function App({ Component, pageProps, router }: AppProps) {
                   <AnimatedText
                     text={INTRO}
                     links={INTRO_LINKS}
-                    wordDelay={0.03}
-                    lineDelay={0.5}
+                    wordDelay={0.028}
+                    lineDelay={0.46}
                     element="p"
                     // w-0 + min-w-full: fill the column without letting the
                     // long line widen it past the rows below
@@ -369,7 +511,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
               <noscript>
                 <p>
                   Hey, I&apos;m Nithin. I study Operations Research &amp;
-                  Mathematics and currently on a gap year in San Francisco. I
+                  Mathematics and work on AI in San Francisco. I
                   enjoy <a href={INTRO_LINKS.traveling.href}>traveling</a>,
                   making ceramics &amp; scrolling on{" "}
                   <a href={INTRO_LINKS.Cosmos.href}>Cosmos</a>.
@@ -400,6 +542,15 @@ export default function App({ Component, pageProps, router }: AppProps) {
                       <strong>{project.name}</strong> — {project.role}
                     </a>
                     <p>{project.about}</p>
+                  </div>
+                ))}
+
+                <h2>Press &amp; mentions</h2>
+                {PRESS.map((item) => (
+                  <div key={item.slug}>
+                    <a href={item.url}>
+                      <strong>{item.title}</strong> — {item.outlet}
+                    </a>
                   </div>
                 ))}
               </noscript>

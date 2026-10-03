@@ -1,4 +1,12 @@
-import { PAPERS, PATENTS, PROJECTS, WORK_ITEMS } from "@/utils/constants";
+import {
+  PAPERS,
+  PATENTS,
+  PRESS,
+  PROJECTS,
+  type PressItem,
+  VIDEOS,
+  WORK_ITEMS,
+} from "@/utils/constants";
 import { SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from "@/utils/site";
 
 /**
@@ -17,8 +25,6 @@ const PERSON_ID = `${SITE_URL}/#person`;
 const WEBSITE_ID = `${SITE_URL}/#website`;
 const PROFILE_ID = `${SITE_URL}/#profile`;
 const BOOK_ID = `${SITE_URL}/#jet-set-teen`;
-const PRESS_ID = `${SITE_URL}/#press-pleasanton-weekly`;
-
 const PERSON_REF = { "@id": PERSON_ID };
 
 // every profile and site that is Nithin's, so search engines can tie them to
@@ -31,6 +37,11 @@ const SAME_AS = [
   "https://www.cosmos.so/nithinaru",
   "https://travel.nithinaruswamy.com/",
   "https://devpost.com/nithin-alaska",
+  "https://www.youtube.com/@nithinaru",
+  "https://www.goodreads.com/nithinaru",
+  "https://www.amazon.com/stores/Nithin-Aruswamy/author/B0DG2GLQWL",
+  "https://openlibrary.org/authors/OL16612734A",
+  "https://orcid.org/0009-0001-3792-6961",
   "https://apps.apple.com/us/app/oneday-by-nithin-aruswamy/id6755661127",
 ];
 
@@ -80,37 +91,6 @@ const terran = project("terran");
 const oneDay = project("oneday-app");
 const jetSetTeen = project("jet-set-teen");
 
-const person = {
-  "@type": "Person",
-  "@id": PERSON_ID,
-  name: SITE_TITLE,
-  givenName: "Nithin",
-  familyName: "Aruswamy",
-  url: SITE_URL,
-  image: `${SITE_URL}/og.png`,
-  jobTitle: "Operations Researcher & Student",
-  description: SITE_DESCRIPTION,
-  worksFor: currentEmployers,
-  alumniOf: [
-    {
-      "@type": "HighSchool",
-      name: "Dublin High School",
-      address: { "@type": "PostalAddress", addressLocality: "Dublin" },
-    },
-    ...pastOrganisations,
-  ],
-  affiliation: [
-    {
-      "@type": "CollegeOrUniversity",
-      name: "University of California, Berkeley",
-      url: "https://www.berkeley.edu",
-    },
-  ],
-  knowsAbout: KNOWS_ABOUT,
-  sameAs: SAME_AS,
-  subjectOf: { "@id": PRESS_ID },
-};
-
 const website = {
   "@type": "WebSite",
   "@id": WEBSITE_ID,
@@ -139,8 +119,13 @@ const book = {
   alternateName: "Jet-Set Teen",
   author: PERSON_REF,
   url: jetSetTeen?.url,
-  // the Kindle listing
-  sameAs: "https://www.amazon.com/dp/B0DF68HLGD",
+  // the Kindle listing and the Open Library edition
+  sameAs: [
+    "https://www.amazon.com/dp/B0DF68HLGD",
+    "https://play.google.com/store/books/details?id=vLQTEgAAQBAJ",
+    "https://books.google.com/books?id=vLQTEgAAQBAJ",
+    "https://openlibrary.org/books/OL62603255M",
+  ],
   isbn: "979-8336225266",
   datePublished: "2024-08-23",
   numberOfPages: 350,
@@ -149,19 +134,90 @@ const book = {
   publisher: { "@type": "Organization", name: "Independently published" },
 };
 
-const press = {
-  "@type": "NewsArticle",
-  "@id": PRESS_ID,
-  headline: "Dublin teen leads agriculture tech startup",
-  url: "https://www.pleasantonweekly.com/technology/2025/12/22/dublin-teen-leads-agriculture-tech-startup/",
-  datePublished: "2025-12-22",
-  author: { "@type": "Person", name: "Jude Strzemp" },
-  publisher: organisation(
-    "Pleasanton Weekly",
-    "https://www.pleasantonweekly.com",
-  ),
-  about: PERSON_REF,
+const pressId = (item: PressItem) => `${SITE_URL}/#press-${item.slug}`;
+
+// an article is about Nithin. a podcast episode is about the book — not an
+// appearance by him — so it points at the book and stays off his own press
+const pressNode = (item: PressItem) => {
+  switch (item.kind) {
+    case "article":
+      return {
+        "@type": "NewsArticle",
+        "@id": pressId(item),
+        headline: item.title,
+        url: item.url,
+        datePublished: item.date,
+        author: item.author
+          ? { "@type": "Person", name: item.author }
+          : undefined,
+        publisher: organisation(item.outlet, item.outletUrl ?? item.url),
+        about: PERSON_REF,
+      };
+    case "podcast":
+      return {
+        "@type": "PodcastEpisode",
+        "@id": pressId(item),
+        name: item.title,
+        url: item.url,
+        datePublished: item.date,
+        about: { "@id": BOOK_ID },
+      };
+    default: {
+      const unhandled: never = item.kind;
+      throw new Error(`unhandled press kind: ${unhandled}`);
+    }
+  }
 };
+
+const pressNodes = PRESS.map(pressNode);
+const pressAboutPerson = PRESS.filter((item) => item.kind === "article").map(
+  (item) => ({ "@id": pressId(item) }),
+);
+
+const person = {
+  "@type": "Person",
+  "@id": PERSON_ID,
+  name: SITE_TITLE,
+  givenName: "Nithin",
+  familyName: "Aruswamy",
+  url: SITE_URL,
+  image: `${SITE_URL}/og.png`,
+  jobTitle: "Operations Researcher & Student",
+  description: SITE_DESCRIPTION,
+  worksFor: currentEmployers,
+  alumniOf: [
+    {
+      "@type": "HighSchool",
+      name: "Dublin High School",
+      address: { "@type": "PostalAddress", addressLocality: "Dublin" },
+    },
+    ...pastOrganisations,
+  ],
+  affiliation: [
+    {
+      "@type": "CollegeOrUniversity",
+      name: "University of California, Berkeley",
+      url: "https://www.berkeley.edu",
+    },
+  ],
+  knowsAbout: KNOWS_ABOUT,
+  // a stable researcher ID, the same one Wikidata and paper databases use
+  identifier: {
+    "@type": "PropertyValue",
+    propertyID: "ORCID",
+    value: "0009-0001-3792-6961",
+    url: "https://orcid.org/0009-0001-3792-6961",
+  },
+  sameAs: SAME_AS,
+  subjectOf: pressAboutPerson,
+};
+
+// as reported in the AgriTech Insights and Independent pieces (see PRESS)
+const TERRAN_AWARDS = [
+  "Second place, 2024 Zuora Climate Action Challenge (Network for Teaching Entrepreneurship)",
+  "Top 100 team, 2024-25 Blue Ocean Student Entrepreneur Competition",
+  "Finalist, 2025 GENIUS Olympiad",
+];
 
 const founded = [
   priceflag && {
@@ -173,6 +229,8 @@ const founded = [
     ...organisation(terran.name, terran.url),
     description: terran.about,
     founder: PERSON_REF,
+    foundingDate: "2025-01",
+    award: TERRAN_AWARDS,
   },
 ].filter(Boolean);
 
@@ -185,6 +243,16 @@ const app = oneDay && {
   applicationCategory: "ProductivityApplication",
   author: PERSON_REF,
 };
+
+// videos on his own channel, which ties the channel to the site and person
+const videos = VIDEOS.map((video) => ({
+  "@type": "VideoObject",
+  name: video.title,
+  url: `https://www.youtube.com/watch?v=${video.id}`,
+  embedUrl: `https://www.youtube.com/embed/${video.id}`,
+  thumbnailUrl: `https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`,
+  author: PERSON_REF,
+}));
 
 const papers = PAPERS.map((paper) => ({
   "@type": "ScholarlyArticle",
@@ -210,9 +278,10 @@ const GRAPH = {
     profilePage,
     person,
     book,
-    press,
+    ...pressNodes,
     ...founded,
     ...(app ? [app] : []),
+    ...videos,
     ...papers,
     ...patents,
   ],

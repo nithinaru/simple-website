@@ -10,7 +10,7 @@ const CHARACTER_ANIMATION = {
     opacity: 1,
     y: 0,
     transition: {
-      duration: charCount === 1 ? 0.25 : 1, // if its just like "&", make the duration rlly small
+      duration: charCount === 1 ? 0.23 : 0.92, // if its just like "&", make the duration rlly small
       ease: [0.2, 0.65, 0.3, 0.9],
     },
   }),
@@ -161,7 +161,7 @@ const AnimatedText = ({
         animate={ready ? "animate" : "initial"}
         transition={{
           delayChildren: delayFor(index) + (artificialDelay ?? 0),
-          staggerChildren: 0.025,
+          staggerChildren: 0.023,
         }}
       >
         {renderWord(word)}
