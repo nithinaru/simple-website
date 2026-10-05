@@ -7,7 +7,12 @@ import {
   VIDEOS,
   WORK_ITEMS,
 } from "@/utils/constants";
-import { SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from "@/utils/site";
+import {
+  AUTHOR_EMAIL,
+  SITE_DESCRIPTION,
+  SITE_TITLE,
+  SITE_URL,
+} from "@/utils/site";
 
 /**
  * schema.org JSON-LD for search engines only: nothing here renders on the
@@ -181,6 +186,7 @@ const person = {
   givenName: "Nithin",
   familyName: "Aruswamy",
   url: SITE_URL,
+  email: AUTHOR_EMAIL,
   image: `${SITE_URL}/og.png`,
   jobTitle: "Operations Researcher & Student",
   description: SITE_DESCRIPTION,

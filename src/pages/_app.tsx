@@ -2,7 +2,12 @@ import AnimatedText from "@/components/animated-text";
 import { PlaneIcon, SparkleIcon } from "@/components/icons";
 import { SocialStickers } from "@/components/social-stickers";
 import { PRESS, PROJECTS, SOCIALS, WORK_ITEMS } from "@/utils/constants";
-import { SITE_DESCRIPTION, SITE_TITLE, SITE_URL } from "@/utils/site";
+import {
+  AUTHOR_EMAIL,
+  SITE_DESCRIPTION,
+  SITE_TITLE,
+  SITE_URL,
+} from "@/utils/site";
 import { JSON_LD } from "@/utils/structured-data";
 import "@/globals.css";
 import {
@@ -511,15 +516,17 @@ export default function App({ Component, pageProps, router }: AppProps) {
               <noscript>
                 <p>
                   Hey, I&apos;m Nithin. I study Operations Research &amp;
-                  Mathematics and work on AI in San Francisco. I
-                  enjoy <a href={INTRO_LINKS.traveling.href}>traveling</a>,
-                  making ceramics &amp; scrolling on{" "}
+                  Mathematics and work on AI in San Francisco. I enjoy{" "}
+                  <a href={INTRO_LINKS.traveling.href}>traveling</a>, making
+                  ceramics &amp; scrolling on{" "}
                   <a href={INTRO_LINKS.Cosmos.href}>Cosmos</a>.
                 </p>
                 <nav>
                   {SOCIALS.map((social) => (
                     <a key={social.label} href={social.href}>
-                      {social.label}
+                      {social.href.startsWith("mailto:")
+                        ? AUTHOR_EMAIL
+                        : social.label}
                     </a>
                   ))}
                 </nav>

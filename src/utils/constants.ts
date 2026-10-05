@@ -1,3 +1,5 @@
+import { AUTHOR_EMAIL } from "./site.ts";
+
 export type WorkItem = {
   company: string;
   slug: string;
@@ -66,7 +68,7 @@ export const SOCIALS: readonly Social[] = [
     label: "Google Scholar",
     href: "https://scholar.google.com/citations?user=jqQkW0AAAAAJ&hl=en&oi=ao",
   },
-  { label: "Email", href: "mailto:nithin.alaska@gmail.com" },
+  { label: "Email", href: `mailto:${AUTHOR_EMAIL}` },
 ];
 
 const ALL_WORK_ITEMS: readonly WorkItem[] = [

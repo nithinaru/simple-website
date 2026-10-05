@@ -7,6 +7,7 @@ import {
 } from "@/components/icons";
 import { SOCIALS } from "@/utils/constants";
 import { BUTTON_DELAY, BUTTON_STEP } from "@/utils/entrance";
+import { AUTHOR_EMAIL } from "@/utils/site";
 
 // paper-toned stickers, each at a slight tilt so the row looks hand-placed.
 // hovering snaps one straight and lifts it.
@@ -26,39 +27,47 @@ export function SocialStickers() {
   return (
     // wraps only on the very narrowest phones (under ~330px), where four
     // stickers can't fit on one line
-    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-3">
-      {SOCIALS.map((social, i) => {
-        const sticker = STICKERS[social.label];
-        const tilt = TILTS[i % TILTS.length];
-        const isMail = social.href.startsWith("mailto:");
+    <div className="mt-3">
+      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+        {SOCIALS.map((social, i) => {
+          const sticker = STICKERS[social.label];
+          const tilt = TILTS[i % TILTS.length];
+          const isMail = social.href.startsWith("mailto:");
 
-        return (
-          <motion.a
-            key={social.label}
-            href={social.href}
-            target={isMail ? undefined : "_blank"}
-            rel="noopener noreferrer"
-            aria-label={social.label}
-            className="flex shrink-0 items-center gap-1 sm:gap-1.5 rounded-md border border-stone-300 bg-stone-100 px-1.5 sm:px-2 py-1 text-xs font-bold text-stone-600 shadow-[0_1px_2px_oklch(0.3_0.02_62/0.12)] hover:text-stone-800 [&_svg]:size-3"
-            initial={{ opacity: 0, y: 5, filter: "blur(4px)", rotate: tilt }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)", rotate: tilt }}
-            whileHover={{ rotate: 0, scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{
-              default: {
-                duration: 0.92,
-                ease: ENTRANCE_EASE,
-                delay: BUTTON_DELAY + i * BUTTON_STEP,
-              },
-              rotate: SNAP,
-              scale: SNAP,
-            }}
-          >
-            {sticker?.icon}
-            {sticker?.label ?? social.label}
-          </motion.a>
-        );
-      })}
+          return (
+            <motion.a
+              key={social.label}
+              href={social.href}
+              target={isMail ? undefined : "_blank"}
+              rel="noopener noreferrer"
+              aria-label={social.label}
+              className="flex shrink-0 items-center gap-1 sm:gap-1.5 rounded-md border border-stone-300 bg-stone-100 px-1.5 sm:px-2 py-1 text-xs font-bold text-stone-600 shadow-[0_1px_2px_oklch(0.3_0.02_62/0.12)] hover:text-stone-800 [&_svg]:size-3"
+              initial={{ opacity: 0, y: 5, filter: "blur(4px)", rotate: tilt }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)", rotate: tilt }}
+              whileHover={{ rotate: 0, scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{
+                default: {
+                  duration: 0.92,
+                  ease: ENTRANCE_EASE,
+                  delay: BUTTON_DELAY + i * BUTTON_STEP,
+                },
+                rotate: SNAP,
+                scale: SNAP,
+              }}
+            >
+              {sticker?.icon}
+              {sticker?.label ?? social.label}
+            </motion.a>
+          );
+        })}
+      </div>
+      <a
+        href={`mailto:${AUTHOR_EMAIL}`}
+        className="mt-1.5 block text-xs text-stone-500"
+      >
+        {AUTHOR_EMAIL}
+      </a>
     </div>
   );
 }
