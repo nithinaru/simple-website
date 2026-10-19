@@ -1,5 +1,5 @@
 import AnimatedText from "@/components/animated-text";
-import { PlaneIcon, SparkleIcon } from "@/components/icons";
+import { PlaneIcon, SparkleIcon, TwitterIcon } from "@/components/icons";
 import { SocialStickers } from "@/components/social-stickers";
 import { PRESS, PROJECTS, SOCIALS, WORK_ITEMS } from "@/utils/constants";
 import {
@@ -156,13 +156,14 @@ const NAME = "Nithin";
 const LAST_NAME = "Aruswamy";
 
 const INTRO =
-  "Hey, I'm Nithin. I study Operations Research & Mathematics and work on AI in San Francisco. I enjoy traveling, making ceramics & scrolling on Cosmos.";
+  "Hey, I'm Nithin. I study Operations Research & Mathematics and work on AI in San Francisco. I enjoy traveling, making ceramics & posting on Cosmos and Twitter.";
 const INTRO_LINKS = {
   traveling: {
     href: "https://travel.nithinaruswamy.com/",
     icon: <PlaneIcon />,
   },
   Cosmos: { href: "https://www.cosmos.so/nithinaru", icon: <SparkleIcon /> },
+  Twitter: { href: "https://x.com/nithinaru", icon: <TwitterIcon /> },
 };
 
 // the last name arrives with the rest of the page once the intro has landed
@@ -518,8 +519,9 @@ export default function App({ Component, pageProps, router }: AppProps) {
                   Hey, I&apos;m Nithin. I study Operations Research &amp;
                   Mathematics and work on AI in San Francisco. I enjoy{" "}
                   <a href={INTRO_LINKS.traveling.href}>traveling</a>, making
-                  ceramics &amp; scrolling on{" "}
-                  <a href={INTRO_LINKS.Cosmos.href}>Cosmos</a>.
+                  ceramics &amp; posting on{" "}
+                  <a href={INTRO_LINKS.Cosmos.href}>Cosmos</a> and{" "}
+                  <a href={INTRO_LINKS.Twitter.href}>Twitter</a>.
                 </p>
                 <nav>
                   {SOCIALS.map((social) => (
