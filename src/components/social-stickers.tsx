@@ -1,11 +1,14 @@
 import { motion } from "motion/react";
+import { useEffect, useState } from "react";
 import {
+  CheckIcon,
   GitHubIcon,
   GoogleScholarIcon,
   LinkedInIcon,
   MailIcon,
 } from "@/components/icons";
 import { SOCIALS } from "@/utils/constants";
+import { AUTHOR_EMAIL } from "@/utils/site";
 import { BUTTON_DELAY, BUTTON_STEP } from "@/utils/entrance";
 
 // paper-toned stickers, each at a slight tilt so the row looks hand-placed.
@@ -22,7 +25,31 @@ const TILTS = [-3, 2.5, -2, 3];
 const ENTRANCE_EASE = [0.2, 0.65, 0.3, 0.9] as const;
 const SNAP = { type: "spring", stiffness: 400, damping: 15 } as const;
 
+// how long the email sticker says "Copied" before going back
+const COPIED_MS = 1600;
+
 export function SocialStickers() {
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (!copied) return;
+    const timer = setTimeout(() => setCopied(false), COPIED_MS);
+    return () => clearTimeout(timer);
+  }, [copied]);
+
+  // the email sticker copies the address; if the clipboard is unavailable
+  // the click falls through to the mailto link
+  const copyEmail = async (e: React.MouseEvent) => {
+    if (!navigator.clipboard) return;
+    e.preventDefault();
+    try {
+      await navigator.clipboard.writeText(AUTHOR_EMAIL);
+      setCopied(true);
+    } catch {
+      window.location.href = `mailto:${AUTHOR_EMAIL}`;
+    }
+  };
+
   return (
     // wraps only on the very narrowest phones (under ~330px), where four
     // stickers can't fit on one line
@@ -31,6 +58,7 @@ export function SocialStickers() {
         const sticker = STICKERS[social.label];
         const tilt = TILTS[i % TILTS.length];
         const isMail = social.href.startsWith("mailto:");
+        const showCopied = isMail && copied;
 
         return (
           <motion.a
@@ -38,7 +66,10 @@ export function SocialStickers() {
             href={social.href}
             target={isMail ? undefined : "_blank"}
             rel="noopener noreferrer"
-            aria-label={social.label}
+            aria-label={
+              isMail ? `Copy email address ${AUTHOR_EMAIL}` : social.label
+            }
+            onClick={isMail ? copyEmail : undefined}
             className="flex shrink-0 items-center gap-1 sm:gap-1.5 rounded-md border border-stone-300 bg-stone-100 px-1.5 sm:px-2 py-1 text-xs font-bold text-stone-600 shadow-[0_1px_2px_oklch(0.3_0.02_62/0.12)] hover:text-stone-800 [&_svg]:size-3"
             initial={{ opacity: 0, y: 5, filter: "blur(4px)", rotate: tilt }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)", rotate: tilt }}
@@ -54,11 +85,14 @@ export function SocialStickers() {
               scale: SNAP,
             }}
           >
-            {sticker?.icon}
-            {sticker?.label ?? social.label}
+            {showCopied ? <CheckIcon /> : sticker?.icon}
+            {showCopied ? "Copied" : (sticker?.label ?? social.label)}
           </motion.a>
         );
       })}
+      <span className="sr-only" aria-live="polite">
+        {copied ? "Email address copied" : ""}
+      </span>
     </div>
   );
 }
