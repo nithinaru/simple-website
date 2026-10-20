@@ -8,8 +8,8 @@ import {
   MailIcon,
 } from "@/components/icons";
 import { SOCIALS } from "@/utils/constants";
-import { AUTHOR_EMAIL } from "@/utils/site";
 import { BUTTON_DELAY, BUTTON_STEP } from "@/utils/entrance";
+import { AUTHOR_EMAIL } from "@/utils/site";
 
 // paper-toned stickers, each at a slight tilt so the row looks hand-placed.
 // hovering snaps one straight and lifts it.
@@ -28,6 +28,23 @@ const SNAP = { type: "spring", stiffness: 400, damping: 15 } as const;
 // how long the email sticker says "Copied" before going back
 const COPIED_MS = 1600;
 
+function legacyCopy(text: string) {
+  const field = document.createElement("textarea");
+  field.value = text;
+  field.setAttribute("readonly", "");
+  // off-screen but still selectable; 16px stops ios zooming in on focus
+  field.style.cssText = "position:fixed;top:0;left:-9999px;font-size:16px";
+  document.body.append(field);
+  field.select();
+  field.setSelectionRange(0, text.length);
+  let ok = false;
+  try {
+    ok = document.execCommand("copy");
+  } catch {}
+  field.remove();
+  return ok;
+}
+
 export function SocialStickers() {
   const [copied, setCopied] = useState(false);
 
@@ -37,15 +54,22 @@ export function SocialStickers() {
     return () => clearTimeout(timer);
   }, [copied]);
 
-  // the email sticker copies the address; if the clipboard is unavailable
-  // the click falls through to the mailto link
+  // the email sticker copies the address. the async clipboard api is
+  // blocked in some browsers (in-app webviews, older safari, plain http), so
+  // the old selection-based copy is the backup, and only if both fail does
+  // the click open the mail app instead.
   const copyEmail = async (e: React.MouseEvent) => {
-    if (!navigator.clipboard) return;
     e.preventDefault();
+    let ok = false;
     try {
       await navigator.clipboard.writeText(AUTHOR_EMAIL);
-      setCopied(true);
+      ok = true;
     } catch {
+      ok = legacyCopy(AUTHOR_EMAIL);
+    }
+    if (ok) {
+      setCopied(true);
+    } else {
       window.location.href = `mailto:${AUTHOR_EMAIL}`;
     }
   };
