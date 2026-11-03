@@ -75,7 +75,7 @@ const workOrganisation = (company: string) => {
 const present = <T>(value: T | null): value is T => value !== null;
 
 const currentEmployers = [
-  workOrganisation("Idler / Widget Factory"),
+  workOrganisation("Idler"),
   workOrganisation("UC Davis GSM"),
 ].filter(present);
 
