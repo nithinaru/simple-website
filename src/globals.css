@@ -89,6 +89,10 @@
   --tone-700: oklch(0.374 var(--ink-c) var(--ink-h));
   --tone-800: oklch(0.268 var(--ink-c) var(--ink-h));
 
+  /* highlighter for the one project being worked on right now: a pale,
+     warm yellow on the same hue family, so the text over it stays at ink */
+  --marker: oklch(0.9 0.075 92);
+
   /* default text (name, tagline, headings) — near-black, same brown cast */
   --tone-ink: oklch(0.2 calc(var(--ink-c) * 0.9) var(--ink-h));
 }

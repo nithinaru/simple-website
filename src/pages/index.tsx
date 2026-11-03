@@ -5,6 +5,7 @@ import {
 } from "motion/react";
 import { memo, useCallback, useState } from "react";
 import AnimatedText from "@/components/animated-text";
+import { Annotation, type AnnotationKind } from "@/components/annotation";
 import HoverPreview from "@/components/hover-preview";
 import { PAPERS, PATENTS, PROJECTS, WORK_ITEMS } from "@/utils/constants";
 import { cascade, EXPERIENCE_AT } from "@/utils/entrance";
@@ -59,6 +60,7 @@ type ItemRowProps = {
   delay: number;
   previewUrl: string;
   onHover: (id: string, previewUrl: string, rect: DOMRect) => void;
+  annotate?: AnnotationKind;
 };
 
 const ItemRow = memo(function ItemRow({
@@ -73,6 +75,7 @@ const ItemRow = memo(function ItemRow({
   delay,
   previewUrl,
   onHover,
+  annotate,
 }: ItemRowProps) {
   const handleMouseEnter = useCallback(
     (e: React.MouseEvent) => {
@@ -102,8 +105,14 @@ const ItemRow = memo(function ItemRow({
 
       <div className="relative flex items-baseline justify-between gap-2 sm:gap-8 w-full">
         <div className="flex items-baseline gap-2 min-w-0">
-          <span className="font-display font-bold text-stone-700 truncate">
-            {label}
+          <span className="relative min-w-0 flex">
+            {/* drawn once the row has landed */}
+            {annotate ? (
+              <Annotation kind={annotate} delay={delay + 0.7} />
+            ) : null}
+            <span className="relative font-display font-bold text-stone-700 truncate">
+              {label}
+            </span>
           </span>
           <span className="text-sm text-stone-500 hidden sm:inline">
             {role}
@@ -241,6 +250,7 @@ export default function Home() {
             delay={projects.row(i)}
             previewUrl={PROJECT_PREVIEW_URLS.get(project.slug) ?? ""}
             onHover={handleProjectHover}
+            annotate={project.annotate}
           />
         ))}
       </div>

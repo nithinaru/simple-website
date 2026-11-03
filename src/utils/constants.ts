@@ -22,6 +22,8 @@ export type Project = {
   url: string;
   /** ms to wait before screenshotting, for sites with an entrance animation */
   previewWaitMs?: number;
+  /** hand-drawn mark on the name, for what's being worked on right now */
+  annotate?: "box" | "highlight";
 };
 
 export type Paper = {
@@ -73,7 +75,7 @@ export const SOCIALS: readonly Social[] = [
 
 const ALL_WORK_ITEMS: readonly WorkItem[] = [
   {
-    company: "Idler / Widget Factory",
+    company: "Idler",
     slug: "idler-widget-factory",
     role: "Software Engineer",
     date: "Sep 2026 — Present",
@@ -137,6 +139,7 @@ export const PROJECTS: readonly Project[] = [
     name: "Priceflag",
     slug: "priceflag",
     role: "Co-Founder",
+    annotate: "highlight",
     date: "Present",
     about: "Simulate & safely roll out price changes for eCommerce platforms",
     url: "https://priceflag.org/",
