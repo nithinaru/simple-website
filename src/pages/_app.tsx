@@ -156,7 +156,7 @@ const NAME = "Nithin";
 const LAST_NAME = "Aruswamy";
 
 const INTRO =
-  "Hey, I'm Nithin. I study Operations Research & Mathematics and work on AI in San Francisco. I enjoy traveling, making ceramics & posting on Cosmos and Twitter.";
+  "Hey, I'm Nithin. Currently on a gap year from UC Berkeley & working on AI in San Francisco. I enjoy traveling, making ceramics & posting on Cosmos and Twitter.";
 const INTRO_LINKS = {
   traveling: {
     href: "https://travel.nithinaruswamy.com/",
@@ -516,8 +516,8 @@ export default function App({ Component, pageProps, router }: AppProps) {
 
               <noscript>
                 <p>
-                  Hey, I&apos;m Nithin. I study Operations Research &amp;
-                  Mathematics and work on AI in San Francisco. I enjoy{" "}
+                  Hey, I&apos;m Nithin. Currently on a gap year from UC Berkeley
+                  &amp; working on AI in San Francisco. I enjoy{" "}
                   <a href={INTRO_LINKS.traveling.href}>traveling</a>, making
                   ceramics &amp; posting on{" "}
                   <a href={INTRO_LINKS.Cosmos.href}>Cosmos</a> and{" "}
