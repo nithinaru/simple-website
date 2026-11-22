@@ -659,6 +659,7 @@ html {
 }
 
 .v2 .dock-item {
+  /* eased frame by frame in dock.tsx, so no transition on the size here */
   --s: 1;
   /* no focus box round a clicked icon: its name above it is the cue */
   outline: none;
@@ -671,9 +672,7 @@ html {
   transform: translate(var(--from), 1.7em) scale(0.2);
   transition:
     transform 260ms cubic-bezier(0.5, 0, 0.7, 0.4),
-    opacity 180ms ease,
-    width 260ms cubic-bezier(0.2, 0.7, 0.2, 1),
-    height 260ms cubic-bezier(0.2, 0.7, 0.2, 1);
+    opacity 180ms ease;
 }
 
 .v2 .net:is(:hover, :focus-visible, :has(:focus-visible)) .dock-item {
@@ -682,9 +681,7 @@ html {
   /* the springy curve overshoots, so they settle rather than stop */
   transition:
     transform 460ms cubic-bezier(0.3, 1.55, 0.5, 1) var(--wait),
-    opacity 160ms ease var(--wait),
-    width 260ms cubic-bezier(0.2, 0.7, 0.2, 1),
-    height 260ms cubic-bezier(0.2, 0.7, 0.2, 1);
+    opacity 160ms ease var(--wait);
 }
 
 /* a soft white haze behind the row, so the marks read over blurred text */
