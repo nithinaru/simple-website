@@ -633,7 +633,8 @@ html {
   bottom: 100%;
   z-index: 20;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: center;
   gap: 0.34em;
   /* the padding keeps the pointer inside on its way up from the phrase */
   padding: 1em 0.8em 0.5em;
@@ -652,6 +653,8 @@ html {
 
 .v2 .dock-item {
   --s: 1;
+  /* no focus box round a clicked icon: its name above it is the cue */
+  outline: none;
   position: relative;
   flex: none;
   width: calc(1.9em * var(--s));
@@ -718,7 +721,7 @@ html {
   transition: opacity 120ms ease;
 }
 
-.v2 .dock-item[data-near] .dock-label {
+.v2 .dock-item:is([data-near], :focus-visible) .dock-label {
   opacity: 1;
 }
 

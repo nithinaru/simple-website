@@ -154,29 +154,60 @@ export function Globe({
   );
 }
 
-/** a three-tier fountain, for private garden */
+/*
+ * private garden's fountain, after the drawing on that site: a wide fluted
+ * basin on a plinth, a smaller bowl above it, and water falling from the jet
+ * in a dome of broken lines.
+ */
 export function Fountain({ seed }: { seed: number }) {
-  const pen = { seed, roughness: 0.8, stroke: INK, strokeWidth: 1.5 };
+  const pen = { seed, roughness: 0.7, stroke: INK, strokeWidth: 1.3 };
+  const water = {
+    fill: "none",
+    stroke: "#1f4fff",
+    strokeWidth: 1.1,
+    strokeLinecap: "round" as const,
+    strokeDasharray: "2.2 2",
+  };
   return (
     <svg
       className="sign"
-      viewBox="0 0 34 32"
-      style={{ width: `${34 / 32}em` }}
+      viewBox="0 0 36 32"
+      style={{ width: `${36 / 32}em` }}
       aria-hidden="true"
     >
+      {/* the water first, so the stone is drawn over it: outer sheets from
+          the jet to the basin, inner ones from the bowl */}
+      <path d="M18 4.5 C9 5.5 5 13 4.5 21" {...water} />
+      <path d="M18 4.5 C27 5.5 31 13 31.5 21" {...water} />
+      <path d="M18 5.5 C13.5 6.5 11.5 9.5 11 13" {...water} />
+      <path d="M18 5.5 C22.5 6.5 24.5 9.5 25 13" {...water} />
+      <path d="M11.5 15.5 C9 17 8 19 7.5 21" {...water} />
+      <path d="M24.5 15.5 C27 17 28 19 28.5 21" {...water} />
       <Paths
         shapes={[
-          // the jet, then three bowls widening downwards, on a stem
-          gen.path("M17 2 C14 4 14 7 17 8 C20 7 20 4 17 2", {
+          // plinth, basin and its rim
+          gen.line(5, 30, 31, 30, { ...pen, strokeWidth: 1.5 }),
+          gen.path("M3.5 21.5 L6.5 27.5 H29.5 L32.5 21.5", {
             ...pen,
-            stroke: "#1f4fff",
-            strokeWidth: 1.3,
+            seed: seed + 1,
           }),
-          gen.path("M12 10 C13 14 21 14 22 10 Z", { ...pen, seed: seed + 1 }),
-          gen.path("M8 17 C10 22 24 22 26 17 Z", { ...pen, seed: seed + 2 }),
-          gen.path("M3 25 C6 31 28 31 31 25 Z", { ...pen, seed: seed + 3 }),
-          gen.line(17, 13, 17, 17, { ...pen, seed: seed + 4 }),
-          gen.line(17, 21, 17, 25, { ...pen, seed: seed + 5 }),
+          gen.ellipse(18, 21.5, 29, 3.4, { ...pen, seed: seed + 2 }),
+          // the fluting round the basin
+          ...[11, 18, 25].map((x, i) =>
+            gen.line(x, 24, x + (x - 18) * 0.06, 27, {
+              ...pen,
+              seed: seed + 3 + i,
+              strokeWidth: 0.8,
+            }),
+          ),
+          // stem, upper bowl, and the jet
+          gen.line(18, 14.5, 18, 20.5, { ...pen, seed: seed + 11 }),
+          gen.path("M11 12.5 C12.5 16 23.5 16 25 12.5", {
+            ...pen,
+            seed: seed + 12,
+          }),
+          gen.ellipse(18, 12.5, 14, 2.2, { ...pen, seed: seed + 13 }),
+          gen.line(18, 7, 18, 12, { ...pen, seed: seed + 14 }),
         ]}
       />
     </svg>
@@ -238,40 +269,13 @@ export function SocialSign({ kind, seed }: { kind: SocialKind; seed: number }) {
 
   let shapes: Drawable[];
   if (kind === "x") {
-    // a small bird, looking right: body and tail, head, beak, wing, legs
+    // a bird on the wing, filled in: one pointed wing raised, tail trailing
+    // low to the left, beak to the right
     shapes = [
       gen.path(
-        "M19 13 C12 12 7 16 6 23 L2.5 26.5 L9 24.5 C15 26.5 22 23 23 15",
-        {
-          ...pen,
-          seed: seed + 1,
-        },
+        "M4 20 C8 21 12 20 15 18 L9 8 C14 9 19 12 21 15 C23 13 26 13 27.5 15 L31 15.5 L28 17.5 C27 23 22 27 16 27 C12 27 8 25 6 23 L2 26 Z",
+        { ...inked, seed: seed + 1, roughness: 0.7 },
       ),
-      gen.circle(22, 11, 8.5, { ...pen, seed: seed + 2 }),
-      gen.linearPath(
-        [
-          [25.8, 9.6],
-          [30, 11.4],
-          [25.8, 13],
-        ],
-        { ...pen, seed: seed + 3 },
-      ),
-      gen.path("M11 18 C13.5 20.5 17 19.5 18.5 16", {
-        ...pen,
-        seed: seed + 4,
-        strokeWidth: 1.3,
-      }),
-      gen.circle(23, 10.2, 1.5, { ...inked, seed: seed + 5 }),
-      gen.line(13, 24.5, 12.2, 29.5, {
-        ...pen,
-        seed: seed + 6,
-        strokeWidth: 1.3,
-      }),
-      gen.line(16.5, 24.5, 16.5, 29.5, {
-        ...pen,
-        seed: seed + 7,
-        strokeWidth: 1.3,
-      }),
     ];
   } else if (kind === "linkedin") {
     // "in", lettered with a broad pen: the dot, the stem, then the n
@@ -285,20 +289,34 @@ export function SocialSign({ kind, seed }: { kind: SocialKind; seed: number }) {
       }),
     ];
   } else if (kind === "github") {
-    // a branch leaving the main line and joining it again
+    // a cat's face, white on a black disc, with two dots for eyes
     shapes = [
-      gen.line(10, 10.5, 10, 21.5, { ...pen, seed: seed + 1, strokeWidth: 2 }),
-      gen.path("M23 15.5 C23 21 10 16.5 10 21.5", {
-        ...pen,
-        seed: seed + 2,
-        strokeWidth: 2,
-      }),
-      gen.circle(10, 7, 6.5, { ...pen, seed: seed + 3 }),
-      gen.circle(10, 25, 6.5, { ...pen, seed: seed + 4 }),
-      gen.circle(23, 12, 6.5, { ...pen, seed: seed + 5 }),
+      gen.circle(16, 16, 28, { ...inked, seed: seed + 1 }),
+      gen.path(
+        "M9 21 C9 17 10 15 11 14 L10 8 L14.5 11.5 C15.5 11.3 16.5 11.3 17.5 11.5 L22 8 L21 14 C22 15 23 17 23 21 C23 24 20 26 16 26 C12 26 9 24 9 21 Z",
+        {
+          ...pen,
+          seed: seed + 2,
+          stroke: "#fff",
+          strokeWidth: 0.8,
+          fill: "#fff",
+          fillStyle: "solid",
+        },
+      ),
+      gen.circle(13.3, 19.5, 2, { ...inked, seed: seed + 3 }),
+      gen.circle(18.7, 19.5, 2, { ...inked, seed: seed + 4 }),
     ];
   } else if (kind === "cosmos") {
-    shapes = [];
+    // a ring of six dots, pen wobble and all
+    shapes = Array.from({ length: 6 }, (_, i) => {
+      const a = (i / 6) * Math.PI * 2;
+      return gen.circle(16 + Math.cos(a) * 8.5, 16 + Math.sin(a) * 8.5, 4.6, {
+        ...inked,
+        seed: seed + 3 + i,
+        roughness: 0.9,
+        strokeWidth: 1.3,
+      });
+    });
   } else {
     // a mortarboard: the flat top, the cap under it, the tassel
     shapes = [
@@ -322,24 +340,6 @@ export function SocialSign({ kind, seed }: { kind: SocialKind; seed: number }) {
   return (
     <svg className="social" viewBox="0 0 32 32" aria-hidden="true">
       <Paths shapes={shapes} />
-      {/* a ring of six dots; plain circles, since tiny ones go ragged when
-          the pen wobbles them */}
-      {kind === "cosmos"
-        ? Array.from({ length: 6 }, (_, i) => {
-            const a = (i / 6) * Math.PI * 2 + 0.26;
-            const r = 2.9 + ((seed + i * 5) % 3) * 0.25;
-            return (
-              <circle
-                // biome-ignore lint/suspicious/noArrayIndexKey: fixed drawing
-                key={i}
-                cx={(16 + Math.cos(a) * 8.6).toFixed(2)}
-                cy={(16 + Math.sin(a) * 8.6).toFixed(2)}
-                r={r}
-                fill={INK}
-              />
-            );
-          })
-        : null}
     </svg>
   );
 }
