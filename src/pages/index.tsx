@@ -263,6 +263,12 @@ export default function Home() {
     };
   }, []);
 
+  // the numbers on the cobalt lines and the name's box are written straight
+  // onto the page, so write them again after anything redraws it
+  useLayoutEffect(() => {
+    if (columnRef.current) labelLinks(columnRef.current);
+  });
+
   // a selection only paints text, so logos and drawings are told when they're
   // inside one and paint the highlight themselves (see [data-picked] in css)
   useEffect(() => {

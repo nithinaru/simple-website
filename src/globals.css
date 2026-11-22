@@ -657,16 +657,16 @@ html {
   outline: none;
   position: relative;
   flex: none;
-  width: calc(1.9em * var(--s));
-  height: calc(1.9em * var(--s));
+  width: calc(2.3em * var(--s));
+  height: calc(2.3em * var(--s));
   opacity: 0;
   /* closed: stacked on the middle of the phrase, small */
   transform: translate(var(--from), 1.7em) scale(0.2);
   transition:
     transform 260ms cubic-bezier(0.5, 0, 0.7, 0.4),
     opacity 180ms ease,
-    width 150ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    height 150ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    width 260ms cubic-bezier(0.2, 0.7, 0.2, 1),
+    height 260ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 .v2 .net:is(:hover, :focus-visible, :has(:focus-visible)) .dock-item {
@@ -676,8 +676,8 @@ html {
   transition:
     transform 460ms cubic-bezier(0.3, 1.55, 0.5, 1) var(--wait),
     opacity 160ms ease var(--wait),
-    width 150ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    height 150ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    width 260ms cubic-bezier(0.2, 0.7, 0.2, 1),
+    height 260ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 /* a soft white haze behind the row, so the marks read over blurred text */
