@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { type SocialKind, SocialSign } from "@/components/sketch";
 
 /*
  * the socials, tucked behind one phrase. hovering the phrase fans them out
@@ -6,7 +7,7 @@ import { useRef } from "react";
  * and shrinks the rest, like the dock on a mac.
  */
 
-export type DockItem = { label: string; href: string; logo: string };
+export type DockItem = { label: string; href: string; sign: SocialKind };
 
 /** nudge the row sideways if it would hang off the edge of the window */
 export const keepDockInView = (phrase: HTMLElement) => {
@@ -88,13 +89,7 @@ export function Dock({ items }: { items: readonly DockItem[] }) {
             } as React.CSSProperties
           }
         >
-          {/* biome-ignore lint/performance/noImgElement: tiny remote favicon */}
-          <img
-            src={`https://www.google.com/s2/favicons?domain=${item.logo}&sz=128`}
-            alt=""
-            width={64}
-            height={64}
-          />
+          <SocialSign kind={item.sign} seed={61 + k * 13} />
           <span className="dock-label">{item.label}</span>
         </a>
       ))}

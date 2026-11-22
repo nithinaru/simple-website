@@ -224,3 +224,84 @@ export function Bridge({ seed }: { seed: number }) {
     </svg>
   );
 }
+
+/*
+ * the socials, drawn in the same hand as the other signs: a frame with a
+ * letter or a simple mark inside, each on its own seed.
+ */
+export type SocialKind = "x" | "linkedin" | "github" | "cosmos" | "scholar";
+
+export function SocialSign({ kind, seed }: { kind: SocialKind; seed: number }) {
+  const pen = { seed, roughness: 0.9, stroke: INK, strokeWidth: 1.6 };
+  const fine = { ...pen, strokeWidth: 1.3 };
+  const dot = { ...fine, fill: INK, fillStyle: "solid" as const };
+  const box = gen.rectangle(3, 3, 26, 26, pen);
+  const ring = gen.circle(16, 16, 27, pen);
+
+  let frame = box;
+  let inside: Drawable[] = [];
+  let label: string | null = null;
+
+  if (kind === "x") {
+    // two crossed strokes
+    inside = [
+      gen.line(10, 9, 22, 23, { ...pen, seed: seed + 1, strokeWidth: 2 }),
+      gen.line(22, 9, 10, 23, { ...pen, seed: seed + 2, strokeWidth: 2 }),
+    ];
+  } else if (kind === "linkedin") {
+    label = "in";
+  } else if (kind === "github") {
+    frame = ring;
+    label = "git";
+  } else if (kind === "cosmos") {
+    // a ring of six dots
+    frame = ring;
+    inside = Array.from({ length: 6 }, (_, i) => {
+      const a = (i / 6) * Math.PI * 2;
+      return gen.circle(16 + Math.cos(a) * 6, 16 + Math.sin(a) * 6, 3.2, {
+        ...dot,
+        seed: seed + 3 + i,
+      });
+    });
+  } else {
+    // a mortarboard: the flat top, the cap under it, the tassel
+    frame = ring;
+    inside = [
+      gen.polygon(
+        [
+          [16, 9],
+          [25, 13.5],
+          [16, 18],
+          [7, 13.5],
+        ],
+        { ...fine, seed: seed + 1 },
+      ),
+      gen.path("M11 16 V20 C13 23 19 23 21 20 V16", {
+        ...fine,
+        seed: seed + 2,
+      }),
+      gen.line(25, 13.5, 25, 20, { ...fine, seed: seed + 3 }),
+    ];
+  }
+
+  return (
+    <svg className="social" viewBox="0 0 32 32" aria-hidden="true">
+      {/* white behind, so it reads over whatever text it opens across */}
+      <rect x="2" y="2" width="28" height="28" rx="6" fill="#fff" />
+      <Paths shapes={[frame, ...inside]} />
+      {label ? (
+        <text
+          x="16"
+          y="20.5"
+          textAnchor="middle"
+          fontFamily={`"${LABEL_FAMILY}", sans-serif`}
+          fontWeight="700"
+          fontSize={label.length > 2 ? 10 : 12}
+          fill={INK}
+        >
+          {label}
+        </text>
+      ) : null}
+    </svg>
+  );
+}
