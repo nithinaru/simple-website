@@ -11,6 +11,8 @@ import {
 import { RulerIntro } from "@/components/ruler-intro";
 import { Bridge, Fountain, Globe, Sign, underline } from "@/components/sketch";
 import { labelLinks } from "@/utils/label-links";
+import { copyText, shuffleText } from "@/utils/shuffle-text";
+import { AUTHOR_EMAIL } from "@/utils/site";
 
 /*
  * the whole site: a name and a few short paragraphs about right now, sized
@@ -269,6 +271,51 @@ export default function Home() {
     if (columnRef.current) labelLinks(columnRef.current);
   });
 
+  /*
+   * clicking the name copies my email. the chip over its box, which normally
+   * gives the box's size, shuffles into "Email copied" (after the Available
+   * pill on justinschueler.com) and shuffles back when the pointer leaves.
+   */
+  const [copied, setCopied] = useState(false);
+  const lastTouch = useRef(false);
+  const chip = useRef<{
+    stop: () => void;
+    back?: ReturnType<typeof setTimeout>;
+  }>({ stop: () => {} });
+
+  const say = (text: string | null) => {
+    const box = columnRef.current?.querySelector<HTMLElement>(".name-box");
+    if (!box) return;
+    chip.current.stop();
+    clearTimeout(chip.current.back);
+    const to = text ?? box.dataset.measure ?? "";
+    if (text) box.dataset.says = text;
+    chip.current.stop = shuffleText(
+      (shown) => {
+        box.dataset.size = shown;
+        // back to measuring once it has finished shuffling home
+        if (!text && shown === to) delete box.dataset.says;
+      },
+      box.dataset.size ?? "",
+      to,
+    );
+  };
+
+  const copyEmail = async (touch: boolean) => {
+    if (!(await copyText(AUTHOR_EMAIL))) return;
+    setCopied(true);
+    say("Email copied");
+    // nothing to stop hovering on a touch screen or the keyboard: go back
+    // after a moment instead
+    if (touch) chip.current.back = setTimeout(putBack, 2000);
+  };
+
+  const putBack = () => {
+    if (!columnRef.current?.querySelector(".name-box[data-says]")) return;
+    setCopied(false);
+    say(null);
+  };
+
   // a selection only paints text, so logos and drawings are told when they're
   // inside one and paint the highlight themselves (see [data-picked] in css)
   useEffect(() => {
@@ -430,8 +477,28 @@ export default function Home() {
           <h1 ref={nameRef}>
             {/* the space is inside the run, so a selection is grainy across it */}
             <span className="tx">{words(GREETING, at)} </span>
-            <span className="name">
+            {/* biome-ignore lint/a11y/useSemanticElements: a button can't sit inside the heading's text run */}
+            <span
+              className="name"
+              role="button"
+              tabIndex={0}
+              aria-label="Nithin. Copy my email address"
+              onClick={(e) => copyEmail(e.detail === 0 || lastTouch.current)}
+              onPointerDown={(e) => {
+                lastTouch.current = e.pointerType !== "mouse";
+              }}
+              onPointerLeave={putBack}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  copyEmail(true);
+                }
+              }}
+            >
               <span className="tx">{words(NAME, at)}</span>
+              <output className="sr-only">
+                {copied ? "Email copied" : ""}
+              </output>
               {/* a cobalt text box, as a design tool shows a selected
                   layer: outline, a handle on each corner, its size on a chip.
                   it's drawn once the opening is over (see .name-box) */}

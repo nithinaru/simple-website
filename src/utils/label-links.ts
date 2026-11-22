@@ -8,6 +8,10 @@ export const labelLinks = (column: HTMLElement) => {
   const box = column.querySelector<HTMLElement>(".name-box");
   if (name && box) {
     const r = name.getBoundingClientRect();
-    box.dataset.size = `${Math.round(r.width)} × ${Math.round(r.height)}`;
+    const size = `${Math.round(r.width)} × ${Math.round(r.height)}`;
+    // kept aside too: the chip can be showing something else for a while
+    // (see copyEmail in pages/index.tsx) and needs to know what to go back to
+    box.dataset.measure = size;
+    if (!box.hasAttribute("data-says")) box.dataset.size = size;
   }
 };

@@ -226,6 +226,11 @@ html {
   }
 }
 
+/* the box thickens a touch when the name can be pressed, or has focus */
+.v2[data-stage="settled"] .name:is(:hover, :focus-visible) .name-box {
+  box-shadow: 0 0 0 1px var(--blue);
+}
+
 .v2 .name-box i {
   position: absolute;
   width: 7px;
@@ -319,6 +324,8 @@ html {
 
 /* the name, and the mark drawn on it (see NameMarkDrawing) */
 .v2 .name {
+  cursor: pointer;
+  outline: none;
   position: relative;
   display: inline-block;
   white-space: nowrap;
