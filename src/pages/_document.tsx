@@ -1,5 +1,4 @@
 import { Head, Html, Main, NextScript } from "next/document";
-import { FONT_STYLESHEETS } from "@/components/options";
 
 export default function Document() {
   return (
@@ -23,11 +22,7 @@ export default function Document() {
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#0a0a0a" />
         <meta name="theme-color" content="#ffffff" />
         <meta name="msapplication-TileColor" content="#ffffff" />
-        {/* font options still being chosen between; see components/options */}
         <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="" />
-        {FONT_STYLESHEETS.map((href) => (
-          <link key={href} rel="stylesheet" href={href} />
-        ))}
         {/* without scripts nothing runs the opening, so show the text plainly */}
         <noscript>
           <style>

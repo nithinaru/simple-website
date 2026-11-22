@@ -1,99 +1,83 @@
 import { type RefObject, useEffect, useState } from "react";
-import rough from "roughjs";
 
 /*
- * a small hand-drawn bear. once the opening is over it walks slowly in from
- * the right, down to the name, stops just short of the full stop after it,
- * and lowers its head to have a look. there it stays.
+ * a small bear, in solid black. once the opening is over and the box round
+ * the name has been drawn, it walks slowly in from the right, down to the
+ * name, stops just short of the full stop after it, and lowers its head to
+ * have a look. there it stays.
  *
- * it's stop-motion: a handful of drawings shown one after another, a few a
- * second, and the bear only moves when the drawing changes. every drawing is
- * made with a different seed, so the lines shiver the way redrawn frames do.
- * the drawings are placeholders: swap `draw` for real artwork later.
+ * it's stop-motion: a handful of poses shown one after another, a few a
+ * second, and the bear only moves when the pose changes. this bear is a
+ * stand-in built from simple shapes: swap `Pose` for real drawings later.
  */
-
-const gen = rough.generator();
 
 const INK = "#141414";
 const VIEW = { w: 120, h: 84 }; // the drawing's own units; feet stand on y=80
 const SCALE = 0.62; // drawing units to css px
-const FPS = 8;
-const STRIDE = 4; // px moved per drawing while walking
+const FPS = 10;
+const POSES = 8; // drawings in one full stride
+const STRIDE = 3.2; // px moved per drawing while walking
 const SLOPE = 0.34; // how steeply it comes down: px dropped per px walked
 const RUN = 420; // furthest it starts from where it ends up, px
+const WAIT = 1100; // ms after the opening before it sets off
 
-type Shape = { d: string; stroke: string; width: number; fill: string };
-
-// node and the browser disagree in the last decimal of sines and cosines
-const tidy = (d: string) =>
-  d.replace(/-?\d+\.\d+/g, (n) => Number(n).toFixed(2));
-
-/** one drawing of the bear, facing left. `step` is where it is in its stride */
-const draw = (seed: number, step: number | null): Shape[] => {
+/** one pose of the bear, facing left. `step` is where it is in its stride;
+    null is standing still with its head down */
+function Pose({ step }: { step: number | null }) {
   const looking = step === null;
-  const turn = looking ? 0 : (step / 6) * Math.PI * 2;
-  const bob = looking ? 0 : Math.sin(turn * 2) * 1.1;
-  const pen = { roughness: 1.1, stroke: INK, strokeWidth: 1.6 };
-  const solid = { ...pen, fill: "#fff", fillStyle: "solid" as const };
+  const turn = looking ? 0 : (step / POSES) * Math.PI * 2;
+  // the body rises and falls twice per stride, the head a beat behind it
+  const bob = looking ? 0 : Math.sin(turn * 2) * 1.2;
+  const nod = looking ? 0 : Math.sin(turn * 2 - 0.9) * 1.4;
 
-  // a leg swings forward lifted and back planted
-  const leg = (hip: number, offset: number, far: boolean, n: number) => {
+  // a leg: thigh to a knee that leads the foot, then down to the foot, which
+  // lifts as it swings forward and stays planted as it pushes back
+  const leg = (hip: number, offset: number) => {
     const swing = looking ? 0 : Math.sin(turn + offset) * 9;
-    const lift = looking ? 0 : Math.max(0, Math.cos(turn + offset)) * 4;
-    const foot = 80 - lift;
-    return gen.polygon(
-      [
-        [hip - 5, 54 + bob],
-        [hip - 6 + swing, foot],
-        [hip + 6 + swing, foot],
-        [hip + 6, 54 + bob],
-      ],
-      { ...solid, seed: seed + n, stroke: far ? "#8a8a8a" : INK },
+    const lift = looking ? 0 : Math.max(0, Math.cos(turn + offset)) * 5;
+    const knee = hip + swing * 0.45 - (looking ? 0 : 2);
+    return (
+      <polyline
+        points={`${hip},${50 + bob} ${knee},${65 + bob * 0.5 - lift * 0.4} ${hip + swing},${76 - lift}`}
+        fill="none"
+        stroke={INK}
+        strokeWidth="11"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     );
   };
 
-  // head up while walking; down by the ground, nose forward, when looking
-  const hx = looking ? 23 : 30;
-  const hy = looking ? 60 : 39 + bob;
+  // head carried low and forward on the walk; down by the ground when looking
+  const hx = looking ? 19 : 25;
+  const hy = looking ? 61 : 42 + nod;
 
-  const drawings = [
-    // the far pair of legs first, so the body covers their tops
-    leg(54, Math.PI, true, 1),
-    leg(94, 0, true, 2),
-    gen.circle(104, 38 + bob, 8, { ...solid, seed: seed + 3 }),
-    gen.ellipse(68, 44 + bob, 70, 40, { ...solid, seed: seed + 4 }),
-    leg(46, 0, false, 5),
-    leg(86, Math.PI, false, 6),
-    gen.circle(hx - 6, hy - 13, 9, { ...solid, seed: seed + 7 }),
-    gen.circle(hx + 7, hy - 13, 9, { ...solid, seed: seed + 8 }),
-    gen.circle(hx, hy, 28, { ...solid, seed: seed + 9 }),
-    gen.ellipse(hx - 13, hy + 4, 14, 10, { ...solid, seed: seed + 10 }),
-    gen.circle(hx - 19, hy + 2, 4, {
-      ...pen,
-      seed: seed + 11,
-      fill: INK,
-      fillStyle: "solid",
-    }),
-    gen.circle(hx - 5, hy - 3, 2.4, {
-      ...pen,
-      seed: seed + 12,
-      fill: INK,
-      fillStyle: "solid",
-    }),
-  ];
-
-  return drawings.flatMap((drawing) =>
-    gen.toPaths(drawing).map((p) => ({
-      d: tidy(p.d),
-      stroke: p.stroke,
-      width: p.strokeWidth,
-      fill: p.fill ?? "none",
-    })),
+  return (
+    <g fill={INK}>
+      {leg(52, Math.PI)}
+      {leg(93, 0)}
+      {leg(44, 0)}
+      {leg(86, Math.PI)}
+      {/* rump, belly and the hump of the shoulders */}
+      <ellipse cx="90" cy={42 + bob} rx="18" ry="19" />
+      <ellipse cx="68" cy={44 + bob} rx="34" ry="19" />
+      <ellipse cx="48" cy={37 + bob} rx="19" ry="16" />
+      {/* neck, head, muzzle, ear */}
+      <line
+        x1="42"
+        y1={40 + bob}
+        x2={hx + 5}
+        y2={hy}
+        stroke={INK}
+        strokeWidth="23"
+        strokeLinecap="round"
+      />
+      <ellipse cx={hx} cy={hy} rx="13.5" ry="11.5" />
+      <ellipse cx={hx - 12} cy={hy + 3.5} rx="8" ry="6" />
+      <circle cx={hx + 6.5} cy={hy - 10.5} r="4.6" />
+    </g>
   );
-};
-
-const WALK = Array.from({ length: 6 }, (_, i) => draw(100 + i * 17, i));
-const LOOK = Array.from({ length: 3 }, (_, i) => draw(300 + i * 17, null));
+}
 
 type Place = { x: number; y: number };
 
@@ -131,14 +115,16 @@ export function Bear({ beside }: { beside: RefObject<HTMLElement | null> }) {
     let left = Math.ceil(run / STRIDE);
     let tick = 0;
     let arrived = false;
-    setPlace({ x: end.x + left * STRIDE, y: end.y - left * STRIDE * SLOPE });
+    let timer: ReturnType<typeof setInterval>;
 
     // a timer, not animation frames: stop-motion wants a fixed, slow beat
-    const timer = setInterval(() => {
-      tick += 1;
-      if (!arrived) {
+    const start = setTimeout(() => {
+      setPlace({ x: end.x + left * STRIDE, y: end.y - left * STRIDE * SLOPE });
+      timer = setInterval(() => {
+        if (arrived) return;
+        tick += 1;
         left -= 1;
-        setFrame(tick % WALK.length);
+        setFrame(tick % POSES);
         setShown(Math.min(1, tick / 6));
         setPlace({
           x: end.x + left * STRIDE,
@@ -147,12 +133,10 @@ export function Bear({ beside }: { beside: RefObject<HTMLElement | null> }) {
         if (left <= 0) {
           arrived = true;
           setLooking(true);
+          clearInterval(timer);
         }
-        // standing: the lines keep shivering, but slower
-      } else if (tick % 3 === 0) {
-        setFrame((tick / 3) % LOOK.length);
-      }
-    }, 1000 / FPS);
+      }, 1000 / FPS);
+    }, WAIT);
 
     // stay beside the name if the window changes once it's there
     const settle = () => {
@@ -161,15 +145,13 @@ export function Bear({ beside }: { beside: RefObject<HTMLElement | null> }) {
     };
     window.addEventListener("resize", settle);
     return () => {
+      clearTimeout(start);
       clearInterval(timer);
       window.removeEventListener("resize", settle);
     };
   }, [beside]);
 
   if (!place) return null;
-  const shapes = looking
-    ? LOOK[frame % LOOK.length]
-    : WALK[frame % WALK.length];
 
   return (
     <svg
@@ -180,18 +162,7 @@ export function Bear({ beside }: { beside: RefObject<HTMLElement | null> }) {
       style={{ left: place.x, top: place.y, opacity: shown }}
       aria-hidden="true"
     >
-      {shapes.map((s, i) => (
-        <path
-          // biome-ignore lint/suspicious/noArrayIndexKey: fixed drawing
-          key={i}
-          d={s.d}
-          stroke={s.stroke}
-          strokeWidth={s.width}
-          fill={s.fill}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      ))}
+      <Pose step={looking ? null : frame} />
     </svg>
   );
 }

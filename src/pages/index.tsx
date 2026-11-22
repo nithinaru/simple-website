@@ -2,12 +2,12 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Bear } from "@/components/bear";
 import { Dock, type DockItem, keepDockInView } from "@/components/dock";
 import {
-  FONTS,
   LABEL_FAMILY,
   MONO_FAMILY,
-  OptionsPanel,
+  TEXT_FAMILY,
+  TEXT_SCALE,
+  TEXTURE,
   TextureFilters,
-  useOptions,
 } from "@/components/options";
 import {
   follow,
@@ -16,14 +16,7 @@ import {
   preload,
 } from "@/components/pixel-preview";
 import { RulerIntro } from "@/components/ruler-intro";
-import {
-  Bridge,
-  Fountain,
-  Globe,
-  NameMarkDrawing,
-  Sign,
-  underline,
-} from "@/components/sketch";
+import { Bridge, Fountain, Globe, Sign, underline } from "@/components/sketch";
 
 /*
  * the whole site: a name and a few short paragraphs about right now, sized
@@ -53,6 +46,8 @@ type Link = {
   icon?: "fountain";
   /** screenshot shown on hover, from public/images/previews */
   preview?: string;
+  /** the page moves: there's a looping clip beside the screenshot */
+  moving?: boolean;
 };
 /** a phrase that opens the socials when hovered */
 type Net = { net: string };
@@ -96,6 +91,7 @@ const COPY: Token[][] = [
       href: "https://idler.ai/",
       logo: "idler.ai",
       preview: "idler-widget-factory",
+      moving: true,
     },
     " (YC S25).",
   ],
@@ -105,6 +101,7 @@ const COPY: Token[][] = [
       text: "travel",
       href: "https://travel.nithinaruswamy.com/",
       preview: "travel",
+      moving: true,
     },
     ", throw pots, and tend my ",
     {
@@ -112,6 +109,7 @@ const COPY: Token[][] = [
       href: "https://studio.nithinaruswamy.com",
       icon: "fountain",
       preview: "private-garden",
+      moving: true,
     },
     ".",
   ],
@@ -137,10 +135,14 @@ const SOCIALS: readonly DockItem[] = [
   },
 ];
 
-const PREVIEWS = COPY.flat().flatMap((t) =>
-  typeof t !== "string" && "preview" in t && t.preview
-    ? [`/images/previews/${t.preview}.webp`]
-    : [],
+const LINKS = COPY.flat().filter(
+  (t): t is Link => typeof t !== "string" && "text" in t,
+);
+const PREVIEWS = LINKS.flatMap((l) =>
+  l.preview ? [`/images/previews/${l.preview}.webp`] : [],
+);
+const CLIPS = LINKS.flatMap((l) =>
+  l.preview && l.moving ? [`/images/previews/${l.preview}.mp4`] : [],
 );
 
 // timing of the opening, in ms
@@ -220,20 +222,15 @@ const measure = (root: HTMLElement, name: HTMLElement) => {
 };
 
 export default function Home() {
-  const [options, set] = useOptions();
-  const [run, setRun] = useState(0);
   const [stage, setStage] = useState<Stage>("appear");
   const [hover, setHover] = useState<Hover>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const columnRef = useRef<HTMLDivElement>(null);
   const nameRef = useRef<HTMLHeadingElement>(null);
 
-  useEffect(() => preload(PREVIEWS), []);
+  useEffect(() => preload(PREVIEWS, CLIPS), []);
 
-  const font = FONTS.find((f) => f.id === options.font) ?? FONTS[0];
-
-  // the opening, from the top each time `run` changes
-  // biome-ignore lint/correctness/useExhaustiveDependencies: `run` restarts it
+  // the opening, once, when the page arrives
   useLayoutEffect(() => {
     const root = rootRef.current;
     const column = columnRef.current;
@@ -262,10 +259,9 @@ export default function Home() {
     return () => {
       for (const t of timers) clearTimeout(t);
     };
-  }, [run]);
+  }, []);
 
   // keep fitting the window as it or the font changes
-  // biome-ignore lint/correctness/useExhaustiveDependencies: a new name mark needs its size written on it
   useEffect(() => {
     const refit = () => {
       if (rootRef.current && columnRef.current) {
@@ -275,13 +271,13 @@ export default function Home() {
     };
     refit();
     let live = true;
-    document.fonts.load(`16px "${font.family}"`).then(() => live && refit());
+    document.fonts.load(`16px "${TEXT_FAMILY}"`).then(() => live && refit());
     window.addEventListener("resize", refit);
     return () => {
       live = false;
       window.removeEventListener("resize", refit);
     };
-  }, [font.family, options.nameMark]);
+  }, []);
 
   // a selection only paints text, so logos and drawings are told when they're
   // inside one and paint the highlight themselves (see [data-picked] in css)
@@ -318,6 +314,8 @@ export default function Home() {
     const seed = linkSeed;
     linkSeed += 7;
     const src = l.preview ? `/images/previews/${l.preview}.webp` : null;
+    const video =
+      l.preview && l.moving ? `/images/previews/${l.preview}.mp4` : undefined;
     const logo = l.logoSrc ?? (l.logo ? favicon(l.logo) : null);
     const inner = (
       <>
@@ -370,6 +368,7 @@ export default function Home() {
                 follow(e);
                 setHover({
                   src,
+                  video,
                   rect: e.currentTarget.getBoundingClientRect(),
                   open: true,
                 });
@@ -418,36 +417,38 @@ export default function Home() {
       ref={rootRef}
       className="v2"
       data-stage={stage}
-      data-marks={options.marks}
+      data-marks="guide"
       data-peek={hover?.open ? "" : undefined}
       style={
         {
-          "--font-text": `"${font.family}"`,
+          "--font-text": `"${TEXT_FAMILY}"`,
           "--font-mono": `"${MONO_FAMILY}"`,
           "--font-label": `"${LABEL_FAMILY}"`,
-          "--scale": font.scale,
+          "--scale": TEXT_SCALE,
           // set here, not in the stylesheet, so the #id means this document
-          "--texture":
-            options.texture === "none" ? "none" : `url(#tx-${options.texture})`,
+          "--texture": `url(#tx-${TEXTURE})`,
           "--line-ms": `${LINE_MS}ms`,
           "--line-gap": `${LINE_GAP}ms`,
           "--band": `${BAND}px`,
         } as React.CSSProperties
       }
     >
-      {/* the key restarts every animation when the intro is replayed */}
-      <div key={`column-${run}`} className="v2-column" ref={columnRef}>
+      <div className="v2-column" ref={columnRef}>
         <header className="head fade">
           <h1 ref={nameRef}>
             {/* the space is inside the run, so a selection is grainy across it */}
             <span className="tx">{words(GREETING, at)} </span>
             <span className="name">
               <span className="tx">{words(NAME, at)}</span>
-              <NameMarkDrawing
-                key={options.nameMark}
-                mark={options.nameMark}
-                style={at()}
-              />
+              {/* a cobalt text box, as a design tool shows a selected
+                  layer: outline, a handle on each corner, its size on a chip.
+                  it's drawn once the opening is over (see .name-box) */}
+              <span className="name-box" aria-hidden="true">
+                <i />
+                <i />
+                <i />
+                <i />
+              </span>
             </span>
           </h1>
           {/* where i am, after locomotive.ca's footer: the bridge, the
@@ -486,27 +487,15 @@ export default function Home() {
       </div>
 
       {/* once everything is in, the bear sets off */}
-      {stage === "settled" ? (
-        <Bear key={`bear-${run}`} beside={nameRef} />
-      ) : null}
+      {stage === "settled" ? <Bear beside={nameRef} /> : null}
 
       {stage === "settled" ? null : (
-        <RulerIntro
-          key={`guides-${run}`}
-          target={nameRef}
-          leaving={stage === "out"}
-        />
+        <RulerIntro target={nameRef} leaving={stage === "out"} />
       )}
 
       <TextureFilters />
 
       <PixelPreview hover={hover} />
-
-      <OptionsPanel
-        options={options}
-        set={set}
-        onReplay={() => setRun((n) => n + 1)}
-      />
     </div>
   );
 }
