@@ -2,7 +2,13 @@ import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { LOOK, TEXT_FAMILY, TextureFilters } from "@/components/options";
-import { PROJECTS } from "@/utils/constants";
+import {
+  PAPERS,
+  PATENTS,
+  PRESS,
+  PROJECTS,
+  WORK_ITEMS,
+} from "@/utils/constants";
 import getPreviewUrl from "@/utils/get-preview-url";
 import { labelLinks } from "@/utils/label-links";
 import { SITE_TITLE } from "@/utils/site";
@@ -42,6 +48,10 @@ export default function Projects() {
     >
       <Head>
         <title>{`Projects — ${SITE_TITLE}`}</title>
+        <meta
+          name="description"
+          content="What Nithin Aruswamy has built and worked on: Priceflag, Jet-Set Teen, OneDay, Terran, his research, and where he has worked."
+        />
       </Head>
 
       <div className="v2-column" ref={columnRef}>
@@ -115,6 +125,88 @@ export default function Projects() {
             </article>
           );
         })}
+
+        {/* the rest of the record: where i've worked, what i've published,
+            and where it's been written about */}
+        <section className="record">
+          <h2>
+            <span className="tx">Experience</span>
+          </h2>
+          {WORK_ITEMS.map((item) => (
+            <div key={item.slug} className="record-row">
+              <p className="record-name">
+                <a
+                  className="lnk"
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span className="lnk-t">
+                    <span className="tx">{item.company}</span>
+                  </span>
+                </a>
+              </p>
+              <p className="project-meta">
+                {item.role} · {item.date}
+              </p>
+              <p>
+                <span className="tx">{item.about}.</span>
+              </p>
+            </div>
+          ))}
+        </section>
+
+        <section className="record">
+          <h2>
+            <span className="tx">Research</span>
+          </h2>
+          {PAPERS.map((paper) => (
+            <div key={paper.title} className="record-row">
+              <p className="record-name">
+                <span className="tx">{paper.title}</span>
+              </p>
+              <p className="project-meta">
+                {paper.venue} · {paper.year}
+                {paper.citations > 0 ? ` · ${paper.citations} citations` : null}
+              </p>
+            </div>
+          ))}
+          {PATENTS.map((patent) => (
+            <div key={patent.number} className="record-row">
+              <p className="record-name">
+                <span className="tx">{patent.title}</span>
+              </p>
+              <p className="project-meta">
+                Patent {patent.number} · {patent.year}
+              </p>
+            </div>
+          ))}
+        </section>
+
+        <section className="record">
+          <h2>
+            <span className="tx">Press</span>
+          </h2>
+          {PRESS.map((item) => (
+            <div key={item.slug} className="record-row">
+              <p className="record-name">
+                <a
+                  className="lnk"
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span className="lnk-t">
+                    <span className="tx">{item.outlet}</span>
+                  </span>
+                </a>
+              </p>
+              <p>
+                <span className="tx">{item.title}</span>
+              </p>
+            </div>
+          ))}
+        </section>
       </div>
 
       <TextureFilters />

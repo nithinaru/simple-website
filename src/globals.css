@@ -1000,3 +1000,29 @@ html {
   object-position: top;
   border-radius: 10px;
 }
+
+/* the plainer lists under the projects: experience, research, press */
+.v2 .record {
+  margin-top: 4.2em;
+}
+
+.v2 .record h2 {
+  font: inherit;
+  font-size: 1.5em;
+  line-height: 1.25;
+  letter-spacing: -0.012em;
+}
+
+.v2 .record-row {
+  margin-top: 1.5em;
+}
+
+.v2 .record-row .project-meta {
+  margin: 0.3em 0 0.35em;
+}
+
+.v2 .record-row p:not(.record-name, .project-meta) {
+  font-size: 0.86em;
+  line-height: 1.5;
+  color: #4a4a4a;
+}
