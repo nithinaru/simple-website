@@ -4,12 +4,19 @@ import { useEffect, useRef } from "react";
  * the screenshot that appears beside a link on hover. it arrives as a handful
  * of big pixels and sharpens in a few quick steps, like the work thumbnails
  * on locomotive.ca: each step redraws the picture at a low resolution and
- * scales it up with smoothing off.
+ * scales it up with smoothing off. if the page has a clip, the still is its
+ * first frame, and the clip starts playing on the same canvas once it's sharp.
  */
 
 // `open` goes false when the pointer leaves; the rest is kept, so the card
 // fades out where it is instead of jumping away
-export type Hover = { src: string; rect: DOMRect; open: boolean } | null;
+// `video` is a short looping clip of the same page, played once it's sharp
+export type Hover = {
+  src: string;
+  video?: string;
+  rect: DOMRect;
+  open: boolean;
+} | null;
 
 const WIDTH = 232;
 const HEIGHT = Math.round((WIDTH * 10) / 16);
@@ -48,26 +55,49 @@ const load = (src: string) => {
 };
 
 /** fetch the screenshots ahead of time so the first hover isn't blank */
-export const preload = (srcs: string[]) => {
+export const preload = (srcs: string[], videos: string[] = []) => {
   for (const src of srcs) load(src);
+  for (const src of videos) loadClip(src);
 };
 
-// draw `img` to fill a w-by-h box, cropping whatever overflows
+// draw a picture (or the current frame of a clip) to fill a w-by-h box,
+// cropping whatever overflows
 const cover = (
   ctx: CanvasRenderingContext2D,
-  img: HTMLImageElement,
+  pic: HTMLImageElement | HTMLVideoElement,
   w: number,
   h: number,
 ) => {
-  const scale = Math.max(w / img.naturalWidth, h / img.naturalHeight);
+  const pw =
+    pic instanceof HTMLVideoElement ? pic.videoWidth : pic.naturalWidth;
+  const ph =
+    pic instanceof HTMLVideoElement ? pic.videoHeight : pic.naturalHeight;
+  const scale = Math.max(w / pw, h / ph);
   const sw = w / scale;
   const sh = h / scale;
-  ctx.drawImage(img, (img.naturalWidth - sw) / 2, 0, sw, sh, 0, 0, w, h);
+  ctx.drawImage(pic, (pw - sw) / 2, 0, sw, sh, 0, 0, w, h);
+};
+
+const clips = new Map<string, HTMLVideoElement>();
+
+const loadClip = (src: string) => {
+  let clip = clips.get(src);
+  if (!clip) {
+    clip = document.createElement("video");
+    clip.muted = true;
+    clip.loop = true;
+    clip.playsInline = true;
+    clip.preload = "auto";
+    clip.src = src;
+    clips.set(src, clip);
+  }
+  return clip;
 };
 
 export function PixelPreview({ hover }: { hover: Hover }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const src = hover?.src;
+  const video = hover?.video;
   const open = hover?.open ?? false;
 
   useEffect(() => {
@@ -81,8 +111,17 @@ export function PixelPreview({ hover }: { hover: Hover }) {
     const reduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
+    const clip = video && !reduced ? loadClip(video) : null;
     let timer: ReturnType<typeof setTimeout>;
+    let raf = 0;
     let live = true;
+
+    // once the still is sharp, run the clip over it from its first frame
+    const roll = () => {
+      if (!live || !clip) return;
+      if (clip.readyState >= 2) cover(ctx, clip, canvas.width, canvas.height);
+      raf = requestAnimationFrame(roll);
+    };
 
     const draw = (step: number) => {
       if (!live) return;
@@ -94,6 +133,11 @@ export function PixelPreview({ hover }: { hover: Hover }) {
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = "high";
         cover(ctx, img, w, h);
+        if (clip) {
+          clip.currentTime = 0;
+          clip.play().catch(() => {});
+          roll();
+        }
         return;
       }
       small.width = across;
@@ -111,8 +155,10 @@ export function PixelPreview({ hover }: { hover: Hover }) {
     return () => {
       live = false;
       clearTimeout(timer);
+      cancelAnimationFrame(raf);
+      clip?.pause();
     };
-  }, [src, open]);
+  }, [src, video, open]);
 
   // above the link when there's room, otherwise below it
   let left = 0;
