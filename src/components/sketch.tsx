@@ -226,82 +226,120 @@ export function Bridge({ seed }: { seed: number }) {
 }
 
 /*
- * the socials, drawn in the same hand as the other signs: a frame with a
- * letter or a simple mark inside, each on its own seed.
+ * the socials, drawn in the same hand as the other signs: no frames, just a
+ * simple mark each, on its own seed.
  */
 export type SocialKind = "x" | "linkedin" | "github" | "cosmos" | "scholar";
 
 export function SocialSign({ kind, seed }: { kind: SocialKind; seed: number }) {
-  const pen = { seed, roughness: 0.9, stroke: INK, strokeWidth: 1.6 };
-  const fine = { ...pen, strokeWidth: 1.3 };
-  const dot = { ...fine, fill: INK, fillStyle: "solid" as const };
-  const box = gen.rectangle(3, 3, 26, 26, pen);
-  const ring = gen.circle(16, 16, 27, pen);
+  const pen = { seed, roughness: 0.8, stroke: INK, strokeWidth: 1.7 };
+  const bold = { ...pen, strokeWidth: 2.8, roughness: 0.6 };
+  const inked = { ...pen, fill: INK, fillStyle: "solid" as const };
 
-  let frame = box;
-  let inside: Drawable[] = [];
-  let label: string | null = null;
-
+  let shapes: Drawable[];
   if (kind === "x") {
-    // two crossed strokes
-    inside = [
-      gen.line(10, 9, 22, 23, { ...pen, seed: seed + 1, strokeWidth: 2 }),
-      gen.line(22, 9, 10, 23, { ...pen, seed: seed + 2, strokeWidth: 2 }),
+    // a small bird, looking right: body and tail, head, beak, wing, legs
+    shapes = [
+      gen.path(
+        "M19 13 C12 12 7 16 6 23 L2.5 26.5 L9 24.5 C15 26.5 22 23 23 15",
+        {
+          ...pen,
+          seed: seed + 1,
+        },
+      ),
+      gen.circle(22, 11, 8.5, { ...pen, seed: seed + 2 }),
+      gen.linearPath(
+        [
+          [25.8, 9.6],
+          [30, 11.4],
+          [25.8, 13],
+        ],
+        { ...pen, seed: seed + 3 },
+      ),
+      gen.path("M11 18 C13.5 20.5 17 19.5 18.5 16", {
+        ...pen,
+        seed: seed + 4,
+        strokeWidth: 1.3,
+      }),
+      gen.circle(23, 10.2, 1.5, { ...inked, seed: seed + 5 }),
+      gen.line(13, 24.5, 12.2, 29.5, {
+        ...pen,
+        seed: seed + 6,
+        strokeWidth: 1.3,
+      }),
+      gen.line(16.5, 24.5, 16.5, 29.5, {
+        ...pen,
+        seed: seed + 7,
+        strokeWidth: 1.3,
+      }),
     ];
   } else if (kind === "linkedin") {
-    label = "in";
+    // "in", lettered with a broad pen: the dot, the stem, then the n
+    shapes = [
+      gen.circle(8.5, 7.5, 3.6, { ...inked, seed: seed + 1 }),
+      gen.line(8.5, 13.5, 8.5, 26, { ...bold, seed: seed + 2 }),
+      gen.line(15.5, 13.5, 15.5, 26, { ...bold, seed: seed + 3 }),
+      gen.path("M15.5 18.5 C16 12.5 25.5 12 25.5 18.5 V26", {
+        ...bold,
+        seed: seed + 4,
+      }),
+    ];
   } else if (kind === "github") {
-    frame = ring;
-    label = "git";
+    // a branch leaving the main line and joining it again
+    shapes = [
+      gen.line(10, 10.5, 10, 21.5, { ...pen, seed: seed + 1, strokeWidth: 2 }),
+      gen.path("M23 15.5 C23 21 10 16.5 10 21.5", {
+        ...pen,
+        seed: seed + 2,
+        strokeWidth: 2,
+      }),
+      gen.circle(10, 7, 6.5, { ...pen, seed: seed + 3 }),
+      gen.circle(10, 25, 6.5, { ...pen, seed: seed + 4 }),
+      gen.circle(23, 12, 6.5, { ...pen, seed: seed + 5 }),
+    ];
   } else if (kind === "cosmos") {
-    // a ring of six dots
-    frame = ring;
-    inside = Array.from({ length: 6 }, (_, i) => {
-      const a = (i / 6) * Math.PI * 2;
-      return gen.circle(16 + Math.cos(a) * 6, 16 + Math.sin(a) * 6, 3.2, {
-        ...dot,
-        seed: seed + 3 + i,
-      });
-    });
+    shapes = [];
   } else {
     // a mortarboard: the flat top, the cap under it, the tassel
-    frame = ring;
-    inside = [
+    shapes = [
       gen.polygon(
         [
-          [16, 9],
-          [25, 13.5],
-          [16, 18],
-          [7, 13.5],
+          [16, 7],
+          [28, 13],
+          [16, 19],
+          [4, 13],
         ],
-        { ...fine, seed: seed + 1 },
+        { ...pen, seed: seed + 1 },
       ),
-      gen.path("M11 16 V20 C13 23 19 23 21 20 V16", {
-        ...fine,
+      gen.path("M9.5 16.5 V22 C12 26 20 26 22.5 22 V16.5", {
+        ...pen,
         seed: seed + 2,
       }),
-      gen.line(25, 13.5, 25, 20, { ...fine, seed: seed + 3 }),
+      gen.line(28, 13, 28, 22, { ...pen, seed: seed + 3 }),
     ];
   }
 
   return (
     <svg className="social" viewBox="0 0 32 32" aria-hidden="true">
-      {/* white behind, so it reads over whatever text it opens across */}
-      <rect x="2" y="2" width="28" height="28" rx="6" fill="#fff" />
-      <Paths shapes={[frame, ...inside]} />
-      {label ? (
-        <text
-          x="16"
-          y="20.5"
-          textAnchor="middle"
-          fontFamily={`"${LABEL_FAMILY}", sans-serif`}
-          fontWeight="700"
-          fontSize={label.length > 2 ? 10 : 12}
-          fill={INK}
-        >
-          {label}
-        </text>
-      ) : null}
+      <Paths shapes={shapes} />
+      {/* a ring of six dots; plain circles, since tiny ones go ragged when
+          the pen wobbles them */}
+      {kind === "cosmos"
+        ? Array.from({ length: 6 }, (_, i) => {
+            const a = (i / 6) * Math.PI * 2 + 0.26;
+            const r = 2.9 + ((seed + i * 5) % 3) * 0.25;
+            return (
+              <circle
+                // biome-ignore lint/suspicious/noArrayIndexKey: fixed drawing
+                key={i}
+                cx={(16 + Math.cos(a) * 8.6).toFixed(2)}
+                cy={(16 + Math.sin(a) * 8.6).toFixed(2)}
+                r={r}
+                fill={INK}
+              />
+            );
+          })
+        : null}
     </svg>
   );
 }
