@@ -76,8 +76,9 @@ const COPY: Token[][] = [
       text: "Priceflag",
       href: "https://priceflag.org/",
       // the flag-bearer from the priceflag logo, on his own
-      mark: ["/images/logos/priceflag-mark.svg", "#1f4fff", 0.62],
+      mark: ["/images/logos/priceflag-mark.svg", "#141414", 0.62],
       preview: "priceflag",
+      moving: true,
     },
     ", and breaking AI agents at ",
     {
