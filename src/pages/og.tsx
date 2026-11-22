@@ -5,10 +5,10 @@ import {
   MONO_FAMILY,
   TEXT_FAMILY,
 } from "@/components/options";
-import { Bridge, Fountain, Sign } from "@/components/sketch";
+import { Bridge } from "@/components/sketch";
 
 /*
- * a scratch page, not part of the site: six ideas for the card that shows
+ * a scratch page, not part of the site: ideas for the card that shows
  * when the link is sent to someone (the og:image, or a short clip of it).
  * each is drawn at the real size, 1200 by 630, and shown as it would sit in
  * a message. once one is picked it becomes a real image and this page goes.
@@ -60,290 +60,133 @@ const handle = (x: number, y: number) => (
 
 type Card = { name: string; note: string; art: React.ReactNode };
 
+// the dots: flat, a few sizes, dropped over the type so they overlap it
+const dots = (list: [number, number, number, string][]) =>
+  list.map(([cx, cy, r, fill]) => (
+    <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r={r} fill={fill} />
+  ));
+
+const YELLOW = "#f2b632";
+
+/** the second line of the plate: a small bridge, the city, the coordinates */
+const cityLine = (y: number, size: number) => (
+  <>
+    <Drawn x={62} y={y - size * 0.86} size={size * 0.9}>
+      <Bridge seed={43} />
+    </Drawn>
+    <text
+      x={62 + size * 1.5}
+      y={y}
+      fontFamily={serif}
+      fontSize={size}
+      fill={INK}
+    >
+      San Francisco
+    </text>
+    <text
+      x={62 + size * 9.05}
+      y={y - size * 0.4}
+      fontFamily={heavy}
+      fontWeight="700"
+      fontSize={size * 0.27}
+      fill={INK}
+    >
+      ← 37.7749 →
+    </text>
+    <text
+      x={62 + size * 9.05}
+      y={y - size * 0.06}
+      fontFamily={heavy}
+      fontWeight="700"
+      fontSize={size * 0.27}
+      fill={INK}
+    >
+      → 122.4194 ←
+    </text>
+  </>
+);
+
+// round two, from what you said about the first six: keep the dots, keep the
+// bridge but small, and the plate with fewer words
 const CARDS: Card[] = [
   {
-    name: "The selected name",
-    note: "Your name as a selected text layer: cobalt box, handles, and the card's own size on the chip.",
+    name: "The plate, two lines",
+    note: "The address plate with the last line gone: your name, then the city with a small bridge and the coordinates.",
     art: (
       <>
         <rect width={W} height={H} fill="#fff" />
-        <text
-          x="600"
-          y="352"
-          textAnchor="middle"
-          fontFamily={serif}
-          fontSize="100"
-          fill={INK}
-        >
+        <text x="64" y="290" fontFamily={serif} fontSize="118" fill={INK}>
           Nithin Aruswamy
         </text>
-        <rect
-          x="96"
-          y="232"
-          width="1008"
-          height="166"
-          fill="none"
-          stroke={BLUE}
-          strokeWidth="3"
-        />
-        {[
-          [96, 232],
-          [1104, 232],
-          [96, 398],
-          [1104, 398],
-        ].map(([x, y]) => handle(x, y))}
-        <rect x="528" y="176" width="144" height="38" rx="7" fill={BLUE} />
-        <text
-          x="600"
-          y="202"
-          textAnchor="middle"
-          fontFamily={mono}
-          fontSize="20"
-          fill="#fff"
-        >
-          1200 × 630
-        </text>
-        <text
-          x="600"
-          y="470"
-          textAnchor="middle"
-          fontFamily={mono}
-          fontSize="22"
-          fill="#8a8a8a"
-        >
-          nithinaruswamy.com
-        </text>
+        {cityLine(440, 96)}
       </>
     ),
   },
   {
-    name: "Measured",
-    note: "The opening of the site, frozen: guides through the edges of the name, hatched margins, every distance written down.",
+    name: "The plate, with dots",
+    note: "The same two lines, with a few flat dots dropped over the type.",
     art: (
       <>
-        <defs>
-          <pattern
-            id="og-hatch"
-            width="14"
-            height="14"
-            patternUnits="userSpaceOnUse"
-            patternTransform="rotate(45)"
-          >
-            <line x1="0" y1="0" x2="0" y2="14" stroke={BLUE} strokeWidth="2" />
-          </pattern>
-        </defs>
         <rect width={W} height={H} fill="#fff" />
-        <rect
-          x="0"
-          y="250"
-          width="150"
-          height="150"
-          fill="url(#og-hatch)"
-          opacity="0.35"
-        />
-        <rect
-          x="1050"
-          y="250"
-          width="150"
-          height="150"
-          fill="url(#og-hatch)"
-          opacity="0.35"
-        />
-        <path
-          d={`M150 0 V${H} M1050 0 V${H} M0 250 H${W} M0 400 H${W}`}
-          stroke={BLUE}
-          strokeWidth="2"
-          fill="none"
-        />
-        {/* ruler ticks along the top */}
-        <path
-          d={Array.from(
-            { length: 76 },
-            (_, i) => `M${i * 16} 0 V${i % 5 === 0 ? 22 : 10}`,
-          ).join(" ")}
-          stroke={BLUE}
-          strokeWidth="2"
-        />
+        <text x="64" y="290" fontFamily={serif} fontSize="118" fill={INK}>
+          Nithin Aruswamy
+        </text>
+        {cityLine(440, 96)}
+        {dots([
+          [372, 214, 46, BLUE],
+          [1010, 300, 58, ORANGE],
+          [560, 470, 36, YELLOW],
+          [1120, 110, 30, BLUE],
+          [150, 520, 26, ORANGE],
+        ])}
+      </>
+    ),
+  },
+  {
+    name: "Big name, dots, small bridge",
+    note: "Your name as large as fits without being cut off, dots over it, and the bridge kept small in the line underneath.",
+    art: (
+      <>
+        <rect width={W} height={H} fill="#fff" />
         <text
-          x="600"
-          y="358"
-          textAnchor="middle"
+          x="58"
+          y="250"
           fontFamily={serif}
-          fontSize="104"
+          fontSize="208"
+          letterSpacing="-6"
           fill={INK}
         >
-          Hey, I&apos;m Nithin.
-        </text>
-        {/* the width, and the gap above */}
-        <path
-          d="M150 190 H1050 M150 176 V204 M1050 176 V204"
-          stroke={BLUE}
-          strokeWidth="2"
-          fill="none"
-        />
-        <rect x="560" y="174" width="80" height="32" fill="#fff" />
-        <text
-          x="600"
-          y="198"
-          textAnchor="middle"
-          fontFamily={mono}
-          fontSize="22"
-          fill={BLUE}
-        >
-          900
-        </text>
-        <path
-          d="M200 0 V250 M186 250 H214"
-          stroke={BLUE}
-          strokeWidth="2"
-          fill="none"
-        />
-        <rect x="170" y="108" width="60" height="32" fill="#fff" />
-        <text
-          x="200"
-          y="132"
-          textAnchor="middle"
-          fontFamily={mono}
-          fontSize="22"
-          fill={BLUE}
-        >
-          250
-        </text>
-        <text
-          x="75"
-          y="440"
-          textAnchor="middle"
-          fontFamily={mono}
-          fontSize="22"
-          fill={BLUE}
-        >
-          150
-        </text>
-        <text
-          x="1125"
-          y="440"
-          textAnchor="middle"
-          fontFamily={mono}
-          fontSize="22"
-          fill={BLUE}
-        >
-          150
-        </text>
-      </>
-    ),
-  },
-  {
-    name: "The bridge",
-    note: "The hand-drawn Golden Gate, large, with your name and coordinates beside it.",
-    art: (
-      <>
-        <rect width={W} height={H} fill="#fff" />
-        <Drawn x={462} y={56} size={500}>
-          <Bridge seed={43} />
-        </Drawn>
-        <text x="64" y="300" fontFamily={serif} fontSize="76" fill={INK}>
           Nithin
         </text>
-        <text x="64" y="386" fontFamily={serif} fontSize="76" fill={INK}>
+        <text
+          x="58"
+          y="444"
+          fontFamily={serif}
+          fontSize="208"
+          letterSpacing="-6"
+          fill={INK}
+        >
           Aruswamy
         </text>
-        <text
-          x="64"
-          y="452"
-          fontFamily={heavy}
-          fontWeight="700"
-          fontSize="22"
-          fill={INK}
-        >
-          ← 37.7749 →
-        </text>
-        <text
-          x="64"
-          y="480"
-          fontFamily={heavy}
-          fontWeight="700"
-          fontSize="22"
-          fill={INK}
-        >
-          → 122.4194 ←
-        </text>
+        {dots([
+          [300, 150, 52, BLUE],
+          [900, 372, 64, ORANGE],
+          [585, 300, 38, YELLOW],
+          [1085, 150, 34, BLUE],
+        ])}
+        {cityLine(566, 54)}
       </>
     ),
   },
   {
-    name: "Mid-sweep",
-    note: "The name caught halfway through the colour that paints it in. As a clip, the band keeps crossing.",
-    art: (
-      <>
-        <defs>
-          <linearGradient
-            id="og-sweep"
-            gradientUnits="userSpaceOnUse"
-            x1="-1400"
-            x2="2600"
-            y1="0"
-            y2="0"
-          >
-            <stop offset="0" stopColor={INK} />
-            <stop offset="0.5" stopColor={INK} />
-            <stop offset="0.515" stopColor="#c79bc4" />
-            <stop offset="0.535" stopColor="#e9694a" />
-            <stop offset="0.555" stopColor="#e9b84a" />
-            <stop offset="0.575" stopColor="#b3c7e8" />
-            <stop offset="0.595" stopColor="#4f8fdf" />
-            <stop offset="0.61" stopColor="#e3e3e3" />
-            <stop offset="1" stopColor="#e3e3e3" />
-            {/* slide the whole gradient across, rest, and go again */}
-            <animate
-              attributeName="x1"
-              values="-2200;-1400;-400;-400;-2200"
-              keyTimes="0;0.3;0.7;0.9;1"
-              dur="5s"
-              repeatCount="indefinite"
-            />
-            <animate
-              attributeName="x2"
-              values="1800;2600;3600;3600;1800"
-              keyTimes="0;0.3;0.7;0.9;1"
-              dur="5s"
-              repeatCount="indefinite"
-            />
-          </linearGradient>
-        </defs>
-        <rect width={W} height={H} fill="#fff" />
-        <text
-          x="72"
-          y="290"
-          fontFamily={serif}
-          fontSize="150"
-          fill="url(#og-sweep)"
-        >
-          Nithin
-        </text>
-        <text
-          x="72"
-          y="460"
-          fontFamily={serif}
-          fontSize="150"
-          fill="url(#og-sweep)"
-        >
-          Aruswamy.
-        </text>
-        <text x="76" y="548" fontFamily={mono} fontSize="22" fill="#8a8a8a">
-          nithinaruswamy.com
-        </text>
-      </>
-    ),
-  },
-  {
-    name: "Too big for the card",
-    note: "Your name so large it runs off the edges, with flat dots dropped over it. The loudest of the six.",
+    name: "Off the edges, dots, small bridge",
+    note: "The loud one from before, with the bridge added small in the corner so it still says where you are.",
     art: (
       <>
         <rect width={W} height={H} fill="#fff" />
         <text
           x="-18"
-          y="330"
+          y="300"
           fontFamily={serif}
           fontSize="330"
           letterSpacing="-14"
@@ -353,7 +196,7 @@ const CARDS: Card[] = [
         </text>
         <text
           x="-22"
-          y="610"
+          y="560"
           fontFamily={serif}
           fontSize="330"
           letterSpacing="-14"
@@ -361,61 +204,36 @@ const CARDS: Card[] = [
         >
           Aruswamy
         </text>
-        <circle cx="318" cy="150" r="62" fill={BLUE} />
-        <circle cx="905" cy="318" r="74" fill={ORANGE} />
-        <circle cx="610" cy="520" r="50" fill="#f2b632" />
-        <circle cx="1090" cy="84" r="40" fill={BLUE} />
-        <circle cx="120" cy="470" r="34" fill={ORANGE} />
-      </>
-    ),
-  },
-  {
-    name: "The address plate",
-    note: "Three big lines with the site's hand-drawn signs set into them, like a sign on a building.",
-    art: (
-      <>
-        <rect width={W} height={H} fill="#fff" />
-        <Drawn x={60} y={74} size={104}>
-          <Sign shape="diamond" label="NA" seed={5} />
-        </Drawn>
-        <text x="236" y="160" fontFamily={serif} fontSize="96" fill={INK}>
-          Nithin Aruswamy
-        </text>
-        <Drawn x={56} y={258} size={104}>
+        {dots([
+          [318, 130, 62, BLUE],
+          [905, 290, 74, ORANGE],
+          [610, 480, 50, YELLOW],
+          [120, 430, 34, ORANGE],
+        ])}
+        <rect x="900" y="26" width="276" height="92" rx="10" fill="#fff" />
+        <Drawn x={918} y={36} size={66}>
           <Bridge seed={43} />
         </Drawn>
-        <text x="216" y="344" fontFamily={serif} fontSize="96" fill={INK}>
-          San Francisco
-        </text>
         <text
-          x="896"
-          y="306"
+          x="1026"
+          y="68"
           fontFamily={heavy}
           fontWeight="700"
-          fontSize="30"
+          fontSize="20"
           fill={INK}
         >
           ← 37.7749 →
         </text>
         <text
-          x="896"
-          y="344"
+          x="1026"
+          y="96"
           fontFamily={heavy}
           fontWeight="700"
-          fontSize="30"
+          fontSize="20"
           fill={INK}
         >
           → 122.4194 ←
         </text>
-        <text x="64" y="534" fontFamily={serif} fontSize="96" fill={INK}>
-          builds, travels
-        </text>
-        <Drawn x={800} y={442} size={104}>
-          <Fountain seed={71} />
-        </Drawn>
-        <Drawn x={944} y={442} size={104}>
-          <Sign shape="box" label="CA" seed={9} />
-        </Drawn>
       </>
     ),
   },
@@ -431,8 +249,8 @@ export default function OgIdeas() {
       <div className="v2-column">
         <h1>Link preview ideas</h1>
         <p className="lede">
-          Six cards for when the link is sent to someone, each shown as it would
-          sit in a message.
+          Round two: four cards built from the parts you liked, each shown as it
+          would sit in a message.
         </p>
 
         {CARDS.map((card, i) => (
