@@ -1,14 +1,8 @@
+import NextLink from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Bear } from "@/components/bear";
 import { Dock, type DockItem, keepDockInView } from "@/components/dock";
-import {
-  LABEL_FAMILY,
-  MONO_FAMILY,
-  TEXT_FAMILY,
-  TEXT_SCALE,
-  TEXTURE,
-  TextureFilters,
-} from "@/components/options";
+import { LOOK, TEXT_FAMILY, TextureFilters } from "@/components/options";
 import {
   follow,
   type Hover,
@@ -17,6 +11,7 @@ import {
 } from "@/components/pixel-preview";
 import { RulerIntro } from "@/components/ruler-intro";
 import { Bridge, Fountain, Globe, Sign, underline } from "@/components/sketch";
+import { labelLinks } from "@/utils/label-links";
 
 /*
  * the whole site: a name and a few short paragraphs about right now, sized
@@ -96,14 +91,17 @@ const COPY: Token[][] = [
     " (YC S25).",
   ],
   [
-    "Away from the screen I ",
+    "Outside of work I ",
     {
       text: "travel",
       href: "https://travel.nithinaruswamy.com/",
       preview: "travel",
       moving: true,
     },
-    ", throw pots, and tend my ",
+    ", ",
+    // a page of its own, on this site
+    { text: "ship side projects", href: "/projects" },
+    ", and tend my ",
     {
       text: "Private Garden",
       href: "https://studio.nithinaruswamy.com",
@@ -167,20 +165,6 @@ const fit = (root: HTMLElement, column: HTMLElement) => {
     // smaller type also means fewer lines, so close in over a few passes
     scale *= Math.max(0.5, room / column.offsetHeight) * 0.99;
     root.style.setProperty("--fit", scale.toFixed(4));
-  }
-};
-
-/** write on each cobalt line and box how big it is, like the guides do */
-const labelLinks = (column: HTMLElement) => {
-  for (const el of column.querySelectorAll<HTMLElement>(".lnk-t")) {
-    el.dataset.w = String(Math.round(el.getBoundingClientRect().width));
-  }
-  // and on the box round the name, its width and height
-  const name = column.querySelector<HTMLElement>(".name");
-  const box = column.querySelector<HTMLElement>(".name-box");
-  if (name && box) {
-    const r = name.getBoundingClientRect();
-    box.dataset.size = `${Math.round(r.width)} × ${Math.round(r.height)}`;
   }
 };
 
@@ -354,6 +338,13 @@ export default function Home() {
         </span>
       );
     }
+    if (l.href.startsWith("/")) {
+      return (
+        <NextLink key={key} className="lnk fade" href={l.href}>
+          {inner}
+        </NextLink>
+      );
+    }
     return (
       <a
         key={key}
@@ -421,12 +412,7 @@ export default function Home() {
       data-peek={hover?.open ? "" : undefined}
       style={
         {
-          "--font-text": `"${TEXT_FAMILY}"`,
-          "--font-mono": `"${MONO_FAMILY}"`,
-          "--font-label": `"${LABEL_FAMILY}"`,
-          "--scale": TEXT_SCALE,
-          // set here, not in the stylesheet, so the #id means this document
-          "--texture": `url(#tx-${TEXTURE})`,
+          ...LOOK,
           "--line-ms": `${LINE_MS}ms`,
           "--line-gap": `${LINE_GAP}ms`,
           "--band": `${BAND}px`,

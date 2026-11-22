@@ -918,3 +918,70 @@ html {
   height: auto;
   border-radius: 8px;
 }
+
+/* ------------------------------------------------------------------ */
+/* the projects page (see pages/projects.tsx): same look, but it scrolls */
+/* ------------------------------------------------------------------ */
+
+.v2.page {
+  position: static;
+  overflow: visible;
+  display: block;
+  min-height: 100dvh;
+  padding: clamp(56px, 12vh, 120px) 24px 140px;
+  font-size: calc(clamp(16px, 1.1vw + 13px, 21px) * var(--scale, 1));
+}
+
+.v2.page .v2-column {
+  margin: 0 auto;
+}
+
+.v2.page .back {
+  margin-bottom: 2.4em;
+  font-size: 0.86em;
+}
+
+.v2.page .lede {
+  margin-top: 0.5em;
+  color: #6b6b6b;
+}
+
+.v2 .project {
+  margin-top: 4.2em;
+}
+
+.v2 .project h2 {
+  font: inherit;
+  font-size: 1.5em;
+  line-height: 1.25;
+  letter-spacing: -0.012em;
+}
+
+.v2 .project-meta {
+  margin: 0.15em 0 0.7em;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6em;
+  letter-spacing: 0.03em;
+  color: #8a8a8a;
+}
+
+/* the same white-bordered card as the hover screenshots */
+.v2 .project-media {
+  margin: 1.2em 0 1.1em;
+  padding: 5px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow:
+    0 0 0 0.5px rgb(0 0 0 / 0.14),
+    0 1px 2px rgb(0 0 0 / 0.06),
+    0 12px 32px rgb(0 0 0 / 0.12);
+}
+
+.v2 .project-media :is(img, video) {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: top;
+  border-radius: 10px;
+}

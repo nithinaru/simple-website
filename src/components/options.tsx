@@ -24,6 +24,16 @@ export const FONT_FACE_CSS = [
 /** which of the filters below the text is run through */
 export const TEXTURE = "press";
 
+/** the css variables every page of the site sets on its root */
+export const LOOK = {
+  "--font-text": `"${TEXT_FAMILY}"`,
+  "--font-mono": `"${MONO_FAMILY}"`,
+  "--font-label": `"${LABEL_FAMILY}"`,
+  "--scale": TEXT_SCALE,
+  // set inline, not in the stylesheet, so the #id means this document
+  "--texture": `url(#tx-${TEXTURE})`,
+} as React.CSSProperties;
+
 /*
  * the textures, as svg filters laid over runs of text. noise either thins the
  * ink in specks (grain), nudges the outline about (rough), or both (press,
