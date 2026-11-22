@@ -594,15 +594,6 @@ html {
   padding-right: 0.22em;
 }
 
-/* the bear (see components/bear.tsx): it is moved a step at a time by its
-   own timer, so nothing here eases its position */
-.v2 .bear {
-  position: fixed;
-  z-index: 5;
-  overflow: visible;
-  pointer-events: none;
-}
-
 /*
  * the socials (see components/dock.tsx): one phrase, with the logos fanning
  * out above it on hover and swelling under the pointer. while they're out,

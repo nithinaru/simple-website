@@ -1,6 +1,5 @@
 import NextLink from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Bear } from "@/components/bear";
 import { Dock, type DockItem, keepDockInView } from "@/components/dock";
 import { LOOK, TEXT_FAMILY, TextureFilters } from "@/components/options";
 import {
@@ -471,9 +470,6 @@ export default function Home() {
           ))}
         </div>
       </div>
-
-      {/* once everything is in, the bear sets off */}
-      {stage === "settled" ? <Bear beside={nameRef} /> : null}
 
       {stage === "settled" ? null : (
         <RulerIntro target={nameRef} leaving={stage === "out"} />
