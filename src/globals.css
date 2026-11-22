@@ -1002,3 +1002,78 @@ html {
   object-position: top;
   border-radius: 10px;
 }
+
+/* ------------------------------------------------------------------ */
+/* favicon ideas (see pages/favicons.tsx): a scratch page, to be deleted */
+/* ------------------------------------------------------------------ */
+
+.v2.favicons h1 {
+  font-size: 1.8em;
+}
+
+.v2 .favicon-idea {
+  display: grid;
+  grid-template-columns: 128px 1fr;
+  gap: 28px;
+  align-items: center;
+  margin-top: 2.6em;
+}
+
+.v2 .favicon-big {
+  display: grid;
+  place-items: center;
+  width: 128px;
+  height: 128px;
+  border-radius: 14px;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.08);
+}
+
+.v2 .favicon-idea h2 {
+  font: inherit;
+  font-size: 1.1em;
+}
+
+.v2 .favicon-note {
+  margin: 0.2em 0 0.9em;
+  font-size: 0.78em;
+  line-height: 1.4;
+  color: #6b6b6b;
+}
+
+.v2 .favicon-sizes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+}
+
+.v2 .favicon-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px 7px 10px;
+  border-radius: 9px 9px 0 0;
+  background: #f1f1f1;
+  font-size: 12px;
+  line-height: 1;
+  color: #222;
+}
+
+.v2 .favicon-tab[data-tone="dark"] {
+  background: #2b2b2e;
+  color: #eee;
+}
+
+/* the bridge is drawn to sit in a line of text; here it fills the icon */
+.v2 .favicon-bridge {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  font-size: 40px;
+}
+
+.v2 .favicon-bridge .sign {
+  padding: 0;
+  margin: 0;
+}
