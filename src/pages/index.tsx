@@ -1,312 +1,515 @@
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Dock, type DockItem, keepDockInView } from "@/components/dock";
 import {
-  type MotionNodeAnimationOptions,
-  motion,
-  type Transition,
-} from "motion/react";
-import { memo, useCallback, useState } from "react";
-import AnimatedText from "@/components/animated-text";
-import { Annotation, type AnnotationKind } from "@/components/annotation";
-import HoverPreview from "@/components/hover-preview";
-import { PAPERS, PATENTS, PROJECTS, WORK_ITEMS } from "@/utils/constants";
-import { cascade, EXPERIENCE_AT } from "@/utils/entrance";
-import getPreviewUrl from "@/utils/get-preview-url";
+  FONTS,
+  LABEL_FAMILY,
+  MONO_FAMILY,
+  OptionsPanel,
+  TextureFilters,
+  useOptions,
+} from "@/components/options";
+import {
+  follow,
+  type Hover,
+  PixelPreview,
+  preload,
+} from "@/components/pixel-preview";
+import { RulerIntro } from "@/components/ruler-intro";
+import {
+  Bridge,
+  Fountain,
+  Globe,
+  NameMarkDrawing,
+  Sign,
+  underline,
+} from "@/components/sketch";
 
-type HoverState = {
-  id: string;
-  rect: DOMRect;
-  previewUrl: string;
-} | null;
+/*
+ * the whole site: a name and a few short paragraphs about right now, sized
+ * to fit the window so nothing scrolls.
+ *
+ * the opening, after justinschueler.com, runs in four stages:
+ *   appear   measuring guides draw in around the name (see RulerIntro) while
+ *            a skeleton of it arrives; everything else waits behind a fog
+ *   sweep    a band of colour runs along the name and leaves it in ink
+ *   out      the guides pull back and the rest of the page comes into focus
+ *   settled  ordinary text
+ */
 
-const ITEM_ANIMATION = {
-  initial: {
-    opacity: 0,
-    y: 5,
-    filter: "blur(4px)",
-  },
-  animate: {
-    opacity: 1,
-    y: 0,
-    filter: "blur(0px)",
-  },
-  transition: {
-    duration: 0.92,
-    ease: [0.2, 0.65, 0.3, 0.9],
-  },
-} as const satisfies MotionNodeAnimationOptions;
-
-const ITEM_HOVER_TRANSITION = {
-  type: "spring",
-  stiffness: 400,
-  damping: 30,
-} as const satisfies Transition;
-
-// precompute preview urls since items are static
-const WORK_PREVIEW_URLS = new Map(
-  WORK_ITEMS.map((item) => [item.slug, getPreviewUrl(item)]),
-);
-const PROJECT_PREVIEW_URLS = new Map(
-  PROJECTS.map((item) => [item.slug, getPreviewUrl(item)]),
-);
-
-type ItemRowProps = {
-  id: string;
-  label: string;
-  role: string;
-  about: string;
-  date?: string;
-  url: string;
-  isHovered: boolean;
-  layoutId: string;
-  delay: number;
-  previewUrl: string;
-  onHover: (id: string, previewUrl: string, rect: DOMRect) => void;
-  annotate?: AnnotationKind;
+type Link = {
+  text: string;
+  /** without one, it's just a logo and a word */
+  href?: string;
+  /** domain to take the logo from */
+  logo?: string;
+  /** or the address of the logo itself */
+  logoSrc?: string;
+  /** or a one-colour shape, tinted with css: [address, colour, width in em] */
+  mark?: readonly [string, string, number];
+  /** the mark already says the name, so don't print the text beside it */
+  wordless?: boolean;
+  /** or a drawing */
+  icon?: "fountain";
+  /** screenshot shown on hover, from public/images/previews */
+  preview?: string;
 };
+/** a phrase that opens the socials when hovered */
+type Net = { net: string };
+type Token = string | Link | Net;
 
-const ItemRow = memo(function ItemRow({
-  id,
-  label,
-  role,
-  about,
-  date,
-  url,
-  isHovered,
-  layoutId,
-  delay,
-  previewUrl,
-  onHover,
-  annotate,
-}: ItemRowProps) {
-  const handleMouseEnter = useCallback(
-    (e: React.MouseEvent) => {
-      onHover(id, previewUrl, e.currentTarget.getBoundingClientRect());
+const favicon = (domain: string) =>
+  `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+
+const NAME = "Nithin.";
+const GREETING = "Hey, I'm";
+
+const COPY: Token[][] = [
+  [
+    "Everything I do is for the 8 year old & 80 year old version of myself. I'm active on ",
+    { net: "the internet" },
+    " & on a gap year from ",
+    {
+      // "Cal" in the university's own script, in california gold
+      text: "Cal",
+      wordless: true,
+      mark: [
+        "https://upload.wikimedia.org/wikipedia/commons/8/8b/California_Golden_Bears_logo.svg",
+        "#fdb515",
+        1.44,
+      ],
     },
-    [onHover, id, previewUrl],
-  );
+    ".",
+  ],
+  [
+    "I'm building the future of dynamic pricing at ",
+    {
+      text: "Priceflag",
+      href: "https://priceflag.org/",
+      // the flag-bearer from the priceflag logo, on his own
+      mark: ["/images/logos/priceflag-mark.svg", "#1f4fff", 0.62],
+      preview: "priceflag",
+    },
+    ", and breaking AI agents at ",
+    {
+      text: "Idler",
+      href: "https://idler.ai/",
+      logo: "idler.ai",
+      preview: "idler-widget-factory",
+    },
+    " (YC S25).",
+  ],
+  [
+    "Away from the screen I ",
+    {
+      text: "travel",
+      href: "https://travel.nithinaruswamy.com/",
+      preview: "travel",
+    },
+    ", throw pots, and tend my ",
+    {
+      text: "Private Garden",
+      href: "https://studio.nithinaruswamy.com",
+      icon: "fountain",
+      preview: "private-garden",
+    },
+    ".",
+  ],
+];
 
-  const content = (
-    <motion.div
-      className="relative flex flex-col items-start will-change-transform -mx-2 px-2 -my-1 py-1 text-left"
-      initial={ITEM_ANIMATION.initial}
-      animate={ITEM_ANIMATION.animate}
-      transition={{
-        ...ITEM_ANIMATION.transition,
-        delay,
-      }}
-      onMouseEnter={handleMouseEnter}
-    >
-      {isHovered ? (
-        <motion.div
-          layoutId={layoutId}
-          className="absolute inset-0 bg-stone-300/30 border border-stone-300/50 rounded-md"
-          transition={ITEM_HOVER_TRANSITION}
-        />
-      ) : null}
+const SOCIALS: readonly DockItem[] = [
+  { label: "Twitter", href: "https://x.com/nithinaru", logo: "x.com" },
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/in/aruswamy",
+    logo: "linkedin.com",
+  },
+  { label: "GitHub", href: "https://github.com/nithinaru", logo: "github.com" },
+  {
+    label: "Cosmos",
+    href: "https://www.cosmos.so/nithinaru",
+    logo: "cosmos.so",
+  },
+  {
+    label: "Scholar",
+    href: "https://scholar.google.com/citations?user=jqQkW0AAAAAJ&hl=en&oi=ao",
+    logo: "scholar.google.com",
+  },
+];
 
-      <div className="relative flex items-baseline justify-between gap-2 sm:gap-8 w-full">
-        <div className="flex items-baseline gap-2 min-w-0">
-          <span className="relative min-w-0 flex">
-            {/* drawn once the row has landed */}
-            {annotate ? (
-              <Annotation kind={annotate} delay={delay + 0.7} />
-            ) : null}
-            <span className="relative font-display font-bold text-stone-700 truncate">
-              {label}
-            </span>
-          </span>
-          <span className="text-sm text-stone-500 hidden sm:inline">
-            {role}
-          </span>
-        </div>
-        {date ? (
-          <span className="text-xs sm:text-sm text-stone-400 whitespace-nowrap shrink-0">
-            {date}
-          </span>
-        ) : null}
-      </div>
+const PREVIEWS = COPY.flat().flatMap((t) =>
+  typeof t !== "string" && "preview" in t && t.preview
+    ? [`/images/previews/${t.preview}.webp`]
+    : [],
+);
 
-      <span className="relative text-xs text-stone-500 sm:hidden">{role}</span>
+// timing of the opening, in ms
+const START = 520; // the guides are mostly drawn by now
+const STEP = 90; // between one piece of the name arriving and the next
+const APPEAR = 320; // how long a piece takes to arrive
+const LINE_MS = 560; // how long the colour takes to cross the name
+const LINE_GAP = 170; // between lines, should the name ever wrap
+const BAND = 150; // width of the colour band, px
+const RETRACT = 760; // how long the guides take to leave
 
-      <span className="relative text-xs text-stone-600">{about}</span>
-      {/* warm the cache so the hover preview shows instantly */}
-      {/* biome-ignore lint/performance/noImgElement: hidden preload, not displayed */}
-      <img src={previewUrl} alt="" className="hidden" fetchPriority="low" />
-    </motion.div>
-  );
+type Stage = "appear" | "sweep" | "out" | "settled";
 
-  if (!url) {
-    return content;
+/** shrink the type until the column fits the window: the page never scrolls */
+const fit = (root: HTMLElement, column: HTMLElement) => {
+  let scale = 1;
+  root.style.setProperty("--fit", "1");
+  const style = getComputedStyle(root);
+  const room =
+    root.clientHeight -
+    Number.parseFloat(style.paddingTop) -
+    Number.parseFloat(style.paddingBottom);
+  for (let pass = 0; pass < 5 && column.offsetHeight > room; pass++) {
+    // smaller type also means fewer lines, so close in over a few passes
+    scale *= Math.max(0.5, room / column.offsetHeight) * 0.99;
+    root.style.setProperty("--fit", scale.toFixed(4));
   }
-
-  return (
-    <a href={url} target="_blank" rel="noopener noreferrer">
-      {content}
-    </a>
-  );
-});
-
-type LineProps = {
-  delay: number;
-  children: React.ReactNode;
 };
 
-const Line = memo(function Line({ delay, children }: LineProps) {
-  return (
-    <motion.div
-      className="will-change-transform"
-      initial={ITEM_ANIMATION.initial}
-      animate={ITEM_ANIMATION.animate}
-      transition={{ ...ITEM_ANIMATION.transition, delay }}
-    >
-      {children}
-    </motion.div>
-  );
-});
+/** write on each cobalt line and box how big it is, like the guides do */
+const labelLinks = (column: HTMLElement) => {
+  for (const el of column.querySelectorAll<HTMLElement>(".lnk-t")) {
+    el.dataset.w = String(Math.round(el.getBoundingClientRect().width));
+  }
+  // and on the box round the name, its width and height
+  const name = column.querySelector<HTMLElement>(".name");
+  const box = column.querySelector<HTMLElement>(".name-box");
+  if (name && box) {
+    const r = name.getBoundingClientRect();
+    box.dataset.size = `${Math.round(r.width)} × ${Math.round(r.height)}`;
+  }
+};
 
-function SectionHeading({ text, delay }: { text: string; delay: number }) {
-  return (
-    <AnimatedText
-      className="section-heading text-2xl mt-9"
-      element="h2"
-      text={text}
-      artificialDelay={delay}
-    />
-  );
-}
+/*
+ * work out which line each piece of the name sits on, and how far along it,
+ * so the colour can run through them in reading order. returns the number of
+ * lines.
+ */
+const measure = (root: HTMLElement, name: HTMLElement) => {
+  const box = name.getBoundingClientRect();
+  root.style.setProperty("--lw", `${box.width.toFixed(1)}px`);
+  const items = [...name.querySelectorAll<HTMLElement | SVGElement>(".w, .ink")]
+    .map((el) => {
+      const r = el.getBoundingClientRect();
+      return { el, r, middle: r.top + r.height / 2 };
+    })
+    .sort((a, b) => a.middle - b.middle);
 
-const experience = cascade(EXPERIENCE_AT, WORK_ITEMS.length);
-const projects = cascade(experience.next, PROJECTS.length);
-const publications = cascade(
-  projects.next,
-  PAPERS.length + PATENTS.length,
-);
+  let line = -1;
+  let floor = Number.NEGATIVE_INFINITY;
+  for (const { el, r, middle } of items) {
+    // anything that starts below the middle of the current line is on the
+    // next one (drawings sit a little off the words' own middle)
+    if (r.top > floor) {
+      line += 1;
+      floor = middle;
+    }
+    floor = Math.max(floor, middle);
+    const x = r.left - box.left;
+    el.style.setProperty("--line", String(line));
+    el.style.setProperty("--x", `${x.toFixed(1)}px`);
+    // how far through the line's sweep the colour reaches this spot
+    el.style.setProperty(
+      "--xf",
+      ((x + BAND * 0.6) / (box.width + BAND)).toFixed(3),
+    );
+  }
+  return line + 1;
+};
 
 export default function Home() {
-  const [hoveredWork, setHoveredWork] = useState<HoverState>(null);
-  const [hoveredProject, setHoveredProject] = useState<HoverState>(null);
+  const [options, set] = useOptions();
+  const [run, setRun] = useState(0);
+  const [stage, setStage] = useState<Stage>("appear");
+  const [hover, setHover] = useState<Hover>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const columnRef = useRef<HTMLDivElement>(null);
+  const nameRef = useRef<HTMLHeadingElement>(null);
 
-  const handleWorkHover = useCallback(
-    (id: string, previewUrl: string, rect: DOMRect) => {
-      setHoveredWork({ id, rect, previewUrl });
-    },
-    [],
+  useEffect(() => preload(PREVIEWS), []);
+
+  const font = FONTS.find((f) => f.id === options.font) ?? FONTS[0];
+
+  // the opening, from the top each time `run` changes
+  // biome-ignore lint/correctness/useExhaustiveDependencies: `run` restarts it
+  useLayoutEffect(() => {
+    const root = rootRef.current;
+    const column = columnRef.current;
+    const name = nameRef.current;
+    if (!root || !column || !name) return;
+
+    fit(root, column);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setStage("settled");
+      return;
+    }
+    setStage("appear");
+
+    const pieces = name.querySelectorAll(".w, .ink").length;
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    timers.push(
+      setTimeout(
+        () => {
+          // measured as late as possible, once the font has settled
+          fit(root, column);
+          const lines = measure(root, name);
+          setStage("sweep");
+          const swept = (lines - 1) * LINE_GAP + LINE_MS + 120;
+          timers.push(setTimeout(() => setStage("out"), swept));
+          timers.push(setTimeout(() => setStage("settled"), swept + RETRACT));
+        },
+        START + pieces * STEP + APPEAR + 120,
+      ),
+    );
+    return () => {
+      for (const t of timers) clearTimeout(t);
+    };
+  }, [run]);
+
+  // keep fitting the window as it or the font changes
+  // biome-ignore lint/correctness/useExhaustiveDependencies: a new name mark needs its size written on it
+  useEffect(() => {
+    const refit = () => {
+      if (rootRef.current && columnRef.current) {
+        fit(rootRef.current, columnRef.current);
+        labelLinks(columnRef.current);
+      }
+    };
+    refit();
+    let live = true;
+    document.fonts.load(`16px "${font.family}"`).then(() => live && refit());
+    window.addEventListener("resize", refit);
+    return () => {
+      live = false;
+      window.removeEventListener("resize", refit);
+    };
+  }, [font.family, options.nameMark]);
+
+  // a selection only paints text, so logos and drawings are told when they're
+  // inside one and paint the highlight themselves (see [data-picked] in css)
+  useEffect(() => {
+    const mark = () => {
+      const sel = document.getSelection();
+      const live = !!sel && !sel.isCollapsed;
+      const pieces = columnRef.current?.querySelectorAll(
+        ".logo, .mark, .sign, .name-over, .name-box, .coords, .lnk-t",
+      );
+      for (const el of pieces ?? []) {
+        el.toggleAttribute("data-picked", live && sel.containsNode(el, true));
+      }
+    };
+    document.addEventListener("selectionchange", mark);
+    return () => document.removeEventListener("selectionchange", mark);
+  }, []);
+
+  // the heading is cut into words, so the opening can bring them in one by one
+  const words = (text: string, slot?: () => React.CSSProperties) =>
+    text.split(/(\s+)/).map((piece, i) =>
+      piece.trim() === "" ? (
+        piece && " "
+      ) : (
+        // biome-ignore lint/suspicious/noArrayIndexKey: fixed copy
+        <span key={i} className="w" style={slot?.()}>
+          {piece}
+        </span>
+      ),
+    );
+
+  let linkSeed = 11;
+  const link = (l: Link, key: number) => {
+    const seed = linkSeed;
+    linkSeed += 7;
+    const src = l.preview ? `/images/previews/${l.preview}.webp` : null;
+    const logo = l.logoSrc ?? (l.logo ? favicon(l.logo) : null);
+    const inner = (
+      <>
+        {l.icon === "fountain" ? <Fountain seed={71} /> : null}
+        {l.mark ? (
+          <span className="mark">
+            <span
+              style={
+                {
+                  "--shape": `url(${l.mark[0]})`,
+                  "--tint": l.mark[1],
+                  width: `${l.mark[2]}em`,
+                } as React.CSSProperties
+              }
+            />
+          </span>
+        ) : null}
+        {logo ? (
+          <span className="logo">
+            {/* biome-ignore lint/performance/noImgElement: tiny remote logo */}
+            <img src={logo} alt="" width={32} height={32} />
+          </span>
+        ) : null}
+        <span
+          className={l.href ? "lnk-t" : undefined}
+          style={{ "--pen": underline(seed) } as React.CSSProperties}
+        >
+          <span className={l.wordless ? "tx sr-only" : "tx"}>{l.text}</span>
+        </span>
+      </>
+    );
+    if (!l.href) {
+      return (
+        <span key={key} className="lnk fade">
+          {inner}
+        </span>
+      );
+    }
+    return (
+      <a
+        key={key}
+        className="lnk fade"
+        href={l.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        onPointerEnter={
+          src
+            ? (e) => {
+                if (e.pointerType !== "mouse") return;
+                follow(e);
+                setHover({
+                  src,
+                  rect: e.currentTarget.getBoundingClientRect(),
+                  open: true,
+                });
+              }
+            : undefined
+        }
+        onPointerMove={src ? follow : undefined}
+        onPointerLeave={
+          src ? () => setHover((h) => h && { ...h, open: false }) : undefined
+        }
+      >
+        {inner}
+      </a>
+    );
+  };
+
+  const net = (text: string, key: number) => (
+    // focusable, so a tap or the keyboard opens the socials as well as a hover
+    // biome-ignore lint/a11y/useSemanticElements: a real button can't hold the links
+    <span
+      key={key}
+      className="net"
+      role="button"
+      aria-haspopup="true"
+      tabIndex={0}
+      onPointerEnter={(e) => keepDockInView(e.currentTarget)}
+      onFocus={(e) => keepDockInView(e.currentTarget)}
+    >
+      <Globe seed={31} />
+      <span
+        className="lnk-t"
+        style={{ "--pen": underline(53) } as React.CSSProperties}
+      >
+        <span className="tx">{text}</span>
+      </span>
+      <Dock items={SOCIALS} />
+    </span>
   );
 
-  const handleProjectHover = useCallback(
-    (id: string, previewUrl: string, rect: DOMRect) => {
-      setHoveredProject({ id, rect, previewUrl });
-    },
-    [],
-  );
-
-  const clearWorkHover = useCallback(() => setHoveredWork(null), []);
-  const clearProjectHover = useCallback(() => setHoveredProject(null), []);
+  // the pieces of the name arrive one after another
+  let slot = 0;
+  const at = () => ({ "--i": slot++ }) as React.CSSProperties;
 
   return (
-    <>
-      <SectionHeading text="Experience" delay={experience.heading} />
+    <div
+      ref={rootRef}
+      className="v2"
+      data-stage={stage}
+      data-marks={options.marks}
+      data-peek={hover?.open ? "" : undefined}
+      style={
+        {
+          "--font-text": `"${font.family}"`,
+          "--font-mono": `"${MONO_FAMILY}"`,
+          "--font-label": `"${LABEL_FAMILY}"`,
+          "--scale": font.scale,
+          // set here, not in the stylesheet, so the #id means this document
+          "--texture":
+            options.texture === "none" ? "none" : `url(#tx-${options.texture})`,
+          "--start": `${START}ms`,
+          "--step": `${STEP}ms`,
+          "--appear": `${APPEAR}ms`,
+          "--line-ms": `${LINE_MS}ms`,
+          "--line-gap": `${LINE_GAP}ms`,
+          "--band": `${BAND}px`,
+        } as React.CSSProperties
+      }
+    >
+      {/* the key restarts every animation when the intro is replayed */}
+      <div key={`column-${run}`} className="v2-column" ref={columnRef}>
+        <header className="head fade">
+          <h1 ref={nameRef}>
+            {/* the space is inside the run, so a selection is grainy across it */}
+            <span className="tx">{words(GREETING, at)} </span>
+            <span className="name">
+              <span className="tx">{words(NAME, at)}</span>
+              <NameMarkDrawing
+                key={options.nameMark}
+                mark={options.nameMark}
+                style={at()}
+              />
+            </span>
+          </h1>
+          {/* where i am, after locomotive.ca's footer: the bridge, the
+              coordinates stacked between arrows, and the state on a plate */}
+          <p className="where">
+            <Bridge seed={43} />
+            <span className="tx">San Francisco </span>
+            <span className="coords">
+              <span>← 37.7749 →</span>
+              <span>→ 122.4194 ←</span>
+            </span>
+            <span className="tx">California </span>
+            <Sign shape="box" label="CA" seed={9} />
+          </p>
+        </header>
 
-      {/* biome-ignore lint/a11y/noStaticElementInteractions: only clears hover styling */}
-      <div
-        className="flex flex-col gap-3 mt-3 w-full"
-        onMouseLeave={clearWorkHover}
-      >
-        {WORK_ITEMS.map((item, i) => (
-          <ItemRow
-            key={item.slug}
-            id={item.company}
-            label={item.company}
-            role={item.role}
-            about={item.about}
-            date={item.date}
-            url={item.url}
-            isHovered={hoveredWork?.id === item.company}
-            layoutId="work-hover"
-            delay={experience.row(i)}
-            previewUrl={WORK_PREVIEW_URLS.get(item.slug) ?? ""}
-            onHover={handleWorkHover}
-          />
-        ))}
+        <div className="rest">
+          {COPY.map((tokens, p) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: fixed copy
+            <p key={p}>
+              {tokens.map((t, i) =>
+                typeof t === "string" ? (
+                  // biome-ignore lint/suspicious/noArrayIndexKey: fixed copy
+                  <span key={i} className="fade">
+                    <span className="tx">{t}</span>
+                  </span>
+                ) : "net" in t ? (
+                  net(t.net, i)
+                ) : (
+                  link(t, i)
+                ),
+              )}
+            </p>
+          ))}
+        </div>
       </div>
 
-      <SectionHeading text="Projects" delay={projects.heading} />
-
-      {/* biome-ignore lint/a11y/noStaticElementInteractions: only clears hover styling */}
-      <div
-        className="flex flex-col gap-3 mt-3 w-full"
-        onMouseLeave={clearProjectHover}
-      >
-        {PROJECTS.map((project, i) => (
-          <ItemRow
-            key={project.slug}
-            id={project.name}
-            label={project.name}
-            role={project.role}
-            about={project.about}
-            date={project.date}
-            url={project.url}
-            isHovered={hoveredProject?.id === project.name}
-            layoutId="project-hover"
-            delay={projects.row(i)}
-            previewUrl={PROJECT_PREVIEW_URLS.get(project.slug) ?? ""}
-            onHover={handleProjectHover}
-            annotate={project.annotate}
-          />
-        ))}
-      </div>
-
-      <SectionHeading text="Publications" delay={publications.heading} />
-
-      <div className="flex flex-col gap-3 mt-3 w-full">
-        {PAPERS.map((paper, i) => (
-          <Line key={paper.title} delay={publications.row(i)}>
-            <div className="flex flex-col items-start text-left w-full">
-              <div className="flex items-baseline justify-between gap-2 sm:gap-8 w-full">
-                <span className="font-display font-bold text-stone-700 truncate min-w-0">
-                  {paper.title}
-                </span>
-                <span className="text-xs sm:text-sm text-stone-400 whitespace-nowrap shrink-0">
-                  {paper.year}
-                </span>
-              </div>
-              <span className="text-xs text-stone-600 mt-1">
-                {paper.venue}
-                {paper.citations > 0 ? ` · ${paper.citations} citations` : null}
-              </span>
-            </div>
-          </Line>
-        ))}
-
-        {PATENTS.map((patent, i) => (
-          <Line
-            key={patent.number}
-            delay={publications.row(PAPERS.length + i)}
-          >
-            <div className="flex flex-col items-start text-left w-full">
-              <div className="flex items-baseline justify-between gap-2 sm:gap-8 w-full">
-                <span className="font-display font-bold text-stone-700 truncate min-w-0">
-                  {patent.title}
-                </span>
-                <span className="text-xs sm:text-sm text-stone-400 whitespace-nowrap shrink-0">
-                  {patent.year}
-                </span>
-              </div>
-              <span className="text-xs text-stone-600 mt-1">
-                Patent {patent.number}
-              </span>
-            </div>
-          </Line>
-        ))}
-      </div>
-
-      <div className="hidden md:block">
-        <HoverPreview
-          previewUrl={
-            hoveredWork?.previewUrl || hoveredProject?.previewUrl || null
-          }
-          anchorRect={hoveredWork?.rect || hoveredProject?.rect || null}
+      {stage === "settled" ? null : (
+        <RulerIntro
+          key={`guides-${run}`}
+          target={nameRef}
+          leaving={stage === "out"}
         />
-      </div>
-    </>
+      )}
+
+      <TextureFilters />
+
+      <PixelPreview hover={hover} />
+
+      <OptionsPanel
+        options={options}
+        set={set}
+        onReplay={() => setRun((n) => n + 1)}
+      />
+    </div>
   );
 }

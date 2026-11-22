@@ -1,4 +1,5 @@
 import { Head, Html, Main, NextScript } from "next/document";
+import { FONT_STYLESHEETS } from "@/components/options";
 
 export default function Document() {
   return (
@@ -20,8 +21,21 @@ export default function Document() {
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/site.webmanifest" />
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#0a0a0a" />
-        <meta name="theme-color" content="#f7f1e7" />
-        <meta name="msapplication-TileColor" content="#f7f1e7" />
+        <meta name="theme-color" content="#ffffff" />
+        <meta name="msapplication-TileColor" content="#ffffff" />
+        {/* font options still being chosen between; see components/options */}
+        <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="" />
+        {FONT_STYLESHEETS.map((href) => (
+          <link key={href} rel="stylesheet" href={href} />
+        ))}
+        {/* without scripts nothing runs the opening, so show the text plainly */}
+        <noscript>
+          <style>
+            {
+              ".v2 *{animation:none!important;opacity:1!important;filter:none!important}.v2 .w{color:inherit!important}.v2 .w::before{display:none}.v2 .logo{background:none!important}"
+            }
+          </style>
+        </noscript>
       </Head>
       <body className="antialiased">
         <Main />
