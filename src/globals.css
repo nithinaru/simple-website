@@ -77,8 +77,7 @@ html {
 /* how far the colour has travelled along a line; registered so it animates */
 @property --o {
   syntax: "<length>";
-  /* inherited so a word's skeleton bar (its ::before) can follow it */
-  inherits: true;
+  inherits: false;
   initial-value: 0px;
 }
 
@@ -86,8 +85,6 @@ html {
 .v2 {
   --ink: #141414;
   --blue: #1f4fff; /* cobalt: the guides, the link lines, the selection */
-  --bar: #e9e9e9;
-  --bar-lit: #f6f6f6;
   position: fixed;
   inset: 0;
   overflow: hidden;
@@ -127,7 +124,9 @@ html {
   width: fit-content;
   font: inherit;
   font-size: 2.1em;
-  line-height: 1.15;
+  /* tall enough to hold the tails of y and the like: the guides are drawn
+     round this box, and shouldn't cut through them */
+  line-height: 1.32;
   letter-spacing: -0.015em;
 }
 
@@ -266,35 +265,18 @@ html {
 }
 
 /*
- * the opening, stage one: a skeleton of the name, like a loading screen.
- * each word is a grey bar (stretched a little to the right so the bars join
- * up), arriving in order, with a slow shimmer running across them.
+ * the opening, stage one: the guides draw round the name, which isn't there
+ * yet. each word has a little room above and below (cancelled by a negative
+ * margin) so the colour that paints it in reaches the tails of letters like y.
  */
 .v2 h1 .w {
-  position: relative;
+  padding: 0.2em 0;
+  margin: -0.2em 0;
   color: transparent;
-  animation: arrive var(--appear) ease-out both;
-  animation-delay: calc(var(--start) + var(--i) * var(--step));
 }
 
-.v2 h1 .w::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: -0.3em;
-  top: 50%;
-  height: 0.62em;
-  margin-top: -0.29em;
-  border-radius: 0.14em;
-  /* fixed to the window, so the shimmer lines up from one bar to the next */
-  background:
-    linear-gradient(100deg, var(--bar) 42%, var(--bar-lit) 50%, var(--bar) 58%)
-    0 0 / 200vw 100% fixed;
-  animation: shimmer 1500ms linear infinite;
-}
-
-.v2 h1 .name .w::before {
-  right: 0;
+.v2 h1 .ink {
+  opacity: 0;
 }
 
 /* the name, and the mark drawn on it (see NameMarkDrawing) */
@@ -318,41 +300,12 @@ html {
   padding-left: 0.18em;
 }
 
-@keyframes arrive {
-  from {
-    opacity: 0;
-    transform: translateY(0.18em);
-  }
-}
-
-@keyframes shimmer {
-  from {
-    background-position: 100vw 0;
-  }
-  to {
-    background-position: -100vw 0;
-  }
-}
-
-/* the drawing in the name waits at a fraction of its strength */
-.v2 h1 .ink {
-  opacity: 0.2;
-  animation: arrive-ink var(--appear) ease-out both;
-  animation-delay: calc(var(--start) + var(--i) * var(--step));
-}
-
-@keyframes arrive-ink {
-  from {
-    opacity: 0;
-  }
-}
-
 /*
  * stage two: the colour. every word of the name is painted by the same wide
  * gradient (ink, then a band of colour, then nothing), offset by where the
  * word sits, so sliding it reads as one band crossing the whole line and
- * leaving ink behind. the skeleton bars are cut away just ahead of it. (the
- * band is the one bharadwhat.com sweeps over its links on hover.)
+ * leaving ink behind. (the band is the one bharadwhat.com sweeps over its
+ * links on hover.)
  */
 .v2:is([data-stage="sweep"], [data-stage="out"]) h1 .w {
   background-image: linear-gradient(
@@ -374,13 +327,6 @@ html {
   background-clip: text;
   animation: sweep var(--line-ms) cubic-bezier(0.45, 0, 0.55, 1) both;
   animation-delay: calc(var(--line) * var(--line-gap));
-}
-
-/* the bar goes from its left, up to the leading edge of the colour */
-.v2:is([data-stage="sweep"], [data-stage="out"]) h1 .w::before {
-  clip-path: inset(
-    0 0 0 max(0px, calc(var(--lw) + var(--o) + var(--band) - var(--x)))
-  );
 }
 
 @keyframes sweep {
@@ -405,7 +351,7 @@ html {
 
 @keyframes wake {
   from {
-    opacity: 0.2;
+    opacity: 0;
   }
   to {
     opacity: 1;
@@ -443,10 +389,6 @@ html {
 
 .v2[data-stage="settled"] h1 .w {
   color: inherit;
-}
-
-.v2[data-stage="settled"] h1 .w::before {
-  display: none;
 }
 
 .v2[data-stage="settled"] h1 .ink {
@@ -576,17 +518,15 @@ html {
   filter: var(--texture, none);
 }
 
-/* cobalt lines would vanish into the highlight, so they turn white */
+/* the cobalt lines, their numbers and the box step aside for a highlight */
 .v2[data-marks="guide"] .lnk-t[data-picked] {
-  --line: #fff;
+  --line: transparent;
 }
 
-.v2[data-marks="guide"] .lnk-t[data-picked]::after {
-  background: var(--blue);
-  color: #fff;
+.v2 :is(.lnk-t, .name-box)[data-picked]::after {
+  display: none;
 }
 
-/* and the box round the name steps aside */
 .v2 .name-box[data-picked] {
   border-color: transparent;
 }

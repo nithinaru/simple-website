@@ -29,8 +29,8 @@ import {
  * to fit the window so nothing scrolls.
  *
  * the opening, after justinschueler.com, runs in four stages:
- *   appear   measuring guides draw in around the name (see RulerIntro) while
- *            a skeleton of it arrives; everything else waits behind a fog
+ *   appear   measuring guides draw in around where the name will be (see
+ *            RulerIntro); everything else waits behind a fog
  *   sweep    a band of colour runs along the name and leaves it in ink
  *   out      the guides pull back and the rest of the page comes into focus
  *   settled  ordinary text
@@ -143,9 +143,7 @@ const PREVIEWS = COPY.flat().flatMap((t) =>
 );
 
 // timing of the opening, in ms
-const START = 520; // the guides are mostly drawn by now
-const STEP = 90; // between one piece of the name arriving and the next
-const APPEAR = 320; // how long a piece takes to arrive
+const START = 700; // the guides are drawn by now
 const LINE_MS = 560; // how long the colour takes to cross the name
 const LINE_GAP = 170; // between lines, should the name ever wrap
 const BAND = 150; // width of the colour band, px
@@ -248,21 +246,17 @@ export default function Home() {
     }
     setStage("appear");
 
-    const pieces = name.querySelectorAll(".w, .ink").length;
     const timers: ReturnType<typeof setTimeout>[] = [];
     timers.push(
-      setTimeout(
-        () => {
-          // measured as late as possible, once the font has settled
-          fit(root, column);
-          const lines = measure(root, name);
-          setStage("sweep");
-          const swept = (lines - 1) * LINE_GAP + LINE_MS + 120;
-          timers.push(setTimeout(() => setStage("out"), swept));
-          timers.push(setTimeout(() => setStage("settled"), swept + RETRACT));
-        },
-        START + pieces * STEP + APPEAR + 120,
-      ),
+      setTimeout(() => {
+        // measured as late as possible, once the font has settled
+        fit(root, column);
+        const lines = measure(root, name);
+        setStage("sweep");
+        const swept = (lines - 1) * LINE_GAP + LINE_MS + 120;
+        timers.push(setTimeout(() => setStage("out"), swept));
+        timers.push(setTimeout(() => setStage("settled"), swept + RETRACT));
+      }, START),
     );
     return () => {
       for (const t of timers) clearTimeout(t);
@@ -434,9 +428,6 @@ export default function Home() {
           // set here, not in the stylesheet, so the #id means this document
           "--texture":
             options.texture === "none" ? "none" : `url(#tx-${options.texture})`,
-          "--start": `${START}ms`,
-          "--step": `${STEP}ms`,
-          "--appear": `${APPEAR}ms`,
           "--line-ms": `${LINE_MS}ms`,
           "--line-gap": `${LINE_GAP}ms`,
           "--band": `${BAND}px`,
