@@ -97,9 +97,9 @@ const COPY: Token[][] = [
       preview: "travel",
       moving: true,
     },
-    ", ",
+    ", create ",
     // a page of its own, on this site
-    { text: "ship side projects", href: "/projects" },
+    { text: "products", href: "/projects" },
     ", and tend my ",
     {
       text: "Private Garden",
