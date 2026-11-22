@@ -4,7 +4,16 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
+        {/* the hand-drawn golden gate, no background; made by
+            scripts/make-icons.mjs */}
+        <link rel="icon" href="/favicon.ico" sizes="48x48" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link
+          rel="icon"
+          href="/favicon-96x96.png"
+          type="image/png"
+          sizes="96x96"
+        />
         <link
           rel="icon"
           href="/favicon-32x32.png"
@@ -19,7 +28,7 @@ export default function Document() {
         />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/site.webmanifest" />
-        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#0a0a0a" />
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#c8432b" />
         <meta name="theme-color" content="#ffffff" />
         <meta name="msapplication-TileColor" content="#ffffff" />
         <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="" />
