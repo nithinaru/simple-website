@@ -260,7 +260,7 @@ export function Bridge({ seed }: { seed: number }) {
  * the socials, drawn in the same hand as the other signs: no frames, just a
  * simple mark each, on its own seed.
  */
-export type SocialKind = "x" | "linkedin" | "github" | "cosmos" | "scholar";
+export type SocialKind = "linkedin" | "cosmos" | "scholar";
 
 export function SocialSign({ kind, seed }: { kind: SocialKind; seed: number }) {
   const pen = { seed, roughness: 0.8, stroke: INK, strokeWidth: 1.7 };
@@ -268,16 +268,7 @@ export function SocialSign({ kind, seed }: { kind: SocialKind; seed: number }) {
   const inked = { ...pen, fill: INK, fillStyle: "solid" as const };
 
   let shapes: Drawable[];
-  if (kind === "x") {
-    // a bird on the wing, filled in: one pointed wing raised, tail trailing
-    // low to the left, beak to the right
-    shapes = [
-      gen.path(
-        "M4 20 C8 21 12 20 15 18 L9 8 C14 9 19 12 21 15 C23 13 26 13 27.5 15 L31 15.5 L28 17.5 C27 23 22 27 16 27 C12 27 8 25 6 23 L2 26 Z",
-        { ...inked, seed: seed + 1, roughness: 0.7 },
-      ),
-    ];
-  } else if (kind === "linkedin") {
+  if (kind === "linkedin") {
     // "in", lettered with a broad pen: the dot, the stem, then the n
     shapes = [
       gen.circle(8.5, 7.5, 3.6, { ...inked, seed: seed + 1 }),
@@ -287,24 +278,6 @@ export function SocialSign({ kind, seed }: { kind: SocialKind; seed: number }) {
         ...bold,
         seed: seed + 4,
       }),
-    ];
-  } else if (kind === "github") {
-    // a cat's face, white on a black disc, with two dots for eyes
-    shapes = [
-      gen.circle(16, 16, 28, { ...inked, seed: seed + 1 }),
-      gen.path(
-        "M9 21 C9 17 10 15 11 14 L10 8 L14.5 11.5 C15.5 11.3 16.5 11.3 17.5 11.5 L22 8 L21 14 C22 15 23 17 23 21 C23 24 20 26 16 26 C12 26 9 24 9 21 Z",
-        {
-          ...pen,
-          seed: seed + 2,
-          stroke: "#fff",
-          strokeWidth: 0.8,
-          fill: "#fff",
-          fillStyle: "solid",
-        },
-      ),
-      gen.circle(13.3, 19.5, 2, { ...inked, seed: seed + 3 }),
-      gen.circle(18.7, 19.5, 2, { ...inked, seed: seed + 4 }),
     ];
   } else if (kind === "cosmos") {
     // a ring of six dots, pen wobble and all

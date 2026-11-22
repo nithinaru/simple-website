@@ -116,13 +116,21 @@ const COPY: Token[][] = [
 ];
 
 const SOCIALS: readonly DockItem[] = [
-  { label: "Twitter", href: "https://x.com/nithinaru", sign: "x" },
+  {
+    label: "Twitter",
+    href: "https://x.com/nithinaru",
+    drawing: "/images/logos/social-twitter.png",
+  },
   {
     label: "LinkedIn",
     href: "https://www.linkedin.com/in/aruswamy",
     sign: "linkedin",
   },
-  { label: "GitHub", href: "https://github.com/nithinaru", sign: "github" },
+  {
+    label: "GitHub",
+    href: "https://github.com/nithinaru",
+    drawing: "/images/logos/social-github.png",
+  },
   {
     label: "Cosmos",
     href: "https://www.cosmos.so/nithinaru",

@@ -7,7 +7,14 @@ import { type SocialKind, SocialSign } from "@/components/sketch";
  * pointer, with its neighbours rising a little too, like the dock on a mac.
  */
 
-export type DockItem = { label: string; href: string; sign: SocialKind };
+// each has either a sign drawn in code, or a picture: nithin's own drawings,
+// cut out of a sketch he sent, in public/images/logos
+export type DockItem = {
+  label: string;
+  href: string;
+  sign?: SocialKind;
+  drawing?: string;
+};
 
 /** nudge the row sideways if it would hang off the edge of the window */
 export const keepDockInView = (phrase: HTMLElement) => {
@@ -100,7 +107,12 @@ export function Dock({ items }: { items: readonly DockItem[] }) {
             } as React.CSSProperties
           }
         >
-          <SocialSign kind={item.sign} seed={61 + k * 13} />
+          {item.drawing ? (
+            // biome-ignore lint/performance/noImgElement: small local png
+            <img className="social" src={item.drawing} alt="" />
+          ) : item.sign ? (
+            <SocialSign kind={item.sign} seed={61 + k * 13} />
+          ) : null}
           <span className="dock-label">{item.label}</span>
         </a>
       ))}
