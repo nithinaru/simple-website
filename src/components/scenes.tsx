@@ -373,7 +373,9 @@ const BUILD: Record<SceneName, () => Built> = {
     const mid = span / 2;
     const top = 10;
     const low = floor - 6;
-    const cable = (x: number) => top + (low - top) * ((x - mid) / mid) ** 2;
+    // a hanging cable: flat in the middle of the span, steepest at the tower
+    const cable = (x: number) =>
+      low - (low - top) * (Math.min(x, span - x) / mid) ** 2;
     const paint = (seed: number, weight = 1.2) => pen(ORANGE, seed, weight);
 
     // the roadway, and the truss under it that keeps it stiff
@@ -389,10 +391,10 @@ const BUILD: Record<SceneName, () => Built> = {
 
     // a tower: two legs that step in as they climb, the way the real ones do
     const steps: [number, number, number][] = [
-      [floor + 1, floor - 34, 6.6],
-      [floor - 34, floor - 62, 5.6],
-      [floor - 62, floor - 82, 4.6],
-      [floor - 82, top, 3.8],
+      [floor + 1, floor - 36, 7.4],
+      [floor - 36, floor - 63, 6.4],
+      [floor - 63, floor - 83, 5.4],
+      [floor - 83, top, 4.6],
     ];
     for (const side of [-10, 10]) {
       const cx = mid + side;
@@ -403,32 +405,41 @@ const BUILD: Record<SceneName, () => Built> = {
             to,
             w,
             from - to,
-            hatch(ORANGE, 20 + i + side, 1.5),
+            hatch(ORANGE, 20 + i + side, 1.15),
           ),
         );
       }
       built.push(
         // below the road, down to the pier
         gen.rectangle(
-          cx - 3.8,
+          cx - 4.2,
           floor + 7,
-          7.6,
+          8.4,
           sea - 9 - (floor + 7),
-          hatch(ORANGE, 30 + side, 1.5),
+          hatch(ORANGE, 30 + side, 1.15),
         ),
         // and the cap the cable sits on
         gen.rectangle(cx - 2.8, top - 4, 5.6, 4, paint(34 + side, 1.1)),
       );
     }
     // the four portals between the legs above the road
+    // solid bands, deepest at the bottom, each with a rib across it
     for (const [i, [y, h]] of [
-      [floor - 37, 7],
-      [floor - 64, 6],
-      [floor - 84, 5],
-      [top + 1, 4],
+      [floor - 41, 10],
+      [floor - 67, 8],
+      [floor - 86, 6.5],
+      [top + 0.5, 5.5],
     ].entries()) {
-      built.push(gen.rectangle(mid - 7.5, y, 15, h, paint(40 + i, 1.1)));
+      built.push(
+        gen.rectangle(mid - 7, y, 14, h, hatch(ORANGE, 40 + i, 1.3)),
+        gen.line(mid - 7, n(y + h / 2), mid + 7, n(y + h / 2), {
+          ...paint(44 + i, 0.6),
+          roughness: 0.4,
+        }),
+      );
     }
+    // the road passes through the tower under a last band
+    built.push(gen.rectangle(mid - 7, floor - 5, 14, 5, paint(48, 1)));
     // crossed braces between them below it
     const under = (sea - 9 - (floor + 7)) / 2;
     for (let i = 0; i < 2; i++) {
@@ -444,16 +455,16 @@ const BUILD: Record<SceneName, () => Built> = {
       [mid, span],
     ]) {
       const along: [number, number][] = [];
-      for (let x = from; x <= to; x += mid / 12)
+      for (let x = from; x <= to + 0.1; x += mid / 20)
         along.push([n(x), n(cable(x))]);
-      built.push(gen.curve(along, paint(from + 5, 1.6)));
+      built.push(gen.curve(along, { ...paint(from + 5, 1.7), roughness: 0.5 }));
     }
     // and the ropes that hang the road from it
-    for (let x = 14; x < span; x += 14) {
-      if (Math.abs(x - mid) < 15) continue;
+    for (let x = 10; x < span; x += 10) {
+      if (Math.abs(x - mid) < 15 || floor + 1 - cable(x) < 3) continue;
       built.push(
         gen.line(x, n(cable(x)), x, floor + 1, {
-          ...paint(x, 0.6),
+          ...paint(x, 0.5),
           roughness: 0.35,
         }),
       );
@@ -504,6 +515,25 @@ const BUILD: Record<SceneName, () => Built> = {
         pen(PENCIL, seed + 3, 1),
       ),
     ];
+    // alcatraz, far out: the rock, the cell house, the lighthouse, the tank
+    const rock = (x: number) => [
+      gen.curve(
+        [
+          [x - 44, sea - 8],
+          [x - 30, sea - 15],
+          [x - 8, sea - 18],
+          [x + 16, sea - 17],
+          [x + 34, sea - 13],
+          [x + 46, sea - 8],
+        ],
+        pen(PENCIL, 90, 1.1),
+      ),
+      gen.rectangle(x - 16, sea - 24, 30, 6.5, pen(PENCIL, 91, 1)),
+      gen.line(x + 19, sea - 17, x + 19, sea - 33, pen(PENCIL, 92, 1.1)),
+      gen.circle(x + 19, sea - 34, 2.6, hatch(YELLOW, 93, 1)),
+      gen.line(x - 27, sea - 15, x - 27, sea - 25, pen(PENCIL, 94, 0.9)),
+      gen.rectangle(x - 30, sea - 29, 6, 4, pen(PENCIL, 95, 0.9)),
+    ];
     return {
       tall,
       ground,
@@ -532,7 +562,11 @@ const BUILD: Record<SceneName, () => Built> = {
         {
           wide: 1300,
           drift: 0.1,
-          art: <Paths shapes={[...boat(300, 70), ...boat(980, 80)]} />,
+          art: (
+            <Paths
+              shapes={[...boat(300, 70), ...rock(640), ...boat(1040, 80)]}
+            />
+          ),
         },
         { wide: 600, drift: 0.3, art: <Paths shapes={water} /> },
         { wide: span, drift: 1, art: <Paths shapes={built} /> },
