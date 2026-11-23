@@ -29,7 +29,7 @@ const PETALS = [
   "#7c4ddb",
   "#2aa7d8",
 ];
-const WIDE = 44; // every flower is drawn in a box this wide
+export const WIDE = 44; // every flower is drawn in a box this wide
 const EVERY = 23; // one flower about this often, px
 const GALLOP = 11; // frames in her stride; the one after them is standing
 const STRIDE = 2.7; // ground covered in one stride, in horse lengths
@@ -52,7 +52,7 @@ const dice = (seed: number) => {
 
 const n = (v: number) => Math.round(v * 100) / 100;
 
-function draw(seed: number, height: number) {
+export function draw(seed: number, height: number) {
   const roll = dice(seed * 7919 + 13);
   const pick = (from: number, to: number) => from + roll() * (to - from);
   const kind = Math.floor(roll() * 6);
