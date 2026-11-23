@@ -757,6 +757,57 @@ html {
   visibility: visible;
 }
 
+/* the other scene: hills going by behind the horse */
+.v2 .range {
+  position: absolute;
+  z-index: -1;
+  inset: auto 0 0;
+  height: calc(var(--u) * 150px);
+  overflow: hidden;
+  opacity: 0;
+  translate: 0 14px;
+  transition:
+    opacity 800ms ease,
+    translate 1000ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+}
+
+.v2 .range[data-show] {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* copies of one drawing side by side, slid along by the page */
+.v2 .range-strip {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  height: 100%;
+  will-change: translate;
+}
+
+.v2 .range-strip svg {
+  flex: none;
+  display: block;
+  height: 100%;
+  overflow: visible;
+}
+
+.v2 .range .horse {
+  position: absolute;
+  left: 0;
+  bottom: calc(var(--u) * 7px);
+  height: calc(var(--u) * 62px);
+  aspect-ratio: 300 / 204;
+  background: url(/images/horse.png) 0 0 / 1200% 100% no-repeat;
+  visibility: hidden;
+}
+
+.v2 .range .horse[data-here] {
+  visibility: visible;
+}
+
 .v2 .meadow {
   position: absolute;
   z-index: -1;

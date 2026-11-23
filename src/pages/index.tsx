@@ -9,6 +9,7 @@ import {
   PixelPreview,
   preload,
 } from "@/components/pixel-preview";
+import { Range } from "@/components/range";
 import { RulerIntro } from "@/components/ruler-intro";
 import { Bridge, Fountain, Globe, Sign, underline } from "@/components/sketch";
 import { labelLinks } from "@/utils/label-links";
@@ -224,6 +225,14 @@ export default function Home() {
   const nameRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => preload(PREVIEWS, CLIPS), []);
+
+  // what runs along the bottom, while i choose: the flowers, or with
+  // ?scene=hills the horse galloping through open country
+  const [scene, setScene] = useState<"flowers" | "hills">("flowers");
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("scene") === "hills")
+      setScene("hills");
+  }, []);
 
   // the opening, once, when the page arrives
   useLayoutEffect(() => {
@@ -481,7 +490,11 @@ export default function Home() {
         } as React.CSSProperties
       }
     >
-      <Meadow show={stage === "settled"} />
+      {scene === "hills" ? (
+        <Range show={stage === "settled"} />
+      ) : (
+        <Meadow show={stage === "settled"} />
+      )}
 
       <div className="v2-column" ref={columnRef}>
         <header className="head fade">
