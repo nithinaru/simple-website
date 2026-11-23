@@ -80,6 +80,12 @@ export default function App({ Component, pageProps, router }: AppProps) {
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta property="og:image:alt" content={SHARE_IMAGE_ALT} />
+        {/* the same picture, moving, for the few places that play one */}
+        <meta property="og:video" content={`${SITE_URL}/og.mp4`} />
+        <meta property="og:video:secure_url" content={`${SITE_URL}/og.mp4`} />
+        <meta property="og:video:type" content="video/mp4" />
+        <meta property="og:video:width" content="1200" />
+        <meta property="og:video:height" content="630" />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content={TWITTER_HANDLE} />
