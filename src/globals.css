@@ -765,17 +765,27 @@ html {
   inset: auto 0 0;
   height: calc(var(--u) * var(--tall) * 1px);
   overflow: hidden;
-  opacity: 0;
-  translate: 0 14px;
-  transition:
-    opacity 800ms ease,
-    translate 1000ms cubic-bezier(0.2, 0.8, 0.2, 1);
   pointer-events: none;
+  /* it arrives the way it was made: drawn across from the left, behind a
+     soft edge. the mask is a little over twice as wide as the window, ink
+     on its left half, and slides until that half covers everything */
+  -webkit-mask:
+    linear-gradient(90deg, #000 46%, transparent 54%) 100% 0 / 220% 100%
+    no-repeat;
+  mask:
+    linear-gradient(90deg, #000 46%, transparent 54%) 100% 0 / 220% 100%
+    no-repeat;
+  opacity: 0;
+  transition:
+    -webkit-mask-position 2800ms cubic-bezier(0.45, 0.05, 0.25, 1) 150ms,
+    mask-position 2800ms cubic-bezier(0.45, 0.05, 0.25, 1) 150ms,
+    opacity 900ms ease 150ms;
 }
 
 .v2 .scene[data-show] {
   opacity: 1;
-  translate: 0 0;
+  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
 }
 
 /* copies of one drawing side by side, slid along by the page */
@@ -1237,4 +1247,10 @@ html {
   font-size: 0.86em;
   line-height: 1.5;
   color: #4a4a4a;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v2 .scene {
+    transition: none;
+  }
 }

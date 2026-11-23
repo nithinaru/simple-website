@@ -1522,18 +1522,23 @@ export function Scene({ name, show }: { name: SceneName; show: boolean }) {
         drift: Number(strip.dataset.drift),
       }),
     );
-    const arrive = 2200; // she comes in from the left edge first
+    // the opening: the scene is drawn across from the left (see .scene in
+    // globals.css) while the ground gets up to speed, and she rides in a
+    // beat later, once there is something under her to run on
+    const wait = 900;
+    const arrive = 3200;
+    const upTo = 2600; // how long the ground takes to reach her pace
     let raf = 0;
     const began = performance.now();
     const step = (now: number) => {
       const t = now - began;
-      const gone = t * speed;
+      const gone = speed * (t < upTo ? (t * t) / (2 * upTo) : t - upTo / 2);
       for (const { strip, lap, drift } of laps) {
         strip.style.translate = `${(-((gone * drift) % lap)).toFixed(1)}px`;
       }
       // coming in, she also covers the ground between the edge and her mark
-      const in01 = Math.min(1, t / arrive);
-      const come = (mark + wide) * (1 - (1 - in01) ** 2.2);
+      const in01 = Math.min(1, Math.max(0, (t - wait) / arrive));
+      const come = (mark + wide) * (1 - (1 - in01) ** 3);
       rider.style.translate = `${(come - wide).toFixed(1)}px`;
       frame(Math.floor(((gone + come) / (wide * STRIDE)) * GALLOP) % GALLOP);
       raf = requestAnimationFrame(step);
