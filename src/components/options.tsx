@@ -40,13 +40,18 @@ export const LOOK = {
  * and a heavier worn).
  */
 export function TextureFilters() {
-  const grain = (key: string, strength: number, frequency: number) => (
+  const grain = (
+    key: string,
+    strength: number,
+    frequency: number,
+    seed = 4,
+  ) => (
     <>
       <feTurbulence
         type="fractalNoise"
         baseFrequency={frequency}
         numOctaves="2"
-        seed="4"
+        seed={seed}
         result={`${key}-noise`}
       />
       {/* turn the noise into see-through specks */}
@@ -58,13 +63,13 @@ export function TextureFilters() {
       />
     </>
   );
-  const rough = (key: string, amount: number) => (
+  const rough = (key: string, amount: number, seed = 9) => (
     <>
       <feTurbulence
         type="fractalNoise"
         baseFrequency="0.55"
         numOctaves="2"
-        seed="9"
+        seed={seed}
         result={`${key}-wobble`}
       />
       <feDisplacementMap
@@ -97,6 +102,26 @@ export function TextureFilters() {
           {grain("w", 2, 0.75)}
           <feComposite in="w-edges" in2="w-specks" operator="in" />
         </filter>
+        {/* press again, printed a few different ways: the horse takes a
+            different one each frame so her grain moves with her */}
+        {[0, 1, 2].map((k) => (
+          <filter
+            key={k}
+            id={`tx-horse-${k}`}
+            x="-10%"
+            y="-20%"
+            width="120%"
+            height="140%"
+          >
+            {rough(`h${k}`, 1.3, 9 + k * 7)}
+            {grain(`h${k}`, 1.1, 1.3, 4 + k * 5)}
+            <feComposite
+              in={`h${k}-edges`}
+              in2={`h${k}-specks`}
+              operator="in"
+            />
+          </filter>
+        ))}
       </defs>
     </svg>
   );

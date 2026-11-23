@@ -9,8 +9,8 @@ import {
   PixelPreview,
   preload,
 } from "@/components/pixel-preview";
-import { Range } from "@/components/range";
 import { RulerIntro } from "@/components/ruler-intro";
+import { SCENES, Scene, type SceneName } from "@/components/scenes";
 import { Bridge, Fountain, Globe, Sign, underline } from "@/components/sketch";
 import { labelLinks } from "@/utils/label-links";
 import { copyText, shuffleText } from "@/utils/shuffle-text";
@@ -102,10 +102,8 @@ const COPY: Token[][] = [
       preview: "travel",
       moving: true,
     },
-    ", create ",
-    // a page of its own, on this site
-    { text: "products", href: "/projects" },
-    ", and tend my ",
+    // the projects page is still there at /projects, just not linked for now
+    ", play pickleball, and tend my ",
     {
       text: "Private Garden",
       href: "https://studio.nithinaruswamy.com",
@@ -227,11 +225,12 @@ export default function Home() {
   useEffect(() => preload(PREVIEWS, CLIPS), []);
 
   // what runs along the bottom, while i choose: the flowers, or with
-  // ?scene=hills the horse galloping through open country
-  const [scene, setScene] = useState<"flowers" | "hills">("flowers");
+  // ?scene=name one of the places for the horse to run (all six at /scenes)
+  const [scene, setScene] = useState<SceneName | null>(null);
   useEffect(() => {
-    if (new URLSearchParams(window.location.search).get("scene") === "hills")
-      setScene("hills");
+    const asked = new URLSearchParams(window.location.search).get("scene");
+    const found = SCENES.find((s) => s.name === asked);
+    if (found) setScene(found.name);
   }, []);
 
   // the opening, once, when the page arrives
@@ -490,8 +489,8 @@ export default function Home() {
         } as React.CSSProperties
       }
     >
-      {scene === "hills" ? (
-        <Range show={stage === "settled"} />
+      {scene ? (
+        <Scene name={scene} show={stage === "settled"} />
       ) : (
         <Meadow show={stage === "settled"} />
       )}

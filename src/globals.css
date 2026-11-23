@@ -758,12 +758,12 @@ html {
   visibility: visible;
 }
 
-/* the other scene: hills going by behind the horse */
-.v2 .range {
+/* somewhere for the horse to run (see scenes.tsx) */
+.v2 .scene {
   position: absolute;
   z-index: -1;
   inset: auto 0 0;
-  height: calc(var(--u) * 84px);
+  height: calc(var(--u) * var(--tall) * 1px);
   overflow: hidden;
   opacity: 0;
   translate: 0 14px;
@@ -773,13 +773,13 @@ html {
   pointer-events: none;
 }
 
-.v2 .range[data-show] {
+.v2 .scene[data-show] {
   opacity: 1;
   translate: 0 0;
 }
 
 /* copies of one drawing side by side, slid along by the page */
-.v2 .range-strip {
+.v2 .scene-strip {
   position: absolute;
   left: 0;
   bottom: 0;
@@ -788,27 +788,132 @@ html {
   will-change: translate;
 }
 
-.v2 .range-strip svg {
+.v2 .scene-strip[data-blend] {
+  mix-blend-mode: multiply;
+}
+
+.v2 .scene-strip svg {
   flex: none;
   display: block;
   height: 100%;
   overflow: visible;
 }
 
-.v2 .range .horse {
+/* the sun in the western one: it stays where it is */
+.v2 .scene-still {
+  position: absolute;
+  right: 18%;
+  top: 0;
+  width: calc(var(--u) * 34px);
+  height: calc(var(--u) * 34px);
+  overflow: visible;
+}
+
+/* the horse and anything that rides along with her */
+.v2 .rider {
   position: absolute;
   left: 0;
-  bottom: calc(var(--u) * 4.5px);
+  bottom: calc(var(--u) * (var(--ground) - 1.5) * 1px);
+  visibility: hidden;
+}
+
+.v2 .rider[data-here] {
+  visibility: visible;
+}
+
+.v2 .rider .horse {
+  display: block;
   height: calc(var(--u) * 42px);
   aspect-ratio: 300 / 204;
   background: url(/images/horse.png) 0 0 / 1200% 100% no-repeat;
   /* printed with the same worn ink as the text */
   filter: var(--texture, none);
-  visibility: hidden;
 }
 
-.v2 .range .horse[data-here] {
-  visibility: visible;
+/* a cobalt box round her, as a design tool shows a selected layer */
+.v2 .rider-box {
+  position: absolute;
+  inset: -3px -5px -1px;
+  border: 1px solid var(--blue);
+}
+
+.v2 .rider-box i {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border: 1px solid var(--blue);
+  background: #fff;
+}
+
+.v2 .rider-box i:nth-child(1) {
+  left: -3px;
+  top: -3px;
+}
+.v2 .rider-box i:nth-child(2) {
+  right: -3px;
+  top: -3px;
+}
+.v2 .rider-box i:nth-child(3) {
+  left: -3px;
+  bottom: -3px;
+}
+.v2 .rider-box i:nth-child(4) {
+  right: -3px;
+  bottom: -3px;
+}
+
+.v2 .rider-chip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  translate: -50% 0;
+  padding: 2px 5px;
+  border-radius: 3px;
+  background: var(--blue);
+  color: #fff;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 9px;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.v2 .rider[data-over="speed"] .rider-chip::after {
+  content: "36 mph";
+}
+
+.v2 .rider[data-over="frame"] .rider-chip[data-frame]::after {
+  content: "frame " attr(data-frame);
+}
+
+/* the scratch page that shows all the scenes */
+.v2.scenes .scene-idea {
+  margin-top: 3.4em;
+}
+
+.v2.scenes .scene-idea h2 {
+  font: inherit;
+  font-size: 1.25em;
+}
+
+.v2.scenes .scene-idea p {
+  margin-top: 0.3em;
+  color: #6b6b6b;
+}
+
+.v2.scenes .scene-idea a {
+  color: var(--blue);
+  white-space: nowrap;
+}
+
+.v2.scenes .scene-stage {
+  position: relative;
+  z-index: 0;
+  height: 190px;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  border-bottom: 1px solid #ececec;
+  overflow: hidden;
 }
 
 .v2 .meadow {
