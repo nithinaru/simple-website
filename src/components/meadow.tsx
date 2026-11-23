@@ -9,6 +9,13 @@ import { gen, Paths } from "@/components/sketch";
  * (the idea of a meadow for a footer is beyza sezer's, beyza.io; these are
  * my own flowers.)
  *
+ * sallie gardner gallops among them: the twelve frames of eadweard
+ * muybridge's "the horse in motion" (palo alto, 19 june 1878, long in the
+ * public domain), cut out of the plate and played back as he never could.
+ * there are two ways she keeps moving, to choose between:
+ *   run    she crosses the meadow every so often and the flowers part for her
+ *   drift  she gallops on the spot and the meadow slides past underneath
+ *
  * drawn in the browser only: how many there are depends on the window.
  */
 
@@ -23,6 +30,11 @@ const PETALS = [
 ];
 const WIDE = 44; // every flower is drawn in a box this wide
 const EVERY = 23; // one flower about this often, px
+const GALLOP = 11; // frames in her stride; the one after them is standing
+const STRIDE = 2.7; // ground covered in one stride, in horse lengths
+const SPEED = 0.46; // crossing the meadow, px per ms
+const DRIFT = 0.13; // the meadow sliding past, px per ms
+const SPARE = 40; // how far past either edge a drifting flower goes round
 const REACH = 95; // how near the pointer has to be to push one over, px
 
 // a small seeded dice, so a flower is the same each time it's drawn
@@ -231,10 +243,50 @@ function Flower({ seed, x, late }: Planted) {
   );
 }
 
-export function Meadow({ show }: { show: boolean }) {
+type Live = {
+  at: { x: number; y: number } | null;
+  horse: number | null;
+  drift: number;
+};
+
+// how far a flower planted at x has been carried along, going round at the
+// edges
+const carried = (x: number, drift: number) => {
+  if (!drift) return 0;
+  const lap = window.innerWidth + SPARE * 2;
+  return ((((x + drift + SPARE) % lap) + lap) % lap) - SPARE - x;
+};
+
+// every flower leans away from the pointer and from the horse
+const lean = (meadow: HTMLElement | null, { at, horse, drift }: Live) => {
+  if (!meadow) return;
+  const top = meadow.getBoundingClientRect().top - 60;
+  for (const f of meadow.querySelectorAll<HTMLElement>(".flower")) {
+    const moved = carried(Number(f.dataset.x), drift);
+    const x = Number(f.dataset.x) + moved;
+    let deg = 0;
+    if (at && at.y > top) {
+      const dx = x - at.x;
+      deg += Math.sign(dx || 1) * Math.max(0, 1 - Math.abs(dx) / REACH) * 16;
+    }
+    if (horse !== null) {
+      const dx = x - horse;
+      deg += Math.sign(dx || 1) * Math.max(0, 1 - Math.abs(dx) / 62) * 24;
+    }
+    f.style.setProperty("--lean", `${deg.toFixed(1)}deg`);
+    f.style.translate = moved ? `${moved.toFixed(1)}px` : "";
+  }
+};
+
+export type Gait = "run" | "drift";
+
+export function Meadow({ show, gait }: { show: boolean; gait: Gait }) {
   const ref = useRef<HTMLDivElement>(null);
+  const horseRef = useRef<HTMLSpanElement>(null);
   const [width, setWidth] = useState(0);
   const [planted, setPlanted] = useState<Planted[]>([]);
+  // where the pointer and the horse are, and how far the meadow has slid
+  const live = useRef<Live>({ at: null, horse: null, drift: 0 });
 
   useEffect(() => {
     const size = () => setWidth(window.innerWidth);
@@ -243,32 +295,22 @@ export function Meadow({ show }: { show: boolean }) {
     return () => window.removeEventListener("resize", size);
   }, []);
 
-  // lean away from the pointer when it comes down among them
   useEffect(() => {
-    const meadow = ref.current;
-    if (!meadow) return;
     let raf = 0;
-    let at: { x: number; y: number } | null = null;
-    const lean = () => {
-      raf = 0;
-      const top = meadow.getBoundingClientRect().top - 60;
-      for (const f of meadow.querySelectorAll<HTMLElement>(".flower")) {
-        const dx = Number(f.dataset.x) - (at?.x ?? 1e6);
-        const near =
-          at && at.y > top ? Math.max(0, 1 - Math.abs(dx) / REACH) : 0;
-        f.style.setProperty(
-          "--lean",
-          `${(Math.sign(dx || 1) * near * 16).toFixed(1)}deg`,
-        );
-      }
+    const soon = () => {
+      raf ||= requestAnimationFrame(() => {
+        raf = 0;
+        lean(ref.current, live.current);
+      });
     };
     const move = (e: PointerEvent) => {
-      at = e.pointerType === "mouse" ? { x: e.clientX, y: e.clientY } : null;
-      raf ||= requestAnimationFrame(lean);
+      live.current.at =
+        e.pointerType === "mouse" ? { x: e.clientX, y: e.clientY } : null;
+      soon();
     };
     const leave = () => {
-      at = null;
-      raf ||= requestAnimationFrame(lean);
+      live.current.at = null;
+      soon();
     };
     window.addEventListener("pointermove", move);
     document.documentElement.addEventListener("pointerleave", leave);
@@ -279,26 +321,106 @@ export function Meadow({ show }: { show: boolean }) {
     };
   }, []);
 
+  // the horse
+  useEffect(() => {
+    const horse = horseRef.current;
+    if (!show || !horse || !width) return;
+    const frame = (i: number) => {
+      horse.style.backgroundPositionX = `${(i / GALLOP) * 100}%`;
+    };
+    const wide = horse.offsetWidth;
+    const put = (x: number) => {
+      horse.style.translate = `${x.toFixed(1)}px`;
+      live.current.horse = x + wide / 2;
+    };
+    let raf = 0;
+    let timer: ReturnType<typeof setTimeout>;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      // no galloping: she stands among the flowers
+      frame(GALLOP);
+      put(width * 0.68);
+      horse.dataset.here = "";
+      lean(ref.current, live.current);
+    } else if (gait === "drift") {
+      timer = setTimeout(() => {
+        put(Math.max(16, width * 0.3 - wide / 2));
+        horse.dataset.here = "";
+        const began = performance.now();
+        const step = (now: number) => {
+          const t = now - began;
+          live.current.drift = t * DRIFT;
+          // twelve pictures a second, as a flick book would show them
+          frame(Math.floor(t * 0.012) % GALLOP);
+          lean(ref.current, live.current);
+          raf = requestAnimationFrame(step);
+        };
+        raf = requestAnimationFrame(step);
+      }, 1400);
+    } else {
+      const pass = () => {
+        const began = performance.now();
+        horse.dataset.here = "";
+        const step = (now: number) => {
+          const gone = (now - began) * SPEED;
+          const x = width + 12 - gone;
+          if (x < -wide - 12) {
+            delete horse.dataset.here;
+            live.current.horse = null;
+            lean(ref.current, live.current);
+            timer = setTimeout(pass, 9000 + Math.random() * 5000);
+            return;
+          }
+          put(x);
+          // her legs keep time with the ground she covers
+          frame(Math.floor((gone / (wide * STRIDE)) * GALLOP) % GALLOP);
+          lean(ref.current, live.current);
+          raf = requestAnimationFrame(step);
+        };
+        raf = requestAnimationFrame(step);
+      };
+      timer = setTimeout(pass, 1900);
+    }
+
+    return () => {
+      clearTimeout(timer);
+      cancelAnimationFrame(raf);
+      delete horse.dataset.here;
+      live.current.horse = null;
+      live.current.drift = 0;
+      lean(ref.current, live.current);
+    };
+  }, [show, gait, width]);
+
   const grown = useMemo(() => {
-    const count = Math.max(8, Math.round(width / EVERY));
+    // planted a little past both edges, so there's no gap when they drift round
+    const span = width + SPARE * 2;
+    const count = Math.max(8, Math.round(span / EVERY));
     return Array.from({ length: width ? count : 0 }, (_, i) => {
       const roll = dice(i + 101);
       return {
         seed: i + 3,
-        x: Math.round(((i + 0.15 + roll() * 0.7) / count) * width),
+        x: Math.round(((i + 0.15 + roll() * 0.7) / count) * span) - SPARE,
       };
     });
   }, [width]);
 
   return (
-    // biome-ignore lint/a11y/noStaticElementInteractions: planting is a bonus for the mouse, nothing is lost without it
+    // a click plants a flower: a bonus for the mouse, nothing is lost without it
     <div
       ref={ref}
       className="meadow"
       data-show={show ? "" : undefined}
       aria-hidden="true"
       onClick={(e) => {
-        const x = Math.round(e.clientX);
+        // where it has to be planted to come up under the pointer now
+        const lap = window.innerWidth + SPARE * 2;
+        const drift = live.current.drift;
+        const x = drift
+          ? Math.round(
+              ((((e.clientX - drift + SPARE) % lap) + lap) % lap) - SPARE,
+            )
+          : Math.round(e.clientX);
         setPlanted((was) => [
           ...was.slice(-40),
           { seed: 500 + ((was.at(-1)?.seed ?? 500) % 4000) + x, x, late: true },
@@ -308,6 +430,7 @@ export function Meadow({ show }: { show: boolean }) {
       {[...grown, ...planted].map((f) => (
         <Flower key={`${f.seed}-${f.x}`} {...f} />
       ))}
+      <span ref={horseRef} className="horse" />
     </div>
   );
 }

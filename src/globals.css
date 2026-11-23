@@ -737,30 +737,22 @@ html {
 /* the horse and the flowers                                           */
 /* ------------------------------------------------------------------ */
 
-/* a point on the heading's baseline, right after the name */
-.v2 .horse-post {
-  position: relative;
-  display: inline-block;
-  width: 0;
-  height: 0;
-}
-
 /* one frame of the plate at a time: twelve side by side in the picture */
-.v2 .horse {
+.v2 .meadow .horse {
   position: absolute;
-  left: 0.42em;
-  bottom: -0.03em;
-  height: 1.16em;
+  z-index: 2; /* some flowers in front of her, some behind */
+  left: 0;
+  bottom: -1px;
+  height: calc(var(--u) * 66px);
   aspect-ratio: 300 / 204;
   background: url(/images/horse.png) 0 0 / 1200% 100% no-repeat;
-  /* she was photographed running right; here she comes in from the right */
-  transform: translateX(var(--run, 0px)) scaleX(-1);
+  /* she was photographed running right; here she runs left */
+  scale: -1 1;
   visibility: hidden;
   pointer-events: none;
-  user-select: none;
 }
 
-.v2 .horse[data-here] {
+.v2 .meadow .horse[data-here] {
   visibility: visible;
 }
 

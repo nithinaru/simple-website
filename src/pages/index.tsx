@@ -1,8 +1,7 @@
 import NextLink from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Dock, type DockItem, keepDockInView } from "@/components/dock";
-import { Horse } from "@/components/horse";
-import { Meadow } from "@/components/meadow";
+import { type Gait, Meadow } from "@/components/meadow";
 import { LOOK, TEXT_FAMILY, TextureFilters } from "@/components/options";
 import {
   follow,
@@ -225,6 +224,14 @@ export default function Home() {
   const nameRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => preload(PREVIEWS, CLIPS), []);
+
+  // two ways for the horse to keep moving, while i choose: she crosses the
+  // meadow now and then, or with ?horse=drift the meadow slides past her
+  const [gait, setGait] = useState<Gait>("run");
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("horse") === "drift")
+      setGait("drift");
+  }, []);
 
   // the opening, once, when the page arrives
   useLayoutEffect(() => {
@@ -482,7 +489,7 @@ export default function Home() {
         } as React.CSSProperties
       }
     >
-      <Meadow show={stage === "settled"} />
+      <Meadow show={stage === "settled"} gait={gait} />
 
       <div className="v2-column" ref={columnRef}>
         <header className="head fade">
@@ -521,7 +528,6 @@ export default function Home() {
                 <i />
               </span>
             </span>
-            <Horse go={stage === "settled"} />
           </h1>
           {/* where i am, after locomotive.ca's footer: the bridge, the
               coordinates stacked between arrows, and the state on a plate */}
