@@ -9,9 +9,12 @@ import {
 } from "@/utils/constants";
 import {
   AUTHOR_EMAIL,
+  PAGE_META,
+  SHARE_IMAGE_ALT,
   SITE_DESCRIPTION,
   SITE_TITLE,
   SITE_URL,
+  TWITTER_HANDLE,
 } from "@/utils/site";
 import { JSON_LD } from "@/utils/structured-data";
 import "@/globals.css";
@@ -45,32 +48,46 @@ export default function App({ Component, pageProps, router }: AppProps) {
   // each page is its own address to a search engine
   const path = router.asPath.split(/[?#]/)[0];
   const pageUrl = path === "/" ? SITE_URL : `${SITE_URL}${path}`;
+  const title = PAGE_META[router.pathname]?.title ?? SITE_TITLE;
+  const description =
+    PAGE_META[router.pathname]?.description ?? SITE_DESCRIPTION;
 
   return (
     <main>
       <Head>
-        <title>{SITE_TITLE}</title>
+        <title>{title}</title>
         <style
           // biome-ignore lint/security/noDangerouslySetInnerHtml: font faces
           dangerouslySetInnerHTML={{ __html: FONT_VARS + FONT_FACE_CSS }}
         />
-        <meta name="description" content={SITE_DESCRIPTION} />
+        <meta name="description" content={description} />
         <meta name="author" content={SITE_TITLE} />
+        {/* a page that asks not to be listed sets its own, and wins */}
+        <meta
+          name="robots"
+          content="index, follow, max-image-preview:large, max-snippet:-1"
+        />
         <meta name="msvalidate.01" content="BC46D7CD921CD032F8BB1AC091B33313" />
         <link rel="canonical" href={pageUrl} />
 
         <meta property="og:type" content="website" />
         <meta property="og:url" content={pageUrl} />
-        <meta property="og:title" content={SITE_TITLE} />
-        <meta property="og:description" content={SITE_DESCRIPTION} />
+        <meta property="og:site_name" content={SITE_TITLE} />
+        <meta property="og:locale" content="en_US" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
         <meta property="og:image" content={`${SITE_URL}/og.png`} />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content={SHARE_IMAGE_ALT} />
 
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={SITE_TITLE} />
-        <meta name="twitter:description" content={SITE_DESCRIPTION} />
+        <meta name="twitter:site" content={TWITTER_HANDLE} />
+        <meta name="twitter:creator" content={TWITTER_HANDLE} />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={`${SITE_URL}/og.png`} />
+        <meta name="twitter:image:alt" content={SHARE_IMAGE_ALT} />
 
         <script
           type="application/ld+json"

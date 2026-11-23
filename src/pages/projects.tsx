@@ -1,4 +1,3 @@
-import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { LOOK, TEXT_FAMILY, TextureFilters } from "@/components/options";
@@ -11,7 +10,6 @@ import {
 } from "@/utils/constants";
 import getPreviewUrl from "@/utils/get-preview-url";
 import { labelLinks } from "@/utils/label-links";
-import { SITE_TITLE } from "@/utils/site";
 
 /*
  * the things i've made, one after another, for anyone who wants a closer
@@ -46,14 +44,6 @@ export default function Projects() {
       data-marks="guide"
       style={LOOK}
     >
-      <Head>
-        <title>{`Projects — ${SITE_TITLE}`}</title>
-        <meta
-          name="description"
-          content="What Nithin Aruswamy has built and worked on: Priceflag, Jet-Set Teen, OneDay, Terran, his research, and where he has worked."
-        />
-      </Head>
-
       <div className="v2-column" ref={columnRef}>
         <p className="back">
           <Link className="lnk" href="/">

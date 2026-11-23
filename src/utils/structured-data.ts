@@ -9,6 +9,7 @@ import {
 } from "@/utils/constants";
 import {
   AUTHOR_EMAIL,
+  LAST_MODIFIED,
   SITE_DESCRIPTION,
   SITE_TITLE,
   SITE_URL,
@@ -114,6 +115,7 @@ const profilePage = {
   url: SITE_URL,
   name: SITE_TITLE,
   isPartOf: { "@id": WEBSITE_ID },
+  dateModified: LAST_MODIFIED,
   mainEntity: PERSON_REF,
 };
 

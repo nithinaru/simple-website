@@ -1,6 +1,21 @@
 export const SITE_URL = "https://nithinaruswamy.com";
 export const SITE_TITLE = "Nithin Aruswamy";
 export const AUTHOR_EMAIL = "nithin.alaska@gmail.com";
-// the line under the title in a search result
+// the line under the title in a search result; it says what the page says
 export const SITE_DESCRIPTION =
-  "Nithin studies OR & Mathematics. He's an avid traveler (50+ countries) & a #1 Amazon New Release author.";
+  "Nithin Aruswamy is building dynamic pricing at Priceflag and breaking AI agents at Idler (YC S25). UC Berkeley student, author, and traveler to 50+ countries.";
+export const TWITTER_HANDLE = "@nithinaru";
+// what the share image shows, for anyone who can't see it
+export const SHARE_IMAGE_ALT = "Nithin Aruswamy, in large type";
+// when the page last changed in a way a search engine should care about
+export const LAST_MODIFIED = "2026-11-23";
+
+// pages with their own title and description; the rest use the site's
+export const PAGE_META: Record<string, { title: string; description: string }> =
+  {
+    "/projects": {
+      title: `Projects — ${SITE_TITLE}`,
+      description:
+        "What Nithin Aruswamy has built and worked on: Priceflag, Jet-Set Teen, OneDay, Terran, his research, and where he has worked.",
+    },
+  };
