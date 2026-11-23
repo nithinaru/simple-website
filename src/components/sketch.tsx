@@ -8,7 +8,7 @@ import { LABEL_FAMILY } from "@/components/options";
  * out the same on the server and in the browser.
  */
 
-const gen = rough.generator();
+export const gen = rough.generator();
 
 const INK = "#141414";
 const PEN = "#9c9c9c"; // the lines under links: pencil, not ink
@@ -19,7 +19,7 @@ const PEN = "#9c9c9c"; // the lines under links: pencil, not ink
 const tidy = (d: string) =>
   d.replace(/-?\d+\.\d+/g, (n) => Number(n).toFixed(2));
 
-function Paths({
+export function Paths({
   shapes,
   fixedWeight,
 }: {

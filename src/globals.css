@@ -90,7 +90,10 @@ html {
   overflow: hidden;
   display: grid;
   place-items: center;
-  padding: clamp(28px, 7vh, 72px) 24px;
+  /* how big the flowers along the bottom are drawn: smaller in a short window */
+  --u: clamp(0.55, 100vh / 840px, 1);
+  /* the extra at the bottom keeps the text clear of them */
+  padding: clamp(28px, 7vh, 72px) 24px clamp(28px, 13.5vh, 116px);
   background: #fff;
   color: var(--ink);
   font-family: var(--font-text), "Iowan Old Style", Georgia, serif;
@@ -728,6 +731,94 @@ html {
 
 .v2 .dock-item:is([data-near], :focus-visible) .dock-label {
   opacity: 1;
+}
+
+/* ------------------------------------------------------------------ */
+/* the horse and the flowers                                           */
+/* ------------------------------------------------------------------ */
+
+/* a point on the heading's baseline, right after the name */
+.v2 .horse-post {
+  position: relative;
+  display: inline-block;
+  width: 0;
+  height: 0;
+}
+
+/* one frame of the plate at a time: twelve side by side in the picture */
+.v2 .horse {
+  position: absolute;
+  left: 0.42em;
+  bottom: -0.03em;
+  height: 1.16em;
+  aspect-ratio: 300 / 204;
+  background: url(/images/horse.png) 0 0 / 1200% 100% no-repeat;
+  /* she was photographed running right; here she comes in from the right */
+  transform: translateX(var(--run, 0px)) scaleX(-1);
+  visibility: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+
+.v2 .horse[data-here] {
+  visibility: visible;
+}
+
+.v2 .meadow {
+  position: absolute;
+  z-index: -1;
+  inset: auto 0 0;
+  height: calc(var(--u) * 118px);
+  cursor: crosshair;
+}
+
+.v2 .flower {
+  position: absolute;
+  bottom: -2px;
+  transform-origin: 50% 100%;
+  rotate: var(--lean, 0deg);
+  scale: 0.7 0;
+  transition: rotate 620ms cubic-bezier(0.2, 0.8, 0.25, 1.25);
+  pointer-events: none;
+}
+
+.v2 .meadow[data-show] .flower {
+  animation: flower-up 900ms cubic-bezier(0.2, 0.9, 0.3, 1.15) var(--wait) both;
+}
+
+@keyframes flower-up {
+  to {
+    scale: 1 1;
+  }
+}
+
+.v2 .flower svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform-origin: 50% 100%;
+  animation: flower-sway var(--sway) ease-in-out var(--from) infinite alternate;
+}
+
+@keyframes flower-sway {
+  from {
+    rotate: calc(var(--far) * -1);
+  }
+  to {
+    rotate: var(--far);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v2 .flower {
+    scale: 1 1;
+    transition: none;
+  }
+  .v2 .meadow[data-show] .flower,
+  .v2 .flower svg {
+    animation: none;
+  }
 }
 
 /* ------------------------------------------------------------------ */

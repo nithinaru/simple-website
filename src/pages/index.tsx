@@ -1,6 +1,8 @@
 import NextLink from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Dock, type DockItem, keepDockInView } from "@/components/dock";
+import { Horse } from "@/components/horse";
+import { Meadow } from "@/components/meadow";
 import { LOOK, TEXT_FAMILY, TextureFilters } from "@/components/options";
 import {
   follow,
@@ -480,6 +482,8 @@ export default function Home() {
         } as React.CSSProperties
       }
     >
+      <Meadow show={stage === "settled"} />
+
       <div className="v2-column" ref={columnRef}>
         <header className="head fade">
           <h1 ref={nameRef}>
@@ -517,6 +521,7 @@ export default function Home() {
                 <i />
               </span>
             </span>
+            <Horse go={stage === "settled"} />
           </h1>
           {/* where i am, after locomotive.ca's footer: the bridge, the
               coordinates stacked between arrows, and the state on a plate */}
