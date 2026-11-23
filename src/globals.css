@@ -769,7 +769,6 @@ html {
   z-index: -1;
   inset: auto 0 0;
   height: calc(var(--u) * 118px);
-  cursor: crosshair;
 }
 
 .v2 .flower {
