@@ -92,8 +92,9 @@ html {
   place-items: center;
   /* how big the flowers along the bottom are drawn: smaller in a short window */
   --u: clamp(0.55, 100vh / 840px, 1);
-  /* the extra at the bottom keeps the text clear of them */
-  padding: clamp(28px, 7vh, 72px) 24px clamp(28px, 13.5vh, 116px);
+  /* the same top and bottom, so the text sits in the middle of the window;
+     the flowers stay shorter than this under the text */
+  padding: clamp(28px, 7vh, 72px) 24px;
   background: #fff;
   color: var(--ink);
   font-family: var(--font-text), "Iowan Old Style", Georgia, serif;

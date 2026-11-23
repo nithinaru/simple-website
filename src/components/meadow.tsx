@@ -12,7 +12,8 @@ import { gen, Paths } from "@/components/sketch";
  * sallie gardner gallops among them: the twelve frames of eadweard
  * muybridge's "the horse in motion" (palo alto, 19 june 1878, long in the
  * public domain), cut out of the plate and played back as he never could.
- * there are two ways she keeps moving, to choose between:
+ * she's off the page for now (the page doesn't pass a gait), but kept.
+ * there are two ways she keeps moving:
  *   run    she crosses the meadow every so often and the flowers part for her
  *   drift  she gallops on the spot and the meadow slides past underneath
  *
@@ -51,11 +52,12 @@ const dice = (seed: number) => {
 
 const n = (v: number) => Math.round(v * 100) / 100;
 
-function draw(seed: number) {
+function draw(seed: number, height: number) {
   const roll = dice(seed * 7919 + 13);
   const pick = (from: number, to: number) => from + roll() * (to - from);
   const kind = Math.floor(roll() * 6);
-  const tall = Math.round(kind === 5 ? pick(26, 46) : pick(46, 112));
+  // grass stays low, whatever the flowers round it are doing
+  const tall = Math.round(kind === 5 ? height * pick(0.42, 0.6) : height);
   const colour = PETALS[Math.floor(roll() * PETALS.length)];
   const heart = colour === "#fdb515" ? "#c8432b" : "#fdb515";
   const pen = { seed: seed + 1, roughness: 0.9, strokeWidth: 1.3 };
@@ -69,7 +71,8 @@ function draw(seed: number) {
     hachureAngle: Math.round(pick(-70, 70)),
   };
 
-  const foot: [number, number] = [WIDE / 2, tall];
+  // the feet go a little below the box, so no stem stops short of the edge
+  const foot: [number, number] = [WIDE / 2, tall + 4];
   const cx = n(WIDE / 2 + pick(-5, 5));
   const cy = 15;
   const bend = n(WIDE / 2 + pick(-5, 5));
@@ -101,7 +104,7 @@ function draw(seed: number) {
       shapes.push(
         gen.curve(
           [
-            [n(WIDE / 2 + pick(-4, 4)), tall],
+            [n(WIDE / 2 + pick(-4, 4)), tall + 4],
             [n(WIDE / 2 + lean * 0.4), n(tall * 0.5)],
             [n(WIDE / 2 + lean), n(pick(4, tall * 0.4))],
           ],
@@ -213,10 +216,10 @@ function draw(seed: number) {
   return { tall, shapes };
 }
 
-type Planted = { seed: number; x: number; late?: boolean };
+type Planted = { seed: number; x: number; height: number; late?: boolean };
 
-function Flower({ seed, x, late }: Planted) {
-  const { tall, shapes } = useMemo(() => draw(seed), [seed]);
+function Flower({ seed, x, height, late }: Planted) {
+  const { tall, shapes } = useMemo(() => draw(seed, height), [seed, height]);
   const roll = dice(seed);
   return (
     <span
@@ -280,7 +283,27 @@ const lean = (meadow: HTMLElement | null, { at, horse, drift }: Live) => {
 
 export type Gait = "run" | "drift";
 
-export function Meadow({ show, gait }: { show: boolean; gait: Gait }) {
+/*
+ * how tall a flower may grow at x: low under the column of text, so the two
+ * never meet, rising to full height out towards the sides of the window
+ */
+const LOW = 50;
+const HIGH = 108;
+const roomAt = (x: number, width: number) => {
+  const column = Math.min(632, width - 48) / 2;
+  const out = Math.abs(x - width / 2) - column;
+  const t = Math.max(0, Math.min(1, out / 200));
+  return LOW + (HIGH - LOW) * t * t * (3 - 2 * t);
+};
+
+export function Meadow({
+  show,
+  gait,
+}: {
+  show: boolean;
+  /** how the horse keeps moving; leave it out and there's no horse */
+  gait?: Gait;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const horseRef = useRef<HTMLSpanElement>(null);
   const [width, setWidth] = useState(0);
@@ -324,7 +347,7 @@ export function Meadow({ show, gait }: { show: boolean; gait: Gait }) {
   // the horse
   useEffect(() => {
     const horse = horseRef.current;
-    if (!show || !horse || !width) return;
+    if (!show || !gait || !horse || !width) return;
     const frame = (i: number) => {
       horse.style.backgroundPositionX = `${(i / GALLOP) * 100}%`;
     };
@@ -393,14 +416,23 @@ export function Meadow({ show, gait }: { show: boolean; gait: Gait }) {
   }, [show, gait, width]);
 
   const grown = useMemo(() => {
-    // planted a little past both edges, so there's no gap when they drift round
+    // evenly spaced out from the middle, each nudged only a little, and a
+    // little past both edges so there's no gap if they drift round
     const span = width + SPARE * 2;
     const count = Math.max(8, Math.round(span / EVERY));
+    const pitch = span / count;
     return Array.from({ length: width ? count : 0 }, (_, i) => {
       const roll = dice(i + 101);
+      const x = Math.round(
+        width / 2 + (i - (count - 1) / 2 + (roll() - 0.5) * 0.3) * pitch,
+      );
       return {
         seed: i + 3,
-        x: Math.round(((i + 0.15 + roll() * 0.7) / count) * span) - SPARE,
+        x,
+        // every other one a head shorter, so neighbours don't crowd
+        height: Math.round(
+          roomAt(x, width) * (i % 2 ? 0.68 : 0.92) * (0.92 + roll() * 0.16),
+        ),
       };
     });
   }, [width]);
@@ -423,14 +455,22 @@ export function Meadow({ show, gait }: { show: boolean; gait: Gait }) {
           : Math.round(e.clientX);
         setPlanted((was) => [
           ...was.slice(-40),
-          { seed: 500 + ((was.at(-1)?.seed ?? 500) % 4000) + x, x, late: true },
+          {
+            seed: 500 + ((was.at(-1)?.seed ?? 500) % 4000) + x,
+            x,
+            height: Math.round(
+              roomAt(e.clientX, window.innerWidth) *
+                (0.7 + Math.random() * 0.3),
+            ),
+            late: true,
+          },
         ]);
       }}
     >
       {[...grown, ...planted].map((f) => (
         <Flower key={`${f.seed}-${f.x}`} {...f} />
       ))}
-      <span ref={horseRef} className="horse" />
+      {gait ? <span ref={horseRef} className="horse" /> : null}
     </div>
   );
 }
