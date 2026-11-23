@@ -10,8 +10,8 @@ import { gen, Paths } from "@/components/sketch";
  * by behind her, far things slowly and the ground at exactly the pace of her
  * legs, which is how she can run for ever without getting anywhere.
  *
- * ten scenes to choose between (see them all at /scenes, or one on the front
- * page with ?scene=name). each is a few strips that repeat end to end.
+ * ten scenes; the front page uses the golden gate, and ?scene=name there
+ * shows another. each is a few strips that repeat end to end.
  *
  * drawn in the browser only: how much of it there is depends on the window.
  */

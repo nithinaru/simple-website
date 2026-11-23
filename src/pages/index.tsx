@@ -224,13 +224,15 @@ export default function Home() {
 
   useEffect(() => preload(PREVIEWS, CLIPS), []);
 
-  // what runs along the bottom, while i choose: the flowers, or with
-  // ?scene=name one of the places for the horse to run (all six at /scenes)
-  const [scene, setScene] = useState<SceneName | null>(null);
+  // what runs along the bottom: the horse on the golden gate. ?scene=name
+  // puts her somewhere else (see SCENES), and ?scene=flowers brings back the
+  // meadow
+  const [scene, setScene] = useState<SceneName | "flowers">("bridge");
   useEffect(() => {
     const asked = new URLSearchParams(window.location.search).get("scene");
     const found = SCENES.find((s) => s.name === asked);
     if (found) setScene(found.name);
+    else if (asked === "flowers") setScene("flowers");
   }, []);
 
   // the opening, once, when the page arrives
@@ -489,10 +491,10 @@ export default function Home() {
         } as React.CSSProperties
       }
     >
-      {scene ? (
-        <Scene name={scene} show={stage === "settled"} />
-      ) : (
+      {scene === "flowers" ? (
         <Meadow show={stage === "settled"} />
+      ) : (
+        <Scene name={scene} show={stage === "settled"} />
       )}
 
       <div className="v2-column" ref={columnRef}>
