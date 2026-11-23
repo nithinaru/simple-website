@@ -102,7 +102,7 @@ const COPY: Token[][] = [
       preview: "travel",
       moving: true,
     },
-    // the projects page is still there at /projects, just not linked for now
+    // the projects page is switched off for now (see next.config.ts)
     ", play pickleball, and tend my ",
     {
       text: "Private Garden",
