@@ -4,7 +4,7 @@ import { LOOK, TextureFilters } from "@/components/options";
 import { SCENES, Scene } from "@/components/scenes";
 
 /*
- * a scratch page: the six places the horse could run along the bottom of the
+ * a scratch page: the ten places the horse could run along the bottom of the
  * front page, one under another, to pick from. not linked from anywhere.
  */
 export default function Scenes() {
@@ -20,7 +20,7 @@ export default function Scenes() {
         </p>
         <h1>Scenes for the horse</h1>
         <p className="lede">
-          Six places she could run along the bottom of the front page. Each one
+          Ten places she could run along the bottom of the front page. Each one
           opens on the real page from its link.
         </p>
       </div>

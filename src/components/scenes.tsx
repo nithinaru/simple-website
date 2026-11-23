@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Drawable } from "roughjs/bin/core";
+import { WIDE as FLOWER, draw as flower } from "@/components/meadow";
 import { gen, Paths } from "@/components/sketch";
 
 /*
@@ -9,7 +10,7 @@ import { gen, Paths } from "@/components/sketch";
  * by behind her, far things slowly and the ground at exactly the pace of her
  * legs, which is how she can run for ever without getting anywhere.
  *
- * six scenes to choose between (see them all at /scenes, or one on the front
+ * ten scenes to choose between (see them all at /scenes, or one on the front
  * page with ?scene=name). each is a few strips that repeat end to end.
  *
  * drawn in the browser only: how much of it there is depends on the window.
@@ -100,7 +101,11 @@ export type SceneName =
   | "dots"
   | "bridge"
   | "grass"
-  | "west";
+  | "west"
+  | "world"
+  | "city"
+  | "moon"
+  | "garden";
 
 export const SCENES: { name: SceneName; title: string; note: string }[] = [
   {
@@ -132,6 +137,26 @@ export const SCENES: { name: SceneName; title: string; note: string }[] = [
     name: "west",
     title: "Out west",
     note: "Mesas a long way off, cactus nearer, a scribbled sun that stays put.",
+  },
+  {
+    name: "world",
+    title: "Round the world",
+    note: "Fifty countries in one gallop: the pyramids, the Eiffel Tower, a torii gate, Big Ben, a windmill, the Taj Mahal, palms, and a balloon overhead.",
+  },
+  {
+    name: "city",
+    title: "Through San Francisco",
+    note: "Painted ladies, the Transamerica Pyramid, Coit and Sutro towers, the Campanile across the bay, and a cable car coming the other way.",
+  },
+  {
+    name: "moon",
+    title: "On the moon",
+    note: "Craters underfoot, coloured stars, a lander, a flag, a rocket, and the Earth hanging where the sun would be.",
+  },
+  {
+    name: "garden",
+    title: "The private garden",
+    note: "Clipped hedges, topiary, an arch of roses and the fountain from your Private Garden mark, with the meadow's flowers along the path.",
   },
 ];
 
@@ -340,24 +365,78 @@ const BUILD: Record<SceneName, () => Built> = {
   },
 
   bridge() {
-    const tall = 124;
-    const ground = 17;
+    const tall = 142;
+    const ground = 37; // the roadway is a long way above the water
     const floor = tall - ground;
-    const span = 900; // tower to tower
+    const sea = tall - 5;
+    const span = 860; // tower to tower
     const mid = span / 2;
-    const top = 12;
-    const low = floor - 12;
+    const top = 10;
+    const low = floor - 6;
     const cable = (x: number) => top + (low - top) * ((x - mid) / mid) ** 2;
+    const paint = (seed: number, weight = 1.2) => pen(ORANGE, seed, weight);
+
+    // the roadway, and the truss under it that keeps it stiff
+    let zig = `M 0 ${floor + 7}`;
+    for (let x = 0; x < span; x += 10) {
+      zig += ` L ${x + 5} ${floor + 1.5} L ${x + 10} ${floor + 7}`;
+    }
     const built: Drawable[] = [
-      // the deck she runs on
-      gen.line(-12, floor + 1, span + 12, floor + 1, pen(ORANGE, 1, 1.5)),
-      gen.line(-12, floor + 5, span + 12, floor + 5, pen(ORANGE, 2, 1)),
-      // a tower: two legs and the braces between them
-      gen.line(mid - 7, floor + 1, mid - 6, top - 3, pen(ORANGE, 3, 1.6)),
-      gen.line(mid + 7, floor + 1, mid + 6, top - 3, pen(ORANGE, 4, 1.6)),
+      gen.line(-12, floor + 1, span + 12, floor + 1, paint(1, 1.7)),
+      gen.line(-12, floor + 7, span + 12, floor + 7, paint(2, 1.1)),
+      gen.path(zig, { ...paint(3, 0.7), roughness: 0.4 }),
     ];
-    for (const [i, y] of [top, 30, 50, 72].entries()) {
-      built.push(gen.rectangle(mid - 7, y, 14, 5, pen(ORANGE, 10 + i, 1.1)));
+
+    // a tower: two legs that step in as they climb, the way the real ones do
+    const steps: [number, number, number][] = [
+      [floor + 1, floor - 34, 6.6],
+      [floor - 34, floor - 62, 5.6],
+      [floor - 62, floor - 82, 4.6],
+      [floor - 82, top, 3.8],
+    ];
+    for (const side of [-10, 10]) {
+      const cx = mid + side;
+      for (const [i, [from, to, w]] of steps.entries()) {
+        built.push(
+          gen.rectangle(
+            n(cx - w / 2),
+            to,
+            w,
+            from - to,
+            hatch(ORANGE, 20 + i + side, 1.5),
+          ),
+        );
+      }
+      built.push(
+        // below the road, down to the pier
+        gen.rectangle(
+          cx - 3.8,
+          floor + 7,
+          7.6,
+          sea - 9 - (floor + 7),
+          hatch(ORANGE, 30 + side, 1.5),
+        ),
+        // and the cap the cable sits on
+        gen.rectangle(cx - 2.8, top - 4, 5.6, 4, paint(34 + side, 1.1)),
+      );
+    }
+    // the four portals between the legs above the road
+    for (const [i, [y, h]] of [
+      [floor - 37, 7],
+      [floor - 64, 6],
+      [floor - 84, 5],
+      [top + 1, 4],
+    ].entries()) {
+      built.push(gen.rectangle(mid - 7.5, y, 15, h, paint(40 + i, 1.1)));
+    }
+    // crossed braces between them below it
+    const under = (sea - 9 - (floor + 7)) / 2;
+    for (let i = 0; i < 2; i++) {
+      const y = floor + 7 + i * under;
+      built.push(
+        gen.line(mid - 6.5, y, mid + 6.5, n(y + under), paint(50 + i, 0.9)),
+        gen.line(mid + 6.5, y, mid - 6.5, n(y + under), paint(52 + i, 0.9)),
+      );
     }
     // the cable swings down from the tower to the middle of each span
     for (const [from, to] of [
@@ -365,22 +444,29 @@ const BUILD: Record<SceneName, () => Built> = {
       [mid, span],
     ]) {
       const along: [number, number][] = [];
-      for (let x = from; x <= to; x += 37.5) along.push([x, n(cable(x))]);
-      built.push(gen.curve(along, pen(ORANGE, from + 5, 1.4)));
+      for (let x = from; x <= to; x += mid / 12)
+        along.push([n(x), n(cable(x))]);
+      built.push(gen.curve(along, paint(from + 5, 1.6)));
     }
-    for (let x = 30; x < span; x += 30) {
-      if (Math.abs(x - mid) < 12) continue;
+    // and the ropes that hang the road from it
+    for (let x = 14; x < span; x += 14) {
+      if (Math.abs(x - mid) < 15) continue;
       built.push(
         gen.line(x, n(cable(x)), x, floor + 1, {
-          ...pen(ORANGE, x, 0.7),
-          roughness: 0.5,
+          ...paint(x, 0.6),
+          roughness: 0.35,
         }),
       );
     }
+    // the pier it stands on in the water
+    built.push(
+      gen.rectangle(mid - 23, sea - 9, 46, 10, hatch(PENCIL, 60, 2.4)),
+    );
+
     const roll = dice(41);
     const water: Drawable[] = [];
-    for (let x = 20; x < 600; x += 40 + roll() * 60) {
-      const y = floor + 8 + roll() * (ground - 11);
+    for (let x = 20; x < 600; x += 34 + roll() * 50) {
+      const y = sea - 2 + roll() * 6;
       water.push(
         gen.curve(
           [
@@ -394,11 +480,36 @@ const BUILD: Record<SceneName, () => Built> = {
         ),
       );
     }
+    // a sailing boat out on the bay
+    const boat = (x: number, seed: number) => [
+      gen.path(
+        `M ${x - 9} ${sea - 6} L ${x + 9} ${sea - 6} L ${x + 6} ${sea - 2} L ${x - 6} ${sea - 2} Z`,
+        hatch(BLUE, seed, 1.6),
+      ),
+      gen.line(x, sea - 6, x, sea - 27, pen(PENCIL, seed + 1, 1)),
+      gen.polygon(
+        [
+          [x + 1.5, sea - 26],
+          [x + 11, sea - 9],
+          [x + 1.5, sea - 9],
+        ],
+        pen(PENCIL, seed + 2, 1),
+      ),
+      gen.polygon(
+        [
+          [x - 1.5, sea - 22],
+          [x - 8, sea - 9],
+          [x - 1.5, sea - 9],
+        ],
+        pen(PENCIL, seed + 3, 1),
+      ),
+    ];
     return {
       tall,
       ground,
       strips: [
         {
+          // the headlands across the water
           wide: 1600,
           drift: 0.03,
           art: (
@@ -408,7 +519,7 @@ const BUILD: Record<SceneName, () => Built> = {
                   1600,
                   tall,
                   (x) =>
-                    46 +
+                    50 +
                     13 * Math.sin((WAVE * x) / 800 + 1) +
                     7 * Math.sin((WAVE * x) / (1600 / 3) + 2.2),
                   PENCIL,
@@ -417,6 +528,11 @@ const BUILD: Record<SceneName, () => Built> = {
               ]}
             />
           ),
+        },
+        {
+          wide: 1300,
+          drift: 0.1,
+          art: <Paths shapes={[...boat(300, 70), ...boat(980, 80)]} />,
         },
         { wide: 600, drift: 0.3, art: <Paths shapes={water} /> },
         { wide: span, drift: 1, art: <Paths shapes={built} /> },
@@ -604,6 +720,713 @@ const BUILD: Record<SceneName, () => Built> = {
         { wide: 1500, drift: 0.04, art: <Paths shapes={far} /> },
         { wide: 1100, drift: 0.3, art: <Paths shapes={mid} /> },
         { wide: 1200, drift: 1, art: <Paths shapes={front} /> },
+      ],
+    };
+  },
+
+  world() {
+    const tall = 120;
+    const ground = 8;
+    const floor = tall - ground;
+    const foot = tall - 22; // where the sights stand, back from the road
+    const far: Drawable[] = [
+      gen.line(-12, foot, 2112, foot, { ...pen(PENCIL, 2, 1), bowing: 0.2 }),
+    ];
+    // the pyramids
+    const pyramid = (x: number, w: number, h: number, seed: number) =>
+      gen.polygon(
+        [
+          [x, foot],
+          [x + w / 2, foot - h],
+          [x + w, foot],
+        ],
+        hatch(YELLOW, seed, 2.6),
+      );
+    far.push(pyramid(170, 54, 33, 3), pyramid(110, 76, 47, 4));
+    // the eiffel tower
+    const e = 440;
+    far.push(
+      gen.path(
+        `M ${e - 18} ${foot} Q ${e - 5} ${foot - 27} ${e - 1.6} ${foot - 68} L ${e + 1.6} ${foot - 68} Q ${e + 5} ${foot - 27} ${e + 18} ${foot}`,
+        pen(BLUE, 5, 1.4),
+      ),
+      gen.line(e - 11.5, foot - 17, e + 11.5, foot - 17, pen(BLUE, 6, 1.4)),
+      gen.line(e - 6, foot - 37, e + 6, foot - 37, pen(BLUE, 7, 1.3)),
+      gen.path(
+        `M ${e - 11} ${foot} Q ${e} ${foot - 17} ${e + 11} ${foot}`,
+        pen(BLUE, 8, 1),
+      ),
+      gen.line(e, foot - 68, e, foot - 77, pen(BLUE, 9, 1)),
+    );
+    // a torii gate
+    const t = 720;
+    far.push(
+      gen.line(t - 12, foot, t - 10, foot - 31, pen(ORANGE, 10, 2.3)),
+      gen.line(t + 12, foot, t + 10, foot - 31, pen(ORANGE, 11, 2.3)),
+      gen.path(
+        `M ${t - 20} ${foot - 35} Q ${t} ${foot - 30} ${t + 20} ${foot - 35}`,
+        pen(ORANGE, 12, 2.8),
+      ),
+      gen.line(t - 14, foot - 24, t + 14, foot - 24, pen(ORANGE, 13, 1.8)),
+    );
+    // big ben
+    const b = 980;
+    far.push(
+      gen.rectangle(b - 6, foot - 52, 12, 52, hatch(VIOLET, 14, 2.6)),
+      gen.rectangle(b - 7.5, foot - 67, 15, 15, pen(VIOLET, 15, 1.2)),
+      gen.circle(b, foot - 59.5, 9.5, pen(VIOLET, 16, 1.1)),
+      gen.polygon(
+        [
+          [b - 7.5, foot - 67],
+          [b, foot - 84],
+          [b + 7.5, foot - 67],
+        ],
+        hatch(VIOLET, 17, 2),
+      ),
+    );
+    // a windmill
+    const w = 1250;
+    far.push(
+      gen.polygon(
+        [
+          [w - 10, foot],
+          [w - 6, foot - 34],
+          [w + 6, foot - 34],
+          [w + 10, foot],
+        ],
+        hatch(PINK, 18, 2.4),
+      ),
+      gen.polygon(
+        [
+          [w - 7, foot - 34],
+          [w, foot - 43],
+          [w + 7, foot - 34],
+        ],
+        pen(PINK, 19, 1.2),
+      ),
+    );
+    for (let k = 0; k < 4; k++) {
+      const a = 0.5 + (k * Math.PI) / 2;
+      far.push(
+        gen.line(
+          w,
+          foot - 38,
+          n(w + Math.cos(a) * 25),
+          n(foot - 38 + Math.sin(a) * 25),
+          pen("#5a5a5a", 20 + k, 1.3),
+        ),
+      );
+    }
+    // the taj mahal
+    const j = 1530;
+    far.push(
+      gen.rectangle(j - 22, foot - 20, 44, 20, pen(PENCIL, 30, 1.2)),
+      gen.ellipse(j, foot - 30, 25, 27, hatch(BLUE, 31, 2.6)),
+      gen.line(j, foot - 43, j, foot - 53, pen(BLUE, 32, 1)),
+      gen.path(
+        `M ${j - 5} ${foot} L ${j - 5} ${foot - 9} Q ${j} ${foot - 17} ${j + 5} ${foot - 9} L ${j + 5} ${foot}`,
+        pen(PENCIL, 33, 1),
+      ),
+    );
+    for (const side of [-33, 33]) {
+      far.push(
+        gen.line(
+          j + side,
+          foot,
+          j + side,
+          foot - 38,
+          pen(PENCIL, 34 + side, 1.6),
+        ),
+        gen.circle(j + side, foot - 40, 5, hatch(BLUE, 35 + side, 1.6)),
+      );
+    }
+    // and a couple of palms
+    const palm = (x: number, h: number, seed: number) => {
+      const out = [
+        gen.curve(
+          [
+            [x, foot],
+            [x + 4, n(foot - h * 0.5)],
+            [x + 1, foot - h],
+          ],
+          pen("#8a6a3a", seed, 1.6),
+        ),
+      ];
+      for (let k = 0; k < 6; k++) {
+        const a = -2.9 + k * 0.56;
+        out.push(
+          gen.curve(
+            [
+              [x + 1, foot - h],
+              [n(x + 1 + Math.cos(a) * 9), n(foot - h + Math.sin(a) * 8 - 2)],
+              [n(x + 1 + Math.cos(a) * 16), n(foot - h + Math.sin(a) * 8 + 5)],
+            ],
+            pen(GREEN, seed + k, 1.3),
+          ),
+        );
+      }
+      return out;
+    };
+    far.push(...palm(1810, 38, 50), ...palm(1845, 28, 60));
+
+    const roll = dice(29);
+    const front: Drawable[] = [
+      gen.line(-12, floor, 1212, floor, { ...pen(PENCIL, 7), bowing: 0.3 }),
+    ];
+    for (let x = 30; x < 1170; x += 60 + roll() * 110) {
+      for (let i = 0; i < 3; i++) {
+        front.push(
+          gen.line(
+            n(x + i * 2.4),
+            floor + 1,
+            n(x + i * 2.4 + (roll() - 0.5) * 9),
+            n(floor - 5 - roll() * 6),
+            pen(GREEN, Math.round(x) + i, 1.1),
+          ),
+        );
+      }
+    }
+    return {
+      tall,
+      ground,
+      // a hot air balloon, which hangs where it is
+      still: (
+        <svg className="scene-still" viewBox="0 0 40 40" aria-hidden="true">
+          <Paths
+            shapes={[
+              gen.ellipse(20, 14, 24, 26, hatch(PINK, 4, 2.2)),
+              gen.line(11, 22, 17, 33, pen(PENCIL, 5, 0.8)),
+              gen.line(29, 22, 23, 33, pen(PENCIL, 6, 0.8)),
+              gen.rectangle(17, 33, 6, 5, pen("#8a6a3a", 7, 1.1)),
+            ]}
+          />
+        </svg>
+      ),
+      strips: [
+        { wide: 2100, drift: 0.14, art: <Paths shapes={far} /> },
+        { wide: 1200, drift: 1, art: <Paths shapes={front} /> },
+      ],
+    };
+  },
+
+  city() {
+    const tall = 124;
+    const ground = 9;
+    const floor = tall - ground;
+    const foot = tall - 21;
+    const far: Drawable[] = [
+      gen.line(-12, foot, 1812, foot, { ...pen(PENCIL, 2, 1), bowing: 0.2 }),
+    ];
+    // a row of painted ladies
+    const houses = (x: number, count: number, seed: number) => {
+      for (let i = 0; i < count; i++) {
+        const hx = x + i * 21;
+        const colour = BRIGHT[(i + seed) % BRIGHT.length];
+        far.push(
+          gen.rectangle(hx, foot - 25, 19, 25, hatch(colour, seed + i, 2.6)),
+          gen.polygon(
+            [
+              [hx - 1, foot - 25],
+              [hx + 9.5, foot - 38],
+              [hx + 20, foot - 25],
+            ],
+            pen(colour, seed + i + 10, 1.2),
+          ),
+          gen.rectangle(
+            hx + 6.5,
+            foot - 9,
+            6,
+            9,
+            pen("#5a5a5a", seed + i + 20, 0.9),
+          ),
+        );
+      }
+    };
+    houses(70, 5, 1);
+    // the transamerica pyramid
+    const p = 330;
+    far.push(
+      gen.polygon(
+        [
+          [p - 13, foot],
+          [p, foot - 80],
+          [p + 13, foot],
+        ],
+        hatch(BLUE, 30, 3),
+      ),
+      gen.line(p, foot - 80, p, foot - 91, pen(BLUE, 31, 1)),
+      gen.rectangle(p - 9.5, foot - 40, 3, 13, pen(BLUE, 32, 1)),
+      gen.rectangle(p + 6.5, foot - 40, 3, 13, pen(BLUE, 33, 1)),
+    );
+    // salesforce tower, round at the top
+    const sf = 440;
+    far.push(
+      gen.path(
+        `M ${sf - 10} ${foot} L ${sf - 10} ${foot - 56} Q ${sf - 10} ${foot - 74} ${sf} ${foot - 74} Q ${sf + 10} ${foot - 74} ${sf + 10} ${foot - 56} L ${sf + 10} ${foot} Z`,
+        hatch(VIOLET, 34, 3),
+      ),
+    );
+    // some ordinary blocks downtown
+    for (const [i, [x, w, h]] of [
+      [500, 16, 34],
+      [522, 20, 48],
+      [548, 14, 28],
+      [568, 18, 40],
+    ].entries()) {
+      far.push(gen.rectangle(x, foot - h, w, h, pen(PENCIL, 40 + i, 1.1)));
+      for (let y = foot - h + 6; y < foot - 4; y += 7) {
+        far.push(
+          gen.line(x + 3, y, x + w - 3, y, {
+            ...pen(PENCIL, 50 + i + y, 0.7),
+            roughness: 0.4,
+          }),
+        );
+      }
+    }
+    // coit tower on its hill
+    const c = 780;
+    far.push(
+      gen.path(
+        `M ${c - 70} ${foot} Q ${c} ${foot - 30} ${c + 70} ${foot}`,
+        pen(GREEN, 60, 1.3),
+      ),
+      gen.rectangle(c - 4.5, foot - 49, 9, 34, hatch(YELLOW, 61, 2.4)),
+      gen.rectangle(c - 5.5, foot - 55, 11, 6, pen(YELLOW, 62, 1.1)),
+    );
+    // sutro tower, three prongs
+    const u = 1010;
+    far.push(
+      gen.path(
+        `M ${u - 60} ${foot} Q ${u} ${foot - 22} ${u + 60} ${foot}`,
+        pen(GREEN, 63, 1.3),
+      ),
+    );
+    for (const side of [-1, 0, 1]) {
+      far.push(
+        gen.line(
+          u + side * 8,
+          foot - 11,
+          u + side * 4,
+          foot - 84,
+          pen(ORANGE, 70 + side, 1.3),
+        ),
+      );
+    }
+    for (const [i, [y, half]] of [
+      [foot - 30, 8],
+      [foot - 52, 7],
+      [foot - 70, 9],
+    ].entries()) {
+      far.push(gen.line(u - half, y, u + half, y, pen(ORANGE, 74 + i, 1.2)));
+    }
+    // the campanile, over in berkeley
+    const k = 1240;
+    far.push(
+      gen.rectangle(k - 5, foot - 66, 10, 66, hatch(YELLOW, 80, 2.6)),
+      gen.rectangle(k - 6, foot - 74, 12, 8, pen(BLUE, 81, 1.2)),
+      gen.polygon(
+        [
+          [k - 6, foot - 74],
+          [k, foot - 90],
+          [k + 6, foot - 74],
+        ],
+        hatch(BLUE, 82, 1.8),
+      ),
+      gen.circle(k, foot - 58, 5.5, pen(BLUE, 83, 1)),
+    );
+    houses(1400, 6, 3);
+    far.push(gen.rectangle(1600, foot - 44, 22, 44, pen(PENCIL, 90, 1.1)));
+    far.push(gen.rectangle(1630, foot - 30, 18, 30, pen(PENCIL, 91, 1.1)));
+
+    // a cable car coming the other way
+    const road = tall - 11;
+    const car = 320;
+    const mid: Drawable[] = [
+      gen.rectangle(car, road - 14, 36, 11, hatch(ORANGE, 100, 1.8)),
+      gen.line(car - 2, road - 18, car + 38, road - 18, pen(ORANGE, 101, 1.6)),
+      gen.circle(car + 8, road - 2, 4, pen("#5a5a5a", 102, 1.1)),
+      gen.circle(car + 28, road - 2, 4, pen("#5a5a5a", 103, 1.1)),
+    ];
+    for (let i = 0; i < 5; i++) {
+      mid.push(
+        gen.line(car + 2 + i * 8, road - 18, car + 2 + i * 8, road - 14, {
+          ...pen(ORANGE, 104 + i, 1),
+          roughness: 0.4,
+        }),
+      );
+    }
+    // and street trees
+    for (const [i, x] of [640, 930, 1180].entries()) {
+      mid.push(
+        gen.line(x, road, x + 0.5, road - 13, pen("#8a6a3a", 110 + i, 1.4)),
+        gen.circle(x, road - 19, 15, hatch(GREEN, 113 + i, 2.2)),
+      );
+    }
+
+    const front: Drawable[] = [
+      gen.line(-12, floor, 1212, floor, { ...pen(PENCIL, 7), bowing: 0.3 }),
+    ];
+    // the line down the middle of the road
+    for (let x = 10; x < 1200; x += 48) {
+      front.push(
+        gen.line(x, floor + 4.5, x + 20, floor + 4.5, {
+          ...pen(YELLOW, x, 1.5),
+          roughness: 0.5,
+        }),
+      );
+    }
+    return {
+      tall,
+      ground,
+      strips: [
+        { wide: 1800, drift: 0.12, art: <Paths shapes={far} /> },
+        { wide: 1400, drift: 0.42, art: <Paths shapes={mid} /> },
+        { wide: 1200, drift: 1, art: <Paths shapes={front} /> },
+      ],
+    };
+  },
+
+  moon() {
+    const tall = 114;
+    const ground = 10;
+    const floor = tall - ground;
+    const roll = dice(57);
+    const pick = (from: number, to: number) => from + roll() * (to - from);
+
+    const stars = [];
+    for (let i = 0; i < 34; i++) {
+      const x = n(pick(10, 890));
+      const y = n(pick(4, 62));
+      const colour = [BLUE, YELLOW, PINK, VIOLET][i % 4];
+      if (i % 5 === 0) {
+        // a few of them twinkle: four points
+        const r = pick(3, 4.6);
+        stars.push(
+          <path
+            key={i}
+            d={`M ${x} ${n(y - r)} Q ${x} ${y} ${n(x + r)} ${y} Q ${x} ${y} ${x} ${n(y + r)} Q ${x} ${y} ${n(x - r)} ${y} Q ${x} ${y} ${x} ${n(y - r)} Z`}
+            fill={YELLOW}
+          />,
+        );
+      } else {
+        stars.push(
+          <circle key={i} cx={x} cy={y} r={n(pick(0.8, 1.6))} fill={colour} />,
+        );
+      }
+    }
+    const planet = [
+      gen.circle(640, 26, 17, hatch(VIOLET, 3, 2)),
+      gen.ellipse(640, 26, 32, 8, pen(ORANGE, 4, 1.1)),
+    ];
+
+    const base = tall - 16;
+    const mid: Drawable[] = [];
+    // the lander
+    const l = 250;
+    mid.push(
+      gen.polygon(
+        [
+          [l - 9, base - 9],
+          [l - 6, base - 19],
+          [l + 6, base - 19],
+          [l + 9, base - 9],
+        ],
+        hatch(YELLOW, 10, 1.8),
+      ),
+      gen.line(l - 8, base - 9, l - 14, base, pen(PENCIL, 11, 1.2)),
+      gen.line(l + 8, base - 9, l + 14, base, pen(PENCIL, 12, 1.2)),
+      gen.line(l + 3, base - 19, l + 9, base - 27, pen(PENCIL, 13, 1)),
+      gen.circle(l + 10, base - 28, 5, pen(PENCIL, 14, 1)),
+    );
+    // a flag
+    const f = 520;
+    mid.push(
+      gen.line(f, base, f, base - 26, pen(PENCIL, 20, 1.2)),
+      gen.rectangle(f + 0.5, base - 26, 15, 9, hatch(PINK, 21, 1.8)),
+    );
+    // a rocket, standing ready
+    const r = 880;
+    mid.push(
+      gen.path(
+        `M ${r - 6} ${base - 6} L ${r - 6} ${base - 30} Q ${r} ${base - 46} ${r + 6} ${base - 30} L ${r + 6} ${base - 6} Z`,
+        hatch(BLUE, 30, 2),
+      ),
+      gen.polygon(
+        [
+          [r - 6, base - 16],
+          [r - 13, base],
+          [r - 6, base - 5],
+        ],
+        hatch(ORANGE, 31, 1.6),
+      ),
+      gen.polygon(
+        [
+          [r + 6, base - 16],
+          [r + 13, base],
+          [r + 6, base - 5],
+        ],
+        hatch(ORANGE, 32, 1.6),
+      ),
+      gen.circle(r, base - 27, 5.5, pen("#ffffff", 33, 1.4)),
+    );
+    // and a rover
+    const v = 1120;
+    mid.push(
+      gen.rectangle(v - 10, base - 10, 20, 6, hatch(ORANGE, 40, 1.8)),
+      gen.circle(v - 7, base - 2.5, 5, pen("#5a5a5a", 41, 1.1)),
+      gen.circle(v + 7, base - 2.5, 5, pen("#5a5a5a", 42, 1.1)),
+      gen.line(v + 6, base - 10, v + 9, base - 18, pen(PENCIL, 43, 1)),
+    );
+
+    const front: Drawable[] = [
+      gen.line(-12, floor, 1212, floor, { ...pen(PENCIL, 7), bowing: 0.4 }),
+    ];
+    for (let x = 30; x < 1170; x += pick(50, 130)) {
+      front.push(
+        gen.ellipse(
+          n(x),
+          floor + 3,
+          n(pick(10, 26)),
+          4.2,
+          pen(PENCIL, Math.round(x), 1),
+        ),
+      );
+    }
+    return {
+      tall,
+      ground,
+      // the earth, hanging in the sky
+      still: (
+        <svg className="scene-still" viewBox="0 0 40 40" aria-hidden="true">
+          <Paths
+            shapes={[
+              gen.circle(20, 20, 30, hatch(BLUE, 4, 2)),
+              gen.ellipse(15, 15, 11, 8, hatch(GREEN, 5, 1.6)),
+              gen.ellipse(25, 26, 9, 6, hatch(GREEN, 6, 1.6)),
+            ]}
+          />
+        </svg>
+      ),
+      strips: [
+        {
+          wide: 900,
+          drift: 0.015,
+          art: (
+            <>
+              {stars}
+              <Paths shapes={planet} />
+            </>
+          ),
+        },
+        {
+          wide: 1500,
+          drift: 0.06,
+          art: (
+            <Paths
+              shapes={[
+                ridge(
+                  1500,
+                  tall,
+                  (x) =>
+                    26 +
+                    6 * Math.sin((WAVE * x) / 500 + 1) +
+                    4 * Math.sin((WAVE * x) / 300 + 2.2),
+                  PENCIL,
+                  3,
+                ),
+              ]}
+            />
+          ),
+        },
+        { wide: 1300, drift: 0.3, art: <Paths shapes={mid} /> },
+        { wide: 1200, drift: 1, art: <Paths shapes={front} /> },
+      ],
+    };
+  },
+
+  garden() {
+    const tall = 114;
+    const ground = 8;
+    const floor = tall - ground;
+    const base = tall - 14;
+
+    // clipped hedges at the back, with a cypress in each gap
+    const far: Drawable[] = [];
+    for (const [i, [x, len]] of [
+      [30, 190],
+      [300, 160],
+      [540, 220],
+      [840, 170],
+    ].entries()) {
+      far.push(gen.rectangle(x, base - 13, len, 13, hatch(GREEN, 10 + i, 4.2)));
+      far.push(
+        gen.ellipse(
+          x + len + 40,
+          base - 21,
+          11,
+          42,
+          hatch("#256f49", 20 + i, 2),
+        ),
+      );
+    }
+
+    const pot = (x: number, seed: number) =>
+      gen.polygon(
+        [
+          [x - 5, base - 8],
+          [x + 5, base - 8],
+          [x + 3.5, base],
+          [x - 3.5, base],
+        ],
+        hatch(ORANGE, seed, 1.6),
+      );
+    const mid: Drawable[] = [];
+    // the fountain, as in my private garden
+    const f = 200;
+    mid.push(
+      gen.ellipse(f, base - 3, 46, 8, pen("#5a5a5a", 30, 1.2)),
+      gen.line(f, base - 6, f, base - 30, pen("#5a5a5a", 31, 1.6)),
+      gen.ellipse(f, base - 18, 25, 5, pen("#5a5a5a", 32, 1.1)),
+      gen.ellipse(f, base - 29, 12, 3.4, pen("#5a5a5a", 33, 1)),
+    );
+    for (const side of [-1, 1]) {
+      mid.push(
+        gen.path(
+          `M ${f} ${base - 36} Q ${f + side * 9} ${base - 40} ${f + side * 11} ${base - 20}`,
+          pen(BLUE, 34 + side, 1.1),
+        ),
+        gen.path(
+          `M ${f + side * 11} ${base - 17} Q ${f + side * 20} ${base - 18} ${f + side * 20} ${base - 5}`,
+          pen(BLUE, 36 + side, 1.1),
+        ),
+      );
+    }
+    // a ball topiary, two balls on a stem
+    const b = 430;
+    mid.push(
+      pot(b, 40),
+      gen.line(b, base - 8, b, base - 30, pen("#8a6a3a", 41, 1.3)),
+      gen.circle(b, base - 22, 16, hatch(GREEN, 42, 2)),
+      gen.circle(b, base - 37, 11, hatch(GREEN, 43, 2)),
+    );
+    // an arch of roses
+    const a = 650;
+    mid.push(
+      gen.path(
+        `M ${a - 17} ${base} L ${a - 17} ${base - 26} Q ${a} ${base - 50} ${a + 17} ${base - 26} L ${a + 17} ${base}`,
+        pen(GREEN, 50, 1.7),
+      ),
+    );
+    for (let i = 0; i < 11; i++) {
+      const q = i / 10;
+      const ang = Math.PI * (1 - q);
+      const rx = q < 0.18 || q > 0.82 ? 17 : 17;
+      const x = a + Math.cos(ang) * rx;
+      const y =
+        q < 0.18
+          ? base - 26 * (q / 0.18)
+          : q > 0.82
+            ? base - 26 * ((1 - q) / 0.18)
+            : base - 26 - Math.sin(((q - 0.18) / 0.64) * Math.PI) * 12;
+      mid.push(
+        gen.circle(n(x), n(y), 5, {
+          ...hatch(i % 2 ? PINK : ORANGE, 51 + i, 1.4),
+          fillStyle: "solid",
+        }),
+      );
+    }
+    // a cone
+    const c = 860;
+    mid.push(
+      pot(c, 60),
+      gen.polygon(
+        [
+          [c - 9, base - 8],
+          [c, base - 44],
+          [c + 9, base - 8],
+        ],
+        hatch(GREEN, 61, 2),
+      ),
+    );
+    // an urn of flowers on a plinth
+    const u = 1050;
+    mid.push(
+      gen.rectangle(u - 6, base - 10, 12, 10, pen("#5a5a5a", 70, 1.1)),
+      gen.path(
+        `M ${u - 7} ${base - 22} Q ${u - 8} ${base - 12} ${u} ${base - 10} Q ${u + 8} ${base - 12} ${u + 7} ${base - 22} Z`,
+        pen("#5a5a5a", 71, 1.2),
+      ),
+    );
+    for (const [i, [dx, up, colour]] of (
+      [
+        [-6, 34, YELLOW],
+        [0, 40, PINK],
+        [6, 33, VIOLET],
+      ] as [number, number, string][]
+    ).entries()) {
+      mid.push(
+        gen.line(
+          u + dx * 0.4,
+          base - 22,
+          u + dx,
+          base - up,
+          pen(GREEN, 72 + i, 1),
+        ),
+        gen.circle(u + dx, base - up, 6.5, {
+          ...hatch(colour, 75 + i, 1.4),
+          fillStyle: "solid",
+        }),
+      );
+    }
+    // and a tiered one, three shelves
+    const t = 1230;
+    mid.push(
+      pot(t, 80),
+      gen.line(t, base - 8, t, base - 44, pen("#8a6a3a", 81, 1.3)),
+      gen.ellipse(t, base - 16, 20, 9, hatch(GREEN, 82, 2)),
+      gen.ellipse(t, base - 29, 15, 8, hatch(GREEN, 83, 2)),
+      gen.ellipse(t, base - 41, 10, 7, hatch(GREEN, 84, 2)),
+    );
+
+    // the gravel path she's on, with the meadow's flowers along its edge
+    const roll = dice(31);
+    const small = 0.5;
+    const flowers = [];
+    let i = 0;
+    for (let x = 40; x < 1170; x += 50 + roll() * 90) {
+      const made = flower(700 + i++, Math.round(34 + roll() * 26));
+      flowers.push({
+        shapes: made.shapes,
+        place: `translate(${n(x - (FLOWER / 2) * small)} ${n(floor + 1 - made.tall * small)}) scale(${small})`,
+      });
+    }
+    return {
+      tall,
+      ground,
+      strips: [
+        { wide: 1200, drift: 0.14, art: <Paths shapes={far} /> },
+        { wide: 1400, drift: 0.32, art: <Paths shapes={mid} /> },
+        {
+          wide: 1200,
+          drift: 1,
+          art: (
+            <>
+              <Paths
+                shapes={[
+                  gen.line(-12, floor, 1212, floor, {
+                    ...pen(PENCIL, 7),
+                    bowing: 0.3,
+                  }),
+                ]}
+              />
+              {flowers.map((fl) => (
+                <g key={fl.place} transform={fl.place}>
+                  <Paths shapes={fl.shapes} />
+                </g>
+              ))}
+            </>
+          ),
+        },
       ],
     };
   },
