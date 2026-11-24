@@ -1254,3 +1254,23 @@ html {
     transition: none;
   }
 }
+
+/* a phone on its side: little height, so the text moves up clear of the
+   scene, and in a window too short for both the scene steps aside */
+@media (max-height: 520px) {
+  .v2 {
+    padding-top: 12px;
+    padding-bottom: calc(var(--u) * 150px);
+  }
+}
+
+@media (max-height: 330px) {
+  .v2 {
+    padding-bottom: 12px;
+  }
+
+  .v2 .scene,
+  .v2 .meadow {
+    display: none;
+  }
+}
