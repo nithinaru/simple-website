@@ -50,6 +50,7 @@ function broken(): Drawable[] {
   const tower = 150;
   const mid = 430; // tower to the middle of a whole span
   const end = 372; // where the road gives out
+  const parted = 264; // where the cable did, well short of her
   const cable = (x: number) =>
     low - (low - top) * ((mid - Math.abs(x - tower)) / mid) ** 2;
   const paint = (seed: number, weight = 1.2) => pen(ORANGE, seed, weight);
@@ -125,28 +126,28 @@ function broken(): Drawable[] {
   // the cable: whole on the near side, and on the far side as far as the road
   for (const [from, to] of [
     [-30, tower],
-    [tower, end - 6],
+    [tower, parted],
   ]) {
     const along: [number, number][] = [];
     for (let x = from; x <= to + 0.1; x += (to - from) / 14)
       along.push([n(x), n(cable(x))]);
     built.push(gen.curve(along, { ...paint(from + 105, 1.7), roughness: 0.5 }));
   }
-  // where it parted: a few strands, and the rest hanging
-  const snap = cable(end - 6);
+  // where it parted: a few strands, and the rest hanging behind her
+  const snap = cable(parted);
   built.push(
     gen.curve(
       [
-        [end - 6, n(snap)],
-        [end + 4, n(snap + 9)],
-        [end + 5, n(snap + 21)],
+        [parted, n(snap)],
+        [parted + 5, n(snap + 8)],
+        [parted + 3, n(snap + 19)],
       ],
       paint(70, 1.3),
     ),
-    gen.line(end - 6, n(snap), end + 6, n(snap - 1), paint(71, 0.8)),
-    gen.line(end - 6, n(snap), end + 2, n(snap + 4), paint(72, 0.8)),
+    gen.line(parted, n(snap), parted + 9, n(snap + 1), paint(71, 0.8)),
+    gen.line(parted, n(snap), parted + 6, n(snap + 5), paint(72, 0.8)),
   );
-  for (let x = -20; x < end - 10; x += 10) {
+  for (let x = -20; x < parted - 4; x += 10) {
     if (Math.abs(x - tower) < 15 || floor + 1 - cable(x) < 3) continue;
     built.push(
       gen.line(x, n(cable(x)), x, floor + 1, {
@@ -156,7 +157,7 @@ function broken(): Drawable[] {
     );
   }
 
-  // the water, and the far side it was meant to reach
+  // the water
   for (const [i, x] of [20, 92, 196, 262, 318, 396, 452, 498].entries()) {
     const y = sea - 1 + (i % 3) * 2;
     built.push(
@@ -172,17 +173,6 @@ function broken(): Drawable[] {
       ),
     );
   }
-  built.push(
-    gen.curve(
-      [
-        [430, floor + 4],
-        [462, floor - 8],
-        [496, floor - 13],
-        [530, floor - 10],
-      ],
-      pen(PENCIL, 90, 1.3),
-    ),
-  );
   return built;
 }
 
