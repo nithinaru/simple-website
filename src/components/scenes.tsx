@@ -353,9 +353,11 @@ export function Scene({ show }: { show: boolean }) {
     const arrive = 3200;
     const upTo = 2600; // how long the ground takes to reach her pace
     let raf = 0;
-    const began = performance.now();
+    // a beat after the page settles, so this doesn't start in the same
+    // frame as the text being redrawn (the sheet waits as long; see .scene)
+    const began = performance.now() + 300;
     const step = (now: number) => {
-      const t = now - began;
+      const t = Math.max(0, now - began);
       const gone = speed * (t < upTo ? (t * t) / (2 * upTo) : t - upTo / 2);
       for (const { strip, lap, drift } of laps) {
         strip.style.translate = `${(-((gone * drift) % lap)).toFixed(1)}px`;
@@ -386,7 +388,12 @@ export function Scene({ show }: { show: boolean }) {
             style={{ width: `calc(var(--u) * ${s.wide}px)` }}
             aria-hidden="true"
           >
-            {s.art}
+            {/* drawn once; the copies beside it point back at the first */}
+            {i === 0 ? (
+              <g id={`strip-${key}`}>{s.art}</g>
+            ) : (
+              <use href={`#strip-${key}`} />
+            )}
           </svg>
         ),
       )}

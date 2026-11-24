@@ -746,26 +746,25 @@ html {
   height: calc(var(--u) * var(--tall) * 1px);
   overflow: hidden;
   pointer-events: none;
-  /* it arrives the way it was made: drawn across from the left, behind a
-     soft edge. the mask is a little over twice as wide as the window, ink
-     on its left half, and slides until that half covers everything */
-  -webkit-mask:
-    linear-gradient(90deg, #000 46%, transparent 54%) 100% 0 / 220% 100%
-    no-repeat;
-  mask:
-    linear-gradient(90deg, #000 46%, transparent 54%) 100% 0 / 220% 100%
-    no-repeat;
-  opacity: 0;
-  transition:
-    -webkit-mask-position 2800ms cubic-bezier(0.45, 0.05, 0.25, 1) 150ms,
-    mask-position 2800ms cubic-bezier(0.45, 0.05, 0.25, 1) 150ms,
-    opacity 900ms ease 150ms;
+  /* its own layer, painted once while the guides are still on screen */
+  contain: layout paint;
 }
 
-.v2 .scene[data-show] {
-  opacity: 1;
-  -webkit-mask-position: 0 0;
-  mask-position: 0 0;
+/* it arrives the way it was made: drawn across from the left. a sheet of
+   the page's white lies over it, soft along its leading edge, and slides
+   off to the right. only the sheet moves, so nothing under it is repainted */
+.v2 .scene::after {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  inset: 0 0 0 -140px;
+  background: linear-gradient(90deg, transparent, #fff 140px);
+  will-change: transform;
+  transition: transform 2800ms cubic-bezier(0.45, 0.05, 0.25, 1) 300ms;
+}
+
+.v2 .scene[data-show]::after {
+  transform: translateX(100%);
 }
 
 /* copies of one drawing side by side, slid along by the page */
@@ -1011,7 +1010,7 @@ html {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .v2 .scene {
+  .v2 .scene::after {
     transition: none;
   }
 }
