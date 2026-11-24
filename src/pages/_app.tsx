@@ -18,26 +18,15 @@ import {
 import { JSON_LD } from "@/utils/structured-data";
 import "@/globals.css";
 import type { AppProps } from "next/app";
-import { Goudy_Bookletter_1911, Instrument_Sans } from "next/font/google";
 import Head from "next/head";
-
-// the 404 page still uses the old pair of faces
-const bodyFont = Instrument_Sans({ subsets: ["latin"], display: "swap" });
-const nameFont = Goudy_Bookletter_1911({
-  subsets: ["latin"],
-  weight: "400",
-  display: "block",
-});
-
-const FONT_VARS = `:root{--font-body:${bodyFont.style.fontFamily};--font-name:${nameFont.style.fontFamily}}`;
 
 export default function App({ Component, pageProps, router }: AppProps) {
   if (router.pathname === "/404") {
     return (
       <>
         <Head>
-          {/* biome-ignore lint/security/noDangerouslySetInnerHtml: font vars */}
-          <style dangerouslySetInnerHTML={{ __html: FONT_VARS }} />
+          {/* biome-ignore lint/security/noDangerouslySetInnerHtml: font faces */}
+          <style dangerouslySetInnerHTML={{ __html: FONT_FACE_CSS }} />
         </Head>
         <Component {...pageProps} />
       </>
@@ -56,7 +45,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
         <title>{title}</title>
         <style
           // biome-ignore lint/security/noDangerouslySetInnerHtml: font faces
-          dangerouslySetInnerHTML={{ __html: FONT_VARS + FONT_FACE_CSS }}
+          dangerouslySetInnerHTML={{ __html: FONT_FACE_CSS }}
         />
         <meta name="description" content={description} />
         <meta name="author" content={SITE_TITLE} />

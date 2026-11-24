@@ -1,73 +1,8 @@
 @import "tailwindcss";
 
-/* --font-body and --font-name come from next/font, set on :root in _app.tsx */
-@theme {
-  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
-  --font-heading: var(--font-name), serif;
-}
-
-/*
- * fixed warm off-white theme, matched to the favicon background (#f7f1e7).
- *
- * every tone is the same hue at a fixed lightness, so the page reads as one
- * palette. lightness is inherited from tailwind's stone ramp; chroma stays
- * tiny and tapers off toward the text tones so type stays readable rather
- * than colourful. --tone-200 is the page background, pinned to the favicon.
- */
-:root {
-  --tone-h: 80.7;
-  --tone-c: 0.0092;
-
-  --tone-100: oklch(0.975 calc(var(--tone-c) * 1.2) var(--tone-h));
-  --tone-200: #f7f1e7;
-  --tone-300: oklch(0.869 calc(var(--tone-c) * 1.6) var(--tone-h));
-
-  /* text tones sit on a slightly redder, slightly stronger hue than the
-     surfaces: a brown cast you feel next to the off-white rather than see */
-  --ink-h: 62;
-  --ink-c: 0.016;
-
-  --tone-400: oklch(0.709 var(--ink-c) var(--ink-h));
-  --tone-500: oklch(0.5 var(--ink-c) var(--ink-h));
-  --tone-600: oklch(0.444 var(--ink-c) var(--ink-h));
-  --tone-700: oklch(0.374 var(--ink-c) var(--ink-h));
-  --tone-800: oklch(0.268 var(--ink-c) var(--ink-h));
-
-  /* highlighter for the one project being worked on right now: a pale,
-     warm yellow on the same hue family, so the text over it stays at ink */
-  --marker: oklch(0.9 0.075 92);
-
-  /* default text (name, tagline, headings) — near-black, same brown cast */
-  --tone-ink: oklch(0.2 calc(var(--ink-c) * 0.9) var(--ink-h));
-}
-
-/* `inline` so the utilities emit var(--tone-*) instead of copying the values */
-@theme inline {
-  --color-stone-100: var(--tone-100);
-  --color-stone-200: var(--tone-200);
-  --color-stone-300: var(--tone-300);
-  --color-stone-400: var(--tone-400);
-  --color-stone-500: var(--tone-500);
-  --color-stone-600: var(--tone-600);
-  --color-stone-700: var(--tone-700);
-  --color-stone-800: var(--tone-800);
-}
-
-h1,
-h2,
-h3 {
-  font-family: var(--font-heading);
-  /* the heading face only ships one weight; don't let `font-bold` smear it */
-  font-synthesis: none;
-}
-
-::selection {
-  background: oklch(0.86 0.035 var(--ink-h));
-}
-
 html {
   background: #fff;
-  color: var(--tone-ink);
+  color: #141414;
 }
 
 /* ------------------------------------------------------------------ */
@@ -1155,4 +1090,77 @@ html {
   .v2 .scene {
     display: none;
   }
+}
+
+/* ------------------------------------------------------------------ */
+/* the page that isn't there (see pages/404.tsx)                       */
+/* ------------------------------------------------------------------ */
+
+/* no opening here: the box and its handles are simply drawn */
+.v2.lost .name-box,
+.v2.lost .name-box i,
+.v2.lost .name-box::after {
+  animation: none;
+}
+
+/* the horse where the bridge stops. --h is the strip's height: smaller on a
+   narrow window, so the end of the bridge stays in view */
+.v2 .lost-road {
+  --h: min(calc(var(--u) * 190px), 28vw);
+  position: absolute;
+  z-index: -1;
+  inset: auto 0 0;
+  height: var(--h);
+}
+
+.v2 .lost-road svg {
+  display: block;
+  /* the drawing is 400 wide and 110 tall */
+  width: calc(var(--h) * 400 / 110);
+  height: 100%;
+  overflow: visible;
+}
+
+.v2 .lost-horse {
+  position: absolute;
+  /* her feet on the deck, a little back from the edge */
+  left: calc(var(--h) * 196 / 110);
+  bottom: calc(var(--h) * 37.5 / 110);
+  height: calc(var(--h) * 58 / 190);
+  aspect-ratio: 300 / 204;
+  translate: -100% 0;
+  /* the last picture on the plate: standing */
+  background: url(/images/horse.png) 100% 0 / 1200% 100% no-repeat;
+  filter: url(#tx-horse-0);
+}
+
+/* the number as big as it goes */
+.v2 .lost-big {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: min(46vw, 88vh);
+  line-height: 0.8;
+  letter-spacing: -0.04em;
+}
+
+.v2 .lost-corner {
+  position: absolute;
+  top: clamp(18px, 4vh, 40px);
+  right: clamp(18px, 4vw, 56px);
+  font-size: 1.5em;
+}
+
+.v2 .lost-note {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: clamp(18px, 5vh, 48px);
+  text-align: center;
+}
+
+.v2 .lost-note > * {
+  background: #fff;
+  box-shadow: 0 0 0 0.35em #fff;
 }
