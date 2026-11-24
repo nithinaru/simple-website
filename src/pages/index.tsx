@@ -1,7 +1,6 @@
 import NextLink from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Dock, type DockItem, keepDockInView } from "@/components/dock";
-import { Meadow } from "@/components/meadow";
 import { LOOK, TEXT_FAMILY, TextureFilters } from "@/components/options";
 import {
   follow,
@@ -10,7 +9,7 @@ import {
   preload,
 } from "@/components/pixel-preview";
 import { RulerIntro } from "@/components/ruler-intro";
-import { SCENES, Scene, type SceneName } from "@/components/scenes";
+import { Scene } from "@/components/scenes";
 import { Bridge, Fountain, Globe, Sign, underline } from "@/components/sketch";
 import { labelLinks } from "@/utils/label-links";
 import { copyText, shuffleText } from "@/utils/shuffle-text";
@@ -95,7 +94,7 @@ const COPY: Token[][] = [
     " (YC S25).",
   ],
   [
-    "Outside of work I ",
+    "Outside of work, I ",
     {
       text: "travel",
       href: "https://travel.nithinaruswamy.com/",
@@ -223,17 +222,6 @@ export default function Home() {
   const nameRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => preload(PREVIEWS, CLIPS), []);
-
-  // what runs along the bottom: the horse on the golden gate. ?scene=name
-  // puts her somewhere else (see SCENES), and ?scene=flowers brings back the
-  // meadow
-  const [scene, setScene] = useState<SceneName | "flowers">("bridge");
-  useEffect(() => {
-    const asked = new URLSearchParams(window.location.search).get("scene");
-    const found = SCENES.find((s) => s.name === asked);
-    if (found) setScene(found.name);
-    else if (asked === "flowers") setScene("flowers");
-  }, []);
 
   // the opening, once, when the page arrives
   useLayoutEffect(() => {
@@ -491,11 +479,8 @@ export default function Home() {
         } as React.CSSProperties
       }
     >
-      {scene === "flowers" ? (
-        <Meadow show={stage === "settled"} />
-      ) : (
-        <Scene name={scene} show={stage === "settled"} />
-      )}
+      {/* the horse on the golden gate, along the bottom */}
+      <Scene show={stage === "settled"} />
 
       <div className="v2-column" ref={columnRef}>
         <header className="head fade">

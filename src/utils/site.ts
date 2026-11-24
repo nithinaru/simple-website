@@ -10,13 +10,3 @@ export const SHARE_IMAGE_ALT =
   "Nithin Aruswamy in large type, with a hand-drawn globe, Golden Gate tower, spark and sun";
 // when the page last changed in a way a search engine should care about
 export const LAST_MODIFIED = "2026-11-23";
-
-// pages with their own title and description; the rest use the site's
-export const PAGE_META: Record<string, { title: string; description: string }> =
-  {
-    "/projects": {
-      title: `Projects — ${SITE_TITLE}`,
-      description:
-        "What Nithin Aruswamy has built and worked on: Priceflag, Jet-Set Teen, OneDay, Terran, his research, and where he has worked.",
-    },
-  };

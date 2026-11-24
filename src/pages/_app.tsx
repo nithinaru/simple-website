@@ -9,7 +9,6 @@ import {
 } from "@/utils/constants";
 import {
   AUTHOR_EMAIL,
-  PAGE_META,
   SHARE_IMAGE_ALT,
   SITE_DESCRIPTION,
   SITE_TITLE,
@@ -48,9 +47,8 @@ export default function App({ Component, pageProps, router }: AppProps) {
   // each page is its own address to a search engine
   const path = router.asPath.split(/[?#]/)[0];
   const pageUrl = path === "/" ? SITE_URL : `${SITE_URL}${path}`;
-  const title = PAGE_META[router.pathname]?.title ?? SITE_TITLE;
-  const description =
-    PAGE_META[router.pathname]?.description ?? SITE_DESCRIPTION;
+  const title = SITE_TITLE;
+  const description = SITE_DESCRIPTION;
 
   return (
     <main>
@@ -105,8 +103,7 @@ export default function App({ Component, pageProps, router }: AppProps) {
       <Component {...pageProps} />
 
       {/* everything about me, in plain html, for anything reading the page
-          without scripts. the same facts are in the json-ld above and, for
-          people, on /projects */}
+          without scripts. the same facts are in the json-ld above */}
       <noscript>
         <h1>{SITE_TITLE}</h1>
         <p>{SITE_DESCRIPTION}</p>
