@@ -1103,10 +1103,10 @@ html {
   animation: none;
 }
 
-/* the horse where the bridge stops. --h is the strip's height: smaller on a
-   narrow window, so the end of the bridge stays in view */
+/* the bridge as far as it got, and the horse at the end of it. --h is the
+   strip's height: smaller on a narrow window, so the break stays in view */
 .v2 .lost-road {
-  --h: min(calc(var(--u) * 190px), 28vw);
+  --h: min(calc(var(--u) * 150px), 29vw);
   position: absolute;
   z-index: -1;
   inset: auto 0 0;
@@ -1115,8 +1115,8 @@ html {
 
 .v2 .lost-road svg {
   display: block;
-  /* the drawing is 400 wide and 110 tall */
-  width: calc(var(--h) * 400 / 110);
+  /* the drawing is 520 wide and 142 tall */
+  width: calc(var(--h) * 520 / 142);
   height: 100%;
   overflow: visible;
 }
@@ -1124,43 +1124,12 @@ html {
 .v2 .lost-horse {
   position: absolute;
   /* her feet on the deck, a little back from the edge */
-  left: calc(var(--h) * 196 / 110);
-  bottom: calc(var(--h) * 37.5 / 110);
-  height: calc(var(--h) * 58 / 190);
+  left: calc(var(--h) * 352 / 142);
+  bottom: calc(var(--h) * 35.5 / 142);
+  height: calc(var(--h) * 42 / 142);
   aspect-ratio: 300 / 204;
   translate: -100% 0;
   /* the last picture on the plate: standing */
   background: url(/images/horse.png) 100% 0 / 1200% 100% no-repeat;
   filter: url(#tx-horse-0);
-}
-
-/* the number as big as it goes */
-.v2 .lost-big {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  font-size: min(46vw, 88vh);
-  line-height: 0.8;
-  letter-spacing: -0.04em;
-}
-
-.v2 .lost-corner {
-  position: absolute;
-  top: clamp(18px, 4vh, 40px);
-  right: clamp(18px, 4vw, 56px);
-  font-size: 1.5em;
-}
-
-.v2 .lost-note {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: clamp(18px, 5vh, 48px);
-  text-align: center;
-}
-
-.v2 .lost-note > * {
-  background: #fff;
-  box-shadow: 0 0 0 0.35em #fff;
 }
