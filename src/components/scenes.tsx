@@ -419,9 +419,12 @@ export function Scene({ show }: { show: boolean }) {
     const began = performance.now() + 300;
 
     // jumping: space, the up arrow, or a tap anywhere that isn't a link
-    const LEAP = 640; // ms off the ground
-    const high = wide * 0.62;
+    const CROUCH = 80; // ms sinking before she goes
+    const AIR = 640; // ms off the ground
+    const SETTLE = 150; // ms giving at the knees after
+    const high = wide * 0.7;
     let leapt = -1;
+    let landed = false;
     let phase = 0; // where in her stride she is, shifted by each landing
     const leap = () => {
       if (leapt >= 0 || performance.now() - began < wait + 600) return;
@@ -447,7 +450,9 @@ export function Scene({ show }: { show: boolean }) {
     const gap = () => speed * 1000 * (1.7 + roll() * 1.9);
     const count = rider.querySelector<HTMLElement>(".rider-count");
     let cleared = 0;
-    let last = width + speed * 4200; // the first arrives once she has
+    // the first one reaches her about two seconds after she has arrived,
+    // while the label saying how to jump is still up
+    let last = speed * 5700;
     const hurdles = [...scene.querySelectorAll<HTMLElement>(".hurdle")].map(
       (el) => {
         const at = last;
@@ -465,25 +470,51 @@ export function Scene({ show }: { show: boolean }) {
       // coming in, she also covers the ground between the edge and her mark
       const in01 = Math.min(1, Math.max(0, (t - wait) / arrive));
       const come = (mark + wide) * (1 - (1 - in01) ** 3);
-      // in the air she gathers her legs going up and reaches coming down
+      // a jump in three parts: she sinks to push off, goes over with her
+      // legs folding and then reaching, and gives a little as she lands
       let up = 0;
       let air = -1;
+      let tilt = 0;
+      let squash = 0; // + is sunk and wide, - is stretched and tall
       if (leapt >= 0) {
-        const p = (now - leapt) / LEAP;
-        if (p >= 1) {
-          leapt = -1;
-          // she lands on the last picture of the stride, so set her legs
-          // going again from the one after it
-          const now01 = ((gone + come) / (wide * STRIDE)) % 1;
-          phase = (10.5 / GALLOP - now01 + 1) % 1;
-        } else {
+        const e = now - leapt;
+        if (e < CROUCH) {
+          squash = Math.sin((e / CROUCH) * (Math.PI / 2));
+          tilt = -5 * squash;
+          air = 4;
+        } else if (e < CROUCH + AIR) {
+          const p = (e - CROUCH) / AIR;
           up = high * 4 * p * (1 - p);
-          // push off, tuck, reach, land
-          air = p < 0.14 ? 5 : p < 0.56 ? 3 : p < 0.84 ? 7 : 9;
-          rider.style.rotate = `${(-13 * Math.sin(WAVE * p)).toFixed(1)}deg`;
-        }
+          tilt = -5 * (1 - p) ** 6 - 15 * Math.sin(WAVE * p);
+          squash = -0.7 * Math.max(0, 1 - p / 0.3);
+          air =
+            p < 0.08
+              ? 5
+              : p < 0.17
+                ? 4
+                : p < 0.5
+                  ? 3
+                  : p < 0.6
+                    ? 6
+                    : p < 0.74
+                      ? 7
+                      : p < 0.88
+                        ? 8
+                        : 9;
+          landed = false;
+        } else if (e < CROUCH + AIR + SETTLE) {
+          if (!landed) {
+            landed = true;
+            // she comes down on the last picture of the stride, so her legs
+            // set off again from the one after it
+            const now01 = ((gone + come) / (wide * STRIDE)) % 1;
+            phase = (10.5 / GALLOP - now01 + 1) % 1;
+          }
+          squash = 0.8 * Math.sin(((e - CROUCH - AIR) / SETTLE) * Math.PI);
+        } else leapt = -1;
       }
-      if (air < 0) rider.style.rotate = "0deg";
+      rider.style.rotate = `${tilt.toFixed(1)}deg`;
+      rider.style.scale = `${(1 + 0.05 * squash).toFixed(3)} ${(1 - 0.1 * squash).toFixed(3)}`;
       rider.style.translate = `${(come - wide).toFixed(1)}px ${(-up).toFixed(1)}px`;
       frame(
         air >= 0
