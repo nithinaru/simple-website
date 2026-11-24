@@ -9,7 +9,7 @@ import {
   preload,
 } from "@/components/pixel-preview";
 import { RulerIntro } from "@/components/ruler-intro";
-import { type Fall, type Jump, Scene } from "@/components/scenes";
+import { Scene } from "@/components/scenes";
 import { Bridge, Fountain, Globe, Sign, underline } from "@/components/sketch";
 import { labelLinks } from "@/utils/label-links";
 import { copyText, shuffleText } from "@/utils/shuffle-text";
@@ -217,22 +217,6 @@ const measure = (root: HTMLElement, name: HTMLElement) => {
 export default function Home() {
   const [stage, setStage] = useState<Stage>("appear");
   const [hover, setHover] = useState<Hover>(null);
-
-  // things being tried, switched on from the address: ?jump=plain or fences,
-  // ?fall=bottom, trees or page
-  const [trying, setTrying] = useState<{ jump?: Jump; fall?: Fall }>({});
-  useEffect(() => {
-    const asked = new URLSearchParams(window.location.search);
-    const jump = asked.get("jump");
-    const fall = asked.get("fall");
-    setTrying({
-      jump: jump === "plain" || jump === "fences" ? jump : undefined,
-      fall:
-        fall === "bottom" || fall === "trees" || fall === "page"
-          ? fall
-          : undefined,
-    });
-  }, []);
   const rootRef = useRef<HTMLDivElement>(null);
   const columnRef = useRef<HTMLDivElement>(null);
   const nameRef = useRef<HTMLHeadingElement>(null);
@@ -485,7 +469,6 @@ export default function Home() {
       className="v2"
       data-stage={stage}
       data-marks="guide"
-      data-fall={trying.fall}
       data-peek={hover?.open ? "" : undefined}
       style={
         {
@@ -497,7 +480,7 @@ export default function Home() {
       }
     >
       {/* the horse on the golden gate, along the bottom */}
-      <Scene show={stage === "settled"} jump={trying.jump} fall={trying.fall} />
+      <Scene show={stage === "settled"} />
 
       <div className="v2-column" ref={columnRef}>
         <header className="head fade">

@@ -9,7 +9,9 @@ import { gen, Paths } from "@/components/sketch";
  * by behind her, far things slowly and the ground at exactly the pace of her
  * legs, which is how she can run for ever without getting anywhere.
  *
- * the scene is the golden gate: a few strips, each repeating end to end.
+ * the scene is the golden gate in autumn: a few strips, each repeating end
+ * to end, leaves coming down, and pumpkins in the road for her to jump
+ * (space, the up arrow, or a tap).
  *
  * drawn in the browser only: how much of it there is depends on the window.
  */
@@ -25,9 +27,6 @@ const YELLOW = "#fdb515";
 const PENCIL = "#9c9c9c";
 const GREEN = "#2f8f5b";
 const AUTUMN = [ORANGE, YELLOW, "#a34a1e", "#e0861f"];
-
-export type Jump = "plain" | "fences";
-export type Fall = "bottom" | "trees" | "page";
 
 const WAVE = Math.PI * 2;
 
@@ -89,8 +88,8 @@ type Built = {
   strips: Strip[];
 };
 
-const BUILD: { bridge: (fall?: Fall) => Built } = {
-  bridge(fall) {
+const BUILD: { bridge: () => Built } = {
+  bridge() {
     const tall = 142;
     const ground = 37; // the roadway is a long way above the water
     const floor = tall - ground;
@@ -260,7 +259,7 @@ const BUILD: { bridge: (fall?: Fall) => Built } = {
       gen.line(x - 27, sea - 15, x - 27, sea - 25, pen(PENCIL, 94, 0.9)),
       gen.rectangle(x - 30, sea - 29, 6, 4, pen(PENCIL, 95, 0.9)),
     ];
-    // the headlands, and in autumn the trees along the top of them
+    // the headlands, and the autumn trees along the top of them
     const hills = (x: number) =>
       50 +
       13 * Math.sin((WAVE * x) / 800 + 1) +
@@ -288,12 +287,7 @@ const BUILD: { bridge: (fall?: Fall) => Built } = {
           wide: 1600,
           drift: 0.03,
           art: (
-            <Paths
-              shapes={[
-                ridge(1600, tall, hills, PENCIL, 3),
-                ...(fall === "trees" ? trees : []),
-              ]}
-            />
+            <Paths shapes={[ridge(1600, tall, hills, PENCIL, 3), ...trees]} />
           ),
         },
         {
@@ -321,13 +315,13 @@ const leaf = (colour: string, seed: number): Drawable[] => [
   gen.line(12, 4, 12, 23.5, pen(colour, seed + 1, 1.1)),
 ];
 
-/** leaves coming down: along the bottom only, or over the whole page */
-function Leaves({ count, page }: { count: number; page?: boolean }) {
-  const roll = dice(page ? 31 : 19);
+/** leaves coming down through the scene, blown back the way she came */
+function Leaves({ count }: { count: number }) {
+  const roll = dice(19);
   return (
-    <div className="leaves" data-over={page ? "page" : undefined}>
+    <div className="leaves">
       {Array.from({ length: count }, (_, i) => {
-        const fall = (page ? 9 : 5) + roll() * (page ? 9 : 5); // seconds down
+        const fall = 5 + roll() * 5; // seconds down
         return (
           <span
             // biome-ignore lint/suspicious/noArrayIndexKey: a fixed handful
@@ -336,11 +330,11 @@ function Leaves({ count, page }: { count: number; page?: boolean }) {
             style={
               {
                 "--x": `${n(roll() * 118 - 4)}%`,
-                "--s": `${n((page ? 15 : 9) + roll() * (page ? 11 : 6))}px`,
+                "--s": `${n(9 + roll() * 6)}px`,
                 "--d": `${n(fall)}s`,
                 "--delay": `${n(-roll() * fall)}s`,
                 "--w": `${n(1.1 + roll() * 1.6)}s`,
-                "--blow": `${Math.round(-(page ? 90 : 240) * (0.5 + roll()))}px`,
+                "--blow": `${Math.round(-240 * (0.5 + roll()))}px`,
               } as React.CSSProperties
             }
           >
@@ -356,32 +350,18 @@ function Leaves({ count, page }: { count: number; page?: boolean }) {
 
 const HURDLES = 4; // how many can be on the road at once
 
-// something in the road to jump: a hurdle, or in autumn a pumpkin
-const HURDLE: Drawable[] = [
-  gen.line(3, 1.5, 3, 14, pen(BLUE, 301, 1.3)),
-  gen.line(13, 1.5, 13, 14, pen(BLUE, 302, 1.3)),
-  gen.line(1, 4.5, 15, 4.5, pen(BLUE, 303, 1.2)),
-  gen.line(1, 8.5, 15, 8.5, pen(BLUE, 304, 1.2)),
-];
+// something in the road to jump
 const PUMPKIN: Drawable[] = [
   gen.ellipse(8, 9, 14, 9.5, { ...hatch(ORANGE, 311, 1.5), strokeWidth: 1.2 }),
   gen.ellipse(8, 9, 6, 9.5, pen(ORANGE, 312, 0.9)),
   gen.line(8, 4.4, 9.2, 1.4, pen(GREEN, 313, 1.5)),
 ];
 
-export function Scene({
-  show,
-  jump,
-  fall,
-}: {
-  show: boolean;
-  jump?: Jump;
-  fall?: Fall;
-}) {
+export function Scene({ show }: { show: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const riderRef = useRef<HTMLSpanElement>(null);
   const [width, setWidth] = useState(0);
-  const built = useMemo(() => BUILD.bridge(fall), [fall]);
+  const built = useMemo(() => BUILD.bridge(), []);
 
   useEffect(() => {
     const scene = ref.current;
@@ -442,6 +422,7 @@ export function Scene({
     const LEAP = 640; // ms off the ground
     const high = wide * 0.62;
     let leapt = -1;
+    let phase = 0; // where in her stride she is, shifted by each landing
     const leap = () => {
       if (leapt >= 0 || performance.now() - began < wait + 600) return;
       leapt = performance.now();
@@ -458,10 +439,8 @@ export function Scene({
       if (on.closest?.("a, button, [role=button], .net, .dock")) return;
       leap();
     };
-    if (jump) {
-      window.addEventListener("keydown", onKey);
-      window.addEventListener("pointerdown", onTap);
-    }
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("pointerdown", onTap);
 
     // things in the road, each at a place along the ground
     const roll = dice(5);
@@ -491,10 +470,16 @@ export function Scene({
       let air = -1;
       if (leapt >= 0) {
         const p = (now - leapt) / LEAP;
-        if (p >= 1) leapt = -1;
-        else {
+        if (p >= 1) {
+          leapt = -1;
+          // she lands on the last picture of the stride, so set her legs
+          // going again from the one after it
+          const now01 = ((gone + come) / (wide * STRIDE)) % 1;
+          phase = (10.5 / GALLOP - now01 + 1) % 1;
+        } else {
           up = high * 4 * p * (1 - p);
-          air = p < 0.5 ? 3 : 7;
+          // push off, tuck, reach, land
+          air = p < 0.14 ? 5 : p < 0.56 ? 3 : p < 0.84 ? 7 : 9;
           rider.style.rotate = `${(-13 * Math.sin(WAVE * p)).toFixed(1)}deg`;
         }
       }
@@ -503,7 +488,9 @@ export function Scene({
       frame(
         air >= 0
           ? air
-          : Math.floor(((gone + come) / (wide * STRIDE)) * GALLOP) % GALLOP,
+          : Math.floor(
+              (((gone + come) / (wide * STRIDE) + phase) % 1) * GALLOP,
+            ),
       );
 
       for (const h of hurdles) {
@@ -536,7 +523,7 @@ export function Scene({
       window.removeEventListener("pointerdown", onTap);
       delete rider.dataset.here;
     };
-  }, [show, width, jump]);
+  }, [show, width]);
 
   const strip = (s: Strip, key: number) => (
     <div key={key} className="scene-strip" data-drift={s.drift}>
@@ -563,42 +550,37 @@ export function Scene({
   );
 
   return (
-    <>
-      <div
-        ref={ref}
-        className="scene"
-        data-scene="bridge"
-        data-show={show ? "" : undefined}
-        aria-hidden="true"
-        style={
-          {
-            "--tall": built.tall,
-            "--ground": built.ground,
-          } as React.CSSProperties
-        }
-      >
-        {built.strips.map(strip)}
-        {fall && fall !== "page" ? <Leaves count={16} /> : null}
-        {jump === "fences"
-          ? Array.from({ length: HURDLES }, (_, i) => (
-              <svg
-                // biome-ignore lint/suspicious/noArrayIndexKey: a fixed few
-                key={i}
-                className="hurdle"
-                viewBox="0 0 16 14"
-                aria-hidden="true"
-              >
-                <Paths shapes={fall ? PUMPKIN : HURDLE} />
-              </svg>
-            ))
-          : null}
-        <span ref={riderRef} className="rider">
-          <span className="horse" />
-          {jump ? <span className="rider-hint" /> : null}
-          {jump === "fences" ? <span className="rider-count" /> : null}
-        </span>
-      </div>
-      {fall === "page" && show ? <Leaves count={26} page /> : null}
-    </>
+    <div
+      ref={ref}
+      className="scene"
+      data-scene="bridge"
+      data-show={show ? "" : undefined}
+      aria-hidden="true"
+      style={
+        {
+          "--tall": built.tall,
+          "--ground": built.ground,
+        } as React.CSSProperties
+      }
+    >
+      {built.strips.map(strip)}
+      <Leaves count={16} />
+      {Array.from({ length: HURDLES }, (_, i) => (
+        <svg
+          // biome-ignore lint/suspicious/noArrayIndexKey: a fixed few
+          key={i}
+          className="hurdle"
+          viewBox="0 0 16 14"
+          aria-hidden="true"
+        >
+          <Paths shapes={PUMPKIN} />
+        </svg>
+      ))}
+      <span ref={riderRef} className="rider">
+        <span className="horse" />
+        <span className="rider-hint" />
+        <span className="rider-count" />
+      </span>
+    </div>
   );
 }

@@ -853,7 +853,7 @@ html {
   content: "cleared " attr(data-n);
 }
 
-/* a hurdle or a pumpkin in the road; knocked, it goes over */
+/* a pumpkin in the road; knocked, it goes over */
 .v2 .hurdle {
   position: absolute;
   left: 0;
@@ -877,14 +877,6 @@ html {
   inset: 0;
   --drop: calc(var(--u) * var(--tall) * 1px);
   pointer-events: none;
-}
-
-.v2 .leaves[data-over="page"] {
-  position: fixed;
-  z-index: -1;
-  --drop: 100vh;
-  animation: hint-in 1200ms ease both;
-  opacity: 0;
 }
 
 .v2 .leaf {
@@ -918,11 +910,6 @@ html {
     rotate: 65deg;
     translate: 9px 0;
   }
-}
-
-/* autumn over the whole page: the cobalt turns to rust */
-.v2[data-fall="page"] {
-  --blue: #c2531c;
 }
 
 @media (prefers-reduced-motion: reduce) {
