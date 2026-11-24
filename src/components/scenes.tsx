@@ -11,7 +11,7 @@ import { gen, Paths } from "@/components/sketch";
  *
  * the scene is the golden gate in autumn: a few strips, each repeating end
  * to end, leaves coming down, and pumpkins in the road for her to jump
- * (space, the up arrow, or a tap).
+ * (the space bar, or a tap on a touch screen).
  *
  * drawn in the browser only: how much of it there is depends on the window.
  */
@@ -418,7 +418,7 @@ export function Scene({ show }: { show: boolean }) {
     // frame as the text being redrawn (the sheet waits as long; see .scene)
     const began = performance.now() + 300;
 
-    // jumping: space, the up arrow, or a tap anywhere that isn't a link
+    // jumping: the space bar, or a finger where there is no keyboard
     const CROUCH = 80; // ms sinking before she goes
     const AIR = 640; // ms off the ground
     const SETTLE = 150; // ms giving at the knees after
@@ -432,12 +432,15 @@ export function Scene({ show }: { show: boolean }) {
       scene.dataset.jumped = "";
     };
     const onKey = (e: KeyboardEvent) => {
-      if (e.code !== "Space" && e.code !== "ArrowUp") return;
+      if (e.code !== "Space") return;
       if ((e.target as HTMLElement).closest?.("input, textarea")) return;
       e.preventDefault();
       leap();
     };
+    // a finger on a touch screen counts, since a phone has no space bar; a
+    // mouse click doesn't
     const onTap = (e: PointerEvent) => {
+      if (e.pointerType !== "touch") return;
       const on = e.target as HTMLElement;
       if (on.closest?.("a, button, [role=button], .net, .dock")) return;
       leap();
