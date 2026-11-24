@@ -23,6 +23,11 @@ const BLUE = "#1f4fff";
 const ORANGE = "#c8432b";
 const YELLOW = "#fdb515";
 const PENCIL = "#9c9c9c";
+const GREEN = "#2f8f5b";
+const AUTUMN = [ORANGE, YELLOW, "#a34a1e", "#e0861f"];
+
+export type Jump = "plain" | "fences";
+export type Fall = "bottom" | "trees" | "page";
 
 const WAVE = Math.PI * 2;
 
@@ -84,8 +89,8 @@ type Built = {
   strips: Strip[];
 };
 
-const BUILD: { bridge: () => Built } = {
-  bridge() {
+const BUILD: { bridge: (fall?: Fall) => Built } = {
+  bridge(fall) {
     const tall = 142;
     const ground = 37; // the roadway is a long way above the water
     const floor = tall - ground;
@@ -255,6 +260,25 @@ const BUILD: { bridge: () => Built } = {
       gen.line(x - 27, sea - 15, x - 27, sea - 25, pen(PENCIL, 94, 0.9)),
       gen.rectangle(x - 30, sea - 29, 6, 4, pen(PENCIL, 95, 0.9)),
     ];
+    // the headlands, and in autumn the trees along the top of them
+    const hills = (x: number) =>
+      50 +
+      13 * Math.sin((WAVE * x) / 800 + 1) +
+      7 * Math.sin((WAVE * x) / (1600 / 3) + 2.2);
+    const trees: Drawable[] = [];
+    const grow = dice(77);
+    for (let x = 12; x < 1590; x += 13 + grow() * 30) {
+      const r = 4.5 + grow() * 4.5;
+      const y = tall - hills(x);
+      const colour = AUTUMN[Math.floor(grow() * AUTUMN.length)];
+      trees.push(
+        gen.line(n(x), n(y + 1), n(x), n(y - r * 0.9), pen(PENCIL, 5, 0.8)),
+        gen.circle(n(x), n(y - r * 1.5), n(r * 2), {
+          ...hatch(colour, Math.round(x), 1.5),
+          strokeWidth: 0.8,
+        }),
+      );
+    }
     return {
       tall,
       ground,
@@ -266,16 +290,8 @@ const BUILD: { bridge: () => Built } = {
           art: (
             <Paths
               shapes={[
-                ridge(
-                  1600,
-                  tall,
-                  (x) =>
-                    50 +
-                    13 * Math.sin((WAVE * x) / 800 + 1) +
-                    7 * Math.sin((WAVE * x) / (1600 / 3) + 2.2),
-                  PENCIL,
-                  3,
-                ),
+                ridge(1600, tall, hills, PENCIL, 3),
+                ...(fall === "trees" ? trees : []),
               ]}
             />
           ),
@@ -296,11 +312,76 @@ const BUILD: { bridge: () => Built } = {
   },
 };
 
-export function Scene({ show }: { show: boolean }) {
+/* a leaf: two curves to a point, a rib down the middle, scribbled in */
+const leaf = (colour: string, seed: number): Drawable[] => [
+  gen.path("M12 2 C 20 7 20 16 12 21 C 4 16 4 7 12 2 Z", {
+    ...hatch(colour, seed, 2.3),
+    strokeWidth: 1.2,
+  }),
+  gen.line(12, 4, 12, 23.5, pen(colour, seed + 1, 1.1)),
+];
+
+/** leaves coming down: along the bottom only, or over the whole page */
+function Leaves({ count, page }: { count: number; page?: boolean }) {
+  const roll = dice(page ? 31 : 19);
+  return (
+    <div className="leaves" data-over={page ? "page" : undefined}>
+      {Array.from({ length: count }, (_, i) => {
+        const fall = (page ? 9 : 5) + roll() * (page ? 9 : 5); // seconds down
+        return (
+          <span
+            // biome-ignore lint/suspicious/noArrayIndexKey: a fixed handful
+            key={i}
+            className="leaf"
+            style={
+              {
+                "--x": `${n(roll() * 118 - 4)}%`,
+                "--s": `${n((page ? 15 : 9) + roll() * (page ? 11 : 6))}px`,
+                "--d": `${n(fall)}s`,
+                "--delay": `${n(-roll() * fall)}s`,
+                "--w": `${n(1.1 + roll() * 1.6)}s`,
+                "--blow": `${Math.round(-(page ? 90 : 240) * (0.5 + roll()))}px`,
+              } as React.CSSProperties
+            }
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <Paths shapes={leaf(AUTUMN[i % AUTUMN.length], 200 + i)} />
+            </svg>
+          </span>
+        );
+      })}
+    </div>
+  );
+}
+
+const HURDLES = 4; // how many can be on the road at once
+
+// something in the road to jump: a hurdle, or in autumn a pumpkin
+const HURDLE: Drawable[] = [
+  gen.line(3, 1.5, 3, 14, pen(BLUE, 301, 1.3)),
+  gen.line(13, 1.5, 13, 14, pen(BLUE, 302, 1.3)),
+  gen.line(1, 4.5, 15, 4.5, pen(BLUE, 303, 1.2)),
+  gen.line(1, 8.5, 15, 8.5, pen(BLUE, 304, 1.2)),
+];
+const PUMPKIN: Drawable[] = [
+  gen.ellipse(8, 9, 14, 9.5, { ...hatch(ORANGE, 311, 1.5), strokeWidth: 1.2 }),
+  gen.ellipse(8, 9, 6, 9.5, pen(ORANGE, 312, 0.9)),
+  gen.line(8, 4.4, 9.2, 1.4, pen(GREEN, 313, 1.5)),
+];
+
+export function Scene({
+  show,
+  jump,
+  fall,
+}: {
+  show: boolean;
+  jump?: Jump;
+  fall?: Fall;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const riderRef = useRef<HTMLSpanElement>(null);
   const [width, setWidth] = useState(0);
-  const built = useMemo(() => BUILD.bridge(), []);
+  const built = useMemo(() => BUILD.bridge(fall), [fall]);
 
   useEffect(() => {
     const scene = ref.current;
@@ -356,6 +437,46 @@ export function Scene({ show }: { show: boolean }) {
     // a beat after the page settles, so this doesn't start in the same
     // frame as the text being redrawn (the sheet waits as long; see .scene)
     const began = performance.now() + 300;
+
+    // jumping: space, the up arrow, or a tap anywhere that isn't a link
+    const LEAP = 640; // ms off the ground
+    const high = wide * 0.62;
+    let leapt = -1;
+    const leap = () => {
+      if (leapt >= 0 || performance.now() - began < wait + 600) return;
+      leapt = performance.now();
+      scene.dataset.jumped = "";
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.code !== "Space" && e.code !== "ArrowUp") return;
+      if ((e.target as HTMLElement).closest?.("input, textarea")) return;
+      e.preventDefault();
+      leap();
+    };
+    const onTap = (e: PointerEvent) => {
+      const on = e.target as HTMLElement;
+      if (on.closest?.("a, button, [role=button], .net, .dock")) return;
+      leap();
+    };
+    if (jump) {
+      window.addEventListener("keydown", onKey);
+      window.addEventListener("pointerdown", onTap);
+    }
+
+    // things in the road, each at a place along the ground
+    const roll = dice(5);
+    const gap = () => speed * 1000 * (1.7 + roll() * 1.9);
+    const count = rider.querySelector<HTMLElement>(".rider-count");
+    let cleared = 0;
+    let last = width + speed * 4200; // the first arrives once she has
+    const hurdles = [...scene.querySelectorAll<HTMLElement>(".hurdle")].map(
+      (el) => {
+        const at = last;
+        last += gap();
+        return { el, at, done: false, tall: el.getBoundingClientRect().height };
+      },
+    );
+
     const step = (now: number) => {
       const t = Math.max(0, now - began);
       const gone = speed * (t < upTo ? (t * t) / (2 * upTo) : t - upTo / 2);
@@ -365,16 +486,57 @@ export function Scene({ show }: { show: boolean }) {
       // coming in, she also covers the ground between the edge and her mark
       const in01 = Math.min(1, Math.max(0, (t - wait) / arrive));
       const come = (mark + wide) * (1 - (1 - in01) ** 3);
-      rider.style.translate = `${(come - wide).toFixed(1)}px`;
-      frame(Math.floor(((gone + come) / (wide * STRIDE)) * GALLOP) % GALLOP);
+      // in the air she gathers her legs going up and reaches coming down
+      let up = 0;
+      let air = -1;
+      if (leapt >= 0) {
+        const p = (now - leapt) / LEAP;
+        if (p >= 1) leapt = -1;
+        else {
+          up = high * 4 * p * (1 - p);
+          air = p < 0.5 ? 3 : 7;
+          rider.style.rotate = `${(-13 * Math.sin(WAVE * p)).toFixed(1)}deg`;
+        }
+      }
+      if (air < 0) rider.style.rotate = "0deg";
+      rider.style.translate = `${(come - wide).toFixed(1)}px ${(-up).toFixed(1)}px`;
+      frame(
+        air >= 0
+          ? air
+          : Math.floor(((gone + come) / (wide * STRIDE)) * GALLOP) % GALLOP,
+      );
+
+      for (const h of hurdles) {
+        const x = mark + wide * 0.5 + (h.at - gone);
+        if (x < -60) {
+          // gone by: back of the queue, stood up again
+          h.at = Math.max(last, gone + width) + gap();
+          last = h.at;
+          h.done = false;
+          delete h.el.dataset.down;
+          continue;
+        }
+        h.el.style.translate = `${x.toFixed(1)}px`;
+        if (!h.done && Math.abs(h.at - gone) < wide * 0.14) {
+          h.done = true;
+          if (up > h.tall * 0.9) cleared += 1;
+          else {
+            cleared = 0;
+            h.el.dataset.down = "";
+          }
+          if (count) count.dataset.n = String(cleared).padStart(2, "0");
+        }
+      }
       raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
     return () => {
       cancelAnimationFrame(raf);
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("pointerdown", onTap);
       delete rider.dataset.here;
     };
-  }, [show, width]);
+  }, [show, width, jump]);
 
   const strip = (s: Strip, key: number) => (
     <div key={key} className="scene-strip" data-drift={s.drift}>
@@ -401,23 +563,42 @@ export function Scene({ show }: { show: boolean }) {
   );
 
   return (
-    <div
-      ref={ref}
-      className="scene"
-      data-scene="bridge"
-      data-show={show ? "" : undefined}
-      aria-hidden="true"
-      style={
-        {
-          "--tall": built.tall,
-          "--ground": built.ground,
-        } as React.CSSProperties
-      }
-    >
-      {built.strips.map(strip)}
-      <span ref={riderRef} className="rider">
-        <span className="horse" />
-      </span>
-    </div>
+    <>
+      <div
+        ref={ref}
+        className="scene"
+        data-scene="bridge"
+        data-show={show ? "" : undefined}
+        aria-hidden="true"
+        style={
+          {
+            "--tall": built.tall,
+            "--ground": built.ground,
+          } as React.CSSProperties
+        }
+      >
+        {built.strips.map(strip)}
+        {fall && fall !== "page" ? <Leaves count={16} /> : null}
+        {jump === "fences"
+          ? Array.from({ length: HURDLES }, (_, i) => (
+              <svg
+                // biome-ignore lint/suspicious/noArrayIndexKey: a fixed few
+                key={i}
+                className="hurdle"
+                viewBox="0 0 16 14"
+                aria-hidden="true"
+              >
+                <Paths shapes={fall ? PUMPKIN : HURDLE} />
+              </svg>
+            ))
+          : null}
+        <span ref={riderRef} className="rider">
+          <span className="horse" />
+          {jump ? <span className="rider-hint" /> : null}
+          {jump === "fences" ? <span className="rider-count" /> : null}
+        </span>
+      </div>
+      {fall === "page" && show ? <Leaves count={26} page /> : null}
+    </>
   );
 }

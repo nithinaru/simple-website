@@ -796,6 +796,142 @@ html {
   visibility: visible;
 }
 
+.v2 .rider {
+  transform-origin: 50% 100%;
+}
+
+/* how to make her jump, until you have */
+.v2 .rider-hint,
+.v2 .rider-count {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 5px);
+  translate: -50% 0;
+  padding: 1px 5px 2px;
+  border-radius: 2px;
+  background: var(--blue);
+  color: #fff;
+  font:
+    600 9px / 1.3 var(--font-mono),
+    ui-monospace,
+    monospace;
+  white-space: nowrap;
+}
+
+.v2 .rider-hint {
+  opacity: 0;
+  animation: hint-in 500ms ease 5200ms forwards;
+}
+
+.v2 .rider-hint::after {
+  content: "space to jump";
+}
+
+@media (hover: none) {
+  .v2 .rider-hint::after {
+    content: "tap to jump";
+  }
+}
+
+.v2 .scene[data-jumped] .rider-hint {
+  display: none;
+}
+
+@keyframes hint-in {
+  to {
+    opacity: 1;
+  }
+}
+
+/* how many she has cleared in a row */
+.v2 .rider-count:not([data-n]),
+.v2 .rider-count[data-n="00"] {
+  display: none;
+}
+
+.v2 .rider-count::after {
+  content: "cleared " attr(data-n);
+}
+
+/* a hurdle or a pumpkin in the road; knocked, it goes over */
+.v2 .hurdle {
+  position: absolute;
+  left: 0;
+  bottom: calc(var(--u) * (var(--ground) - 0.5) * 1px);
+  width: calc(var(--u) * 15px);
+  margin-left: calc(var(--u) * -7.5px);
+  translate: -200px;
+  overflow: visible;
+  transform-origin: 50% 100%;
+  transition: rotate 320ms cubic-bezier(0.4, 0, 0.9, 0.6);
+  will-change: translate;
+}
+
+.v2 .hurdle[data-down] {
+  rotate: 84deg;
+}
+
+/* autumn: leaves coming down, blown back the way she came */
+.v2 .leaves {
+  position: absolute;
+  inset: 0;
+  --drop: calc(var(--u) * var(--tall) * 1px);
+  pointer-events: none;
+}
+
+.v2 .leaves[data-over="page"] {
+  position: fixed;
+  z-index: -1;
+  --drop: 100vh;
+  animation: hint-in 1200ms ease both;
+  opacity: 0;
+}
+
+.v2 .leaf {
+  position: absolute;
+  top: -30px;
+  left: var(--x);
+  width: calc(var(--u) * var(--s));
+  animation: leaf-fall var(--d) linear var(--delay) infinite;
+  will-change: translate;
+}
+
+.v2 .leaf svg {
+  display: block;
+  width: 100%;
+  overflow: visible;
+  animation: leaf-turn var(--w) ease-in-out infinite alternate;
+}
+
+@keyframes leaf-fall {
+  to {
+    translate: var(--blow) calc(var(--drop) + 60px);
+  }
+}
+
+@keyframes leaf-turn {
+  from {
+    rotate: -55deg;
+    translate: -9px 0;
+  }
+  to {
+    rotate: 65deg;
+    translate: 9px 0;
+  }
+}
+
+/* autumn over the whole page: the cobalt turns to rust */
+.v2[data-fall="page"] {
+  --blue: #c2531c;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v2 .leaf,
+  .v2 .leaf svg {
+    animation: none;
+  }
+}
+
 .v2 .rider .horse {
   display: block;
   height: calc(var(--u) * 42px);
