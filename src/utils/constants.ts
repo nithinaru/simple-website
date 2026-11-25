@@ -210,21 +210,6 @@ export const PRESS: readonly PressItem[] = [
   },
 ];
 
-/** public videos on Nithin's YouTube channel; feed the JSON-LD only */
-export type Video = {
-  /** the YouTube video id (the part after v= or youtu.be/) */
-  id: string;
-  title: string;
-};
-
-export const VIDEOS: readonly Video[] = [
-  {
-    id: "HTlI9NxZe-g",
-    title: "Terran | Scalable Farming for Small-Scale Farmers",
-  },
-  { id: "kmYGtSsVqA0", title: "Introducing Therapeuo" },
-];
-
 export const PAPERS: readonly Paper[] = [
   {
     title: "Math Modeling & Geometry for Fabric Analysis",

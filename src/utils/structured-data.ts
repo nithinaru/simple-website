@@ -4,7 +4,6 @@ import {
   PRESS,
   PROJECTS,
   type PressItem,
-  VIDEOS,
   WORK_ITEMS,
 } from "@/utils/constants";
 import {
@@ -252,16 +251,6 @@ const app = oneDay && {
   author: PERSON_REF,
 };
 
-// videos on his own channel, which ties the channel to the site and person
-const videos = VIDEOS.map((video) => ({
-  "@type": "VideoObject",
-  name: video.title,
-  url: `https://www.youtube.com/watch?v=${video.id}`,
-  embedUrl: `https://www.youtube.com/embed/${video.id}`,
-  thumbnailUrl: `https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`,
-  author: PERSON_REF,
-}));
-
 const papers = PAPERS.map((paper) => ({
   "@type": "ScholarlyArticle",
   name: paper.title,
@@ -289,7 +278,6 @@ const GRAPH = {
     ...pressNodes,
     ...founded,
     ...(app ? [app] : []),
-    ...videos,
     ...papers,
     ...patents,
   ],
