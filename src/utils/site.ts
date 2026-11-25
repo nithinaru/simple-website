@@ -8,5 +8,6 @@ export const TWITTER_HANDLE = "@nithinaru";
 // what the share image shows, for anyone who can't see it
 export const SHARE_IMAGE_ALT =
   "Nithin Aruswamy in large type, with a hand-drawn globe, Golden Gate tower, spark and sun";
-// when the page last changed in a way a search engine should care about
-export const LAST_MODIFIED = "2026-11-25";
+// when the page last changed in a way a search engine should care about;
+// google wants the time and zone too, a bare date gets flagged
+export const LAST_MODIFIED = "2026-11-25T12:00:00-08:00";
